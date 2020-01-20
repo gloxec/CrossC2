@@ -2,7 +2,7 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
-# Croos C2 - Generator CobaltStrike's cross-platform beacon
+# Croos C2 - 生成CobaltStrike的跨平台beacon
 
 ```
      ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 
@@ -22,8 +22,7 @@
 
 # Description
 
-Add beacon generation functions for CobaltStrike's cross-platform beacon. Currently only supported on **Linux** & **MacOS**.
-
+为CobaltStrike添加其他平台的beacon生成功能，暂时仅支持在 **Linux** & **MacOS** 上运行。
 
 
 |  | Windows | Linux | MacOS | iOS | Android | Embedded |
@@ -36,24 +35,24 @@ Add beacon generation functions for CobaltStrike's cross-platform beacon. Curren
 | gen beacon (arm64) |  |  |  | ⍻ | ⍻ |  |
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
-Restricted description:
-* MacOS: Latest systems only support 64-bit programs
-* iOS: sandbox, restricted cmd
+受限说明:
+* MacOS: 新系统仅支持64位程序
+* iOS: sandbox, 受限的cmd
 * Embedded: only *nix
-* ⍻ : Loader is still in progress
+* ⍻ : 加载还在完善中
 
 
 # Install
 
-Download:
+下载基础文件:
 
 > 
 * **CrossC2.cna**
-* **genCrossC2** `CS Env`
+* **genCrossC2** `CS运行环境`
 
-1. copy **CrossC2.cna** and **genCrossC2** file to `CobaltStrike`'s **rootdir**  (Must be in the **same directory** )
-2. choose `Script Manager`，add `CrossC2.cna` (If successfully installed, the menu bar will have an additional item `CrossC2`)
-3. Modify the `genCrossC2` path in the` CrossC2.cna` script to the **real path**
+1. 拷贝 **CrossC2.cna** 与 **genCrossC2** 文件到CobaltStrike **根目录** 下 (必须处于 **同目录** )
+2. 选择`Script Manager`，添加`CrossC2.cna` (如果成功安装，菜单栏会多出一项 `CrossC2`)
+3. 修改`CrossC2.cna`脚本中`genCrossC2`路径为**真实路径**
 
 ```
 exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
@@ -64,26 +63,26 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 ## teamserver
 
-For some reasons, only HTTPS beacon is currently supported. When setting C2Profile, please add an '/ login' to the URI list configured by http-get, and add an '/ logout' to the http-post URI list.
-`C2Profile dynamic analysis will be supported in the future`
+因为一些原因，目前强制只支持HTTPS beacon，并且在设定C2Profile时，在http-get配置的URI列表中请增加一项'/login', http-post URI列表中增加一项'/logout'
+`后续将支持C2Profile动态解析`
 
-## cna plugin way
+## cna插件方式
 
 ```
-Menu bar: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
+菜单栏: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
 
-Can be configured in the pop-up dialog:
-1. Operating System
-2. Arach
-3. Payload Type(Currently only supports Stageless, Staged is being updated)
-4. Generate file save path
+弹出的对话框中可以配置:
+1. 操作系统
+2. 运行位数
+3. Payload类型(目前仅支持Stageless, Staged正在更新中)
+4. 生成文件保存路径
 
 ```
 ![](media/15718834682843/15794531704394.jpg)
 
-## Run the underlying program directly
+## 直接运行底层程序
 
-In addition to cna GUI generation, you can also directly call the underlying program to generate directly.
+除过cna GUI生成外，也可以直接调用底层程序直接生成。
 
 ```
 [usage]: genCrossC2 [host] [port] [getURI] [postURI] [platform] [arch] [outputFileName]
@@ -98,23 +97,21 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 ![](media/15718834682843/15794546043572.jpg)
 
 
-# Coming soon
+# 即将上线
 
-1. Rich C2Porfile support
-2. Staged Type Shellcode Generation
-3. http-proxy (auth) & socks proxy back connection support
-4. Proxy-Pivots 
-5. node beacon? (Single node type, can host other beacon without relying on teamserver)
-
+1. 丰富的C2Porfile支持
+2. Staged类型Shellcode生成
+3. http-proxy (auth) & socks 代理回连支持
+4. 流量中转支持 
+5. node beacon? (单个节点式，可进行不依靠teamserver托管其他beacon)
 
 # Examples
 
-
 ![](media/15794884596715/15795001494711.jpg)
 
-# Bug
+# 可能存在问题
 
-1. GUI file manager and process viewing functions are not currently supported
-2. Uploading and downloading files that are too large may have incomplete end bytes
+1. GUI的文件管理 与 进程查看功能暂不支持
+2. 传输文件时过大的文件可能存在末尾字节写入不全的情况
 
 
