@@ -1,0 +1,45 @@
+menubar("CrossC2", "generator", 2);
+
+popup generator {
+    menu "&CrossC2 Payload Generator" {
+        item "&genCrossC2" {
+            genCrossC2()
+        }
+    }
+    item "&About" {
+        projectAbout()
+    }
+}
+
+sub dialogCallBack {
+    $system = $3['system'];
+    $arch = $3['arch'];
+    $payload_type = $3['payload_type'];
+    $listener = $3['listener'];
+    $outputFileName = $3['outputFileName'];
+
+    $listener_info = listener_info($listener);
+    $host = $listener_info['host'];
+    $port = $listener_info['port'];
+
+    exec("/xxx/xx/xx/genCrossC2 ".$host." ". $port." null null ".$system." ".$arch." ".$outputFileName)
+}
+
+sub genCrossC2 {
+    $dialog = dialog("CrossC2 Payload Generator", %(listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "./CrossC2-test"), &dialogCallBack);
+    dialog_description($dialog, "Export CrossC2 Payload");
+    drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS"));
+    drow_listener($dialog, "listener", "Listener: ");
+    drow_combobox($dialog, "arch", "Arch: ", @("x86", "x64"));
+    drow_combobox($dialog, "payload_type", "Payload_Type: ", @("Staged", "Stageless"));
+    drow_text($dialog, "outputFileName", "OutputFileName: ");
+    dbutton_action($dialog, "Build");
+    dialog_show($dialog);
+}
+
+sub projectAbout {
+    $dialog = dialog("Cross C2 About");
+    dialog_description($dialog, "Export CrossC2 Payload");
+    dialog_show($dialog);
+}
+
