@@ -1,0 +1,108 @@
+set sleeptime "3";
+set useragent "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko";
+set pipename_stager "EtaxReportMonitors";
+set pipename "EtaxReportMonitor";
+http-get {
+
+    set uri "/search/ /login";
+    header "Host" "www.bing.com";
+        header "Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+        header "Cookie" "DUP=Q=GpO1nJpMnam4UllEfmeMdg2&T=283767088&A=1&IG"; 
+
+    client {
+
+        metadata {
+
+            base64;  
+
+
+            header "Cookie";
+
+        }
+
+    }
+
+    server {
+
+        header "Server" "Server";
+
+        header "Set-Cookie" "xb0xcexf1xbexd6xd5xe6xcaxb5xb7xfexcexf18080=26077252";
+
+        header "Set-Cookie" "DUP=Q=GpO1nJpMnam4UllEfmeMdg2&T=283767088&A=1&IG; Path=/; Max-Age=0;";
+
+        header "Set-Cookie" "SERVERID=38c77ca8f937ef5cd932d2e4367e94c5|1576769700|1576769602;Path=/";
+
+        header "Content-Encoding" "gzip";
+
+        output {
+
+            print;
+
+        }
+
+    }
+
+}
+
+http-post {
+
+    
+
+    set uri "/Search/ /logout";
+
+    client {
+
+        header "Accept" "*/*";
+
+        header "Content-Type" "text/xml";
+
+        header "X-Requested-With" "XMLHttpRequest";
+
+        header "Host" "www.amazon.com";
+
+        parameter "sz" "160x600";
+
+        parameter "oe" "oe=ISO-8859-1;";
+
+        id {
+
+            parameter "id";
+
+        }
+
+        parameter "s" "3717";
+
+        parameter "dc_ref" "http://baidu.com";
+
+        output {
+
+            print;
+
+        }
+
+    }
+
+    server {
+
+        header "Server" "Server";
+
+        header "x-amz-id-1" "THK9YE";
+
+        header "x-amz-id-2" "a21JZ1=";
+
+        header "X-Frame-Options" "SAMEORIGIN";
+
+        header "x-ua-compatible" "IE=edge";
+
+        output {
+
+            netbios;
+            prepend "<!DOCTYPE html><html lang=\"en\" xml:lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:Web=\"http://schemas.live.com/Web/\"><script type=\"text/javascript\">//<![CDATA[si_ST=new Date;//]]></script><head><!--pc--><title>Bing</title><meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" /><link href=\"/search?format=rss&amp;q=canary&amp;go=Search&amp;qs=bs&amp;form=QBRE\" rel=\"alternate\" title=\"XML\" type=\"text/xml\" /><link href=\"/search?format=rss&amp;q=canary&amp;go=Search&amp;qs=bs&amp;form=QBRE\" rel=\"alternate\" title=\"RSS\" type=\"application/rss+xml\" /><link href=\"/sa/simg/bing_p_rr_teal_min.ico\" rel=\"shortcut icon\" /><script type=\"text/javascript\">//<![CDATA[";
+            append "G={ST:(si_ST?si_ST:new Date),Mkt:\"en-US\",RTL:false,Ver:\"53\",IG:\"4C1158CCBAFC4896AD78ED0FF0F4A1B2\",EventID:\"E37FA2E804B54C71B3E275E9589590F8\",MN:\"SERP\",V:\"web\",P:\"SERP\",DA:\"CO4\",SUIH:\"OBJhNcrOC72Z3mr21coFQw\",gpUrl:\"/fd/ls/GLinkPing.aspx?\" }; _G.lsUrl=\"/fd/ls/l?IG=\"+_G.IG ;curUrl=\"http://www.bing.com/search\";function si_T(a){ if(document.images){_G.GPImg=new Image;_G.GPImg.src=_G.gpUrl+\"IG=\"+_G.IG+\"&\"+a;}return true;};//]]></script><style type=\"text/css\">.sw_ddbk:after,.sw_ddw:after,.sw_ddgn:after,.sw_poi:after,.sw_poia:after,.sw_play:after,.sw_playa:after,.sw_playd:after,.sw_playp:after,.sw_st:after,.sw_sth:after,.sw_ste:after,.sw_st2:after,.sw_plus:after,.sw_tpcg:after,.sw_tpcw:after,.sw_tpcbk:after,.sw_arwh:after,.sb_pagN:after,.sb_pagP:after,.sw_up:after,.sw_down:after,.b_expandToggle:after,.sw_calc:after,.sw_fbi:after,";
+            print;
+
+        }
+
+    }
+
+}
