@@ -2,7 +2,7 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
-# Croos C2 - Generator CobaltStrike's cross-platform beacon
+# Cross C2 - Generator CobaltStrike's cross-platform beacon
 
 ```
      ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 

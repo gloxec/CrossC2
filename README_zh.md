@@ -2,7 +2,7 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
-# Croos C2 - 生成CobaltStrike的跨平台beacon
+# Cross C2 - 生成CobaltStrike的跨平台beacon
 
 ```
      ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 
