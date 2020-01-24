@@ -63,8 +63,10 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 ## teamserver
 
-因为一些原因，目前强制只支持HTTPS beacon，并且在设定C2Profile时，在http-get配置的URI列表中请增加一项'/login', http-post URI列表中增加一项'/logout'
-`后续将支持C2Profile动态解析`
+因为一些原因，目前强制只支持HTTPS beacon
+`后续将支持C2~~Profile动态解析`
+
+**复制server上cs目录下的 `.cobaltstrike.beacon_keys`到本地cs目录下**
 
 ## cna插件方式
 
