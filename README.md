@@ -64,8 +64,10 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 ## teamserver
 
-For some reasons, only HTTPS beacon is currently supported. When setting C2Profile, please add an '/ login' to the URI list configured by http-get, and add an '/ logout' to the http-post URI list.
+For some reasons, only HTTPS beacon is currently supported.
 `C2Profile dynamic analysis will be supported in the future`
+
+**Copy `.cobaltstrike.beacon_keys` from the cs directory on the server to the local cs directory.**
 
 ## cna plugin way
 

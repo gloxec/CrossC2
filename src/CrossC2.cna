@@ -26,7 +26,7 @@ sub dialogCallBack {
 }
 
 sub genCrossC2 {
-    $dialog = dialog("CrossC2 Payload Generator", %(listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "./CrossC2-test"), &dialogCallBack);
+    $dialog = dialog("CrossC2 Payload Generator", %(listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
     dialog_description($dialog, "Export CrossC2 Payload");
     drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS"));
     drow_listener($dialog, "listener", "Listener: ");
@@ -37,9 +37,14 @@ sub genCrossC2 {
     dialog_show($dialog);
 }
 
+sub projectAboutCallback {
+}
+
 sub projectAbout {
-    $dialog = dialog("Cross C2 About");
+    $dialog = dialog("Cross C2 About",%(link => "https://github.com/gloxec/CrossC2"), &projectAboutCallback);
     dialog_description($dialog, "Export CrossC2 Payload");
+    dbutton_action($dialog, "OK");
+    drow_text($dialog, "link", "link: ", "");
     dialog_show($dialog);
 }
 
