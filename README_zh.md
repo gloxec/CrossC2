@@ -101,7 +101,7 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 # 即将上线
 
-1. 丰富的C2Porfile支持
+1. 丰富的C2Profile支持
 2. Staged类型Shellcode生成
 3. http-proxy (auth) & socks 代理回连支持
 4. 流量中转支持 

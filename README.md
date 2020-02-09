@@ -102,7 +102,7 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 
 # Coming soon
 
-1. Rich C2Porfile support
+1. Rich C2Profile support
 2. Staged Type Shellcode Generation
 3. http-proxy (auth) & socks proxy back connection support
 4. Proxy-Pivots 
