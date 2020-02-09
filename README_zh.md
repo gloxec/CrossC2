@@ -122,14 +122,16 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 * 支持 生成 Linux & MacOS beacon.
 
 md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+
 md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
 
 ## release v0.2 : 
 
-* - 修复 Linux genCrossC2.Linux 崩溃的bug.
-* - 修复 大文件上传时末尾字节写入不全的bug.
-* + 支持 GUI的文件管理器.
+* -修复 Linux genCrossC2.Linux 崩溃的bug.
+* -修复 大文件上传时末尾字节写入不全的bug.
+* +支持 GUI的文件管理器.
 
 md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+
 md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
 
