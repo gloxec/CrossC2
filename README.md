@@ -116,7 +116,25 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 
 # Bug
 
-1. GUI file manager and process viewing functions are not currently supported
-2. Uploading and downloading files that are too large may have incomplete end bytes
+1. File download is not supported.
+
+
+# ChangeLog
+
+## release v0.1 : 
+
+* Support Linux & MacOS beacon generation.
+
+md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
+
+## release v0.2 : 
+
+* - fix genCrossC2.Linux crash.
+* - fix uploading large file error.
+* + support GUI file manager.
+
+md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
 
 
