@@ -28,7 +28,7 @@ sub dialogCallBack {
 sub genCrossC2 {
     $dialog = dialog("CrossC2 Payload Generator", %(listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
     dialog_description($dialog, "Export CrossC2 Payload");
-    drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS"));
+    drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS", "Linux-GLIBC"));
     drow_listener($dialog, "listener", "Listener: ");
     drow_combobox($dialog, "arch", "Arch: ", @("x86", "x64"));
     drow_combobox($dialog, "payload_type", "Payload_Type: ", @("Staged", "Stageless"));
