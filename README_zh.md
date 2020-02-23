@@ -36,6 +36,7 @@
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 受限说明:
+* Linux: 特别老旧的系统可以选择cna中的"Linux-GLIBC"选项（2010年左右）
 * MacOS: 新系统仅支持64位程序
 * iOS: sandbox, 受限的cmd
 * Embedded: only *nix
@@ -110,10 +111,9 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 # Examples
 
 ![](media/15794884596715/15795001494711.jpg)
+![](media/15824278372797/15824282351545.jpg)
+![](media/15824278372797/15824282632072.jpg)
 
-# 可能存在问题
-
-1. 暂不支持文件下载功能
 
 # ChangeLog
 
@@ -134,4 +134,21 @@ md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
 md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
 
 md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+
+## release v0.3 :
+
+* +支持 老系统Linux上低版本GLIBC的兼容 (2010年左右)
+
+## release v0.4 :
+
+* -变更 shell命令执行时采用后台多线程方式
+* -变更 shell命令执行时错误输出重定向到标准输出
+* +支持 增加后台文件下载功能
+
+md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
+
+md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
+
+
+
 
