@@ -37,6 +37,7 @@ Add beacon generation functions for CobaltStrike's cross-platform beacon. Curren
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 Restricted description:
+* Linux: For particularly old systems, you can choose "Linux-GLIBC" option in cna (around 2010)
 * MacOS: Latest systems only support 64-bit programs
 * iOS: sandbox, restricted cmd
 * Embedded: only *nix
@@ -113,10 +114,8 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 
 
 ![](media/15794884596715/15795001494711.jpg)
-
-# Bug
-
-1. File download is not supported.
+![](media/15824278372797/15824282351545.jpg)
+![](media/15824278372797/15824282632072.jpg)
 
 
 # ChangeLog
@@ -138,5 +137,19 @@ md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
 md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
 
 md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+
+## release v0.3 :
+
+* +support Compatibility with older versions of GLIBC on older systems Linux (around 2010).
+
+## release v0.4 :
+
+* -change Multi-threaded background when shell commands are executed
+* -change Redirect error output to standard output when shell command is executed.
+* +support Add background file download function.
+
+md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
+
+md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
 
 
