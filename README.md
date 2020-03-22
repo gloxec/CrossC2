@@ -2,6 +2,10 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
+🚀 For a faster way, see **cna** introduction [GO📌](#cna-plugin-way)
+
+🎉 **Android** & **iPhone** support [GO📌](#Mobile)
+
 # Cross C2 - Generator CobaltStrike's cross-platform beacon
 
 ```
@@ -19,6 +23,7 @@
 ```
 
 ![](media/15794884596715/15794993795360.jpg)
+![](media/15848885324084/15848892759774.jpg)
 
 # Description
 
@@ -30,10 +35,10 @@ Add beacon generation functions for CobaltStrike's cross-platform beacon. Curren
 | --- | --- | --- | --- | --- | --- | --- |
 | Run Env (x86) |  | √ |  |  |  |  |
 | Run Env (x64) |  | √ | √ |  |  |  |
-| gen beacon (x86) |  | √ |  |  |  |  |
+| gen beacon (x86) |  | √ |  |  | √ |  |
 | gen beacon (x64) |  | √ | √ |  |  |  |
-| gen beacon (armv7) |  |  |  | ⍻ | ⍻ |  |
-| gen beacon (arm64) |  |  |  | ⍻ | ⍻ |  |
+| gen beacon (armv7) |  |  |  | ⍻  | √ |  |
+| gen beacon (arm64) |  |  |  | √ | √ |  |
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 Restricted description:
@@ -82,7 +87,7 @@ Can be configured in the pop-up dialog:
 4. Generate file save path
 
 ```
-![](media/15718834682843/15794531704394.jpg)
+![](media/15848885324084/15848895853537.jpg)
 
 ## Run the underlying program directly
 
@@ -112,6 +117,12 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 
 # Examples
 
+## Mobile
+![](media/15848885324084/15848892759774.jpg)
+
+![](media/15848885324084/15848892902723.jpg)
+
+## MacOS & Linux
 
 ![](media/15794884596715/15795001494711.jpg)
 ![](media/15824278372797/15824282351545.jpg)

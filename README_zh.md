@@ -2,6 +2,10 @@
 
 [README](README.md) | [中文文档](README_zh.md)
 
+🚀 更快捷的生成方式，参见 **cna** 介绍 [GO📌](#cna插件方式)
+
+🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
+
 # Cross C2 - 生成CobaltStrike的跨平台beacon
 
 ```
@@ -19,6 +23,8 @@
 ```
 
 ![](media/15794884596715/15794993795360.jpg)
+![](media/15848885324084/15848892759774.jpg)
+
 
 # Description
 
@@ -29,16 +35,16 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | Run Env (x86) |  | √ |  |  |  |  |
 | Run Env (x64) |  | √ | √ |  |  |  |
-| gen beacon (x86) |  | √ |  |  |  |  |
+| gen beacon (x86) |  | √ |  |  | √ |  |
 | gen beacon (x64) |  | √ | √ |  |  |  |
-| gen beacon (armv7) |  |  |  | ⍻ | ⍻ |  |
-| gen beacon (arm64) |  |  |  | ⍻ | ⍻ |  |
+| gen beacon (armv7) |  |  |  | ⍻  | √ |  |
+| gen beacon (arm64) |  |  |  | √ | √ |  |
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 受限说明:
 * Linux: 特别老旧的系统可以选择cna中的"Linux-GLIBC"选项（2010年左右）
 * MacOS: 新系统仅支持64位程序
-* iOS: sandbox, 受限的cmd
+* iOS: sandbox 
 * Embedded: only *nix
 * ⍻ : 加载还在完善中
 
@@ -56,6 +62,16 @@
 3. 修改`CrossC2.cna`脚本中`genCrossC2`路径为**真实路径**
 
 ```
+|  | Windows | Linux | MacOS | iOS | Android | Embedded |
+| --- | --- | --- | --- | --- | --- | --- |
+| Run Env (x86) |  | √ |  |  |  |  |
+| Run Env (x64) |  | √ | √ |  |  |  |
+| gen beacon (x86) |  | √ |  |  | √ |  |
+| gen beacon (x64) |  | √ | √ |  |  |  |
+| gen beacon (armv7) |  |  |  |   | √ |  |
+| gen beacon (arm64) |  |  |  | √ | √ |  |
+| gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
+
 exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 ```
 
@@ -69,7 +85,7 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 **复制server上cs目录下的 `.cobaltstrike.beacon_keys`到本地cs目录下**
 
-## cna插件方式
+## cna插件方式 
 
 ```
 菜单栏: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
@@ -80,8 +96,11 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 3. Payload类型(目前仅支持Stageless, Staged正在更新中)
 4. 生成文件保存路径
 
+最终将生成Payload到指定目录以及创建供wget等工具使用的Scripted Web Delivery
+
 ```
-![](media/15718834682843/15794531704394.jpg)
+![](media/15848885324084/15848895853537.jpg)
+
 
 ## 直接运行底层程序
 
@@ -109,6 +128,13 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 5. node beacon? (单个节点式，可进行不依靠teamserver托管其他beacon)
 
 # Examples
+
+## Mobile
+![](media/15848885324084/15848892759774.jpg)
+
+![](media/15848885324084/15848892902723.jpg)
+
+## MacOS & Linux
 
 ![](media/15794884596715/15795001494711.jpg)
 ![](media/15824278372797/15824282351545.jpg)
