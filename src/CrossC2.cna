@@ -34,7 +34,7 @@ sub dialogCallBack {
     $host = $listener_info['host'];
     $port = $listener_info['port'];
 
-    $process = exec("/xxx/xx/xx/genCrossC2"." ".$host." ". $port." null null ".$system." ".$arch." ".$outputFileName)
+    $process = exec("/xxx/xx/xx/genCrossC2"." ".$host." ". $port." null null ".$system." ".$arch." ".$outputFileName);
     @data = readAll($process);
     closef($process);
 
