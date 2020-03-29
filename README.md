@@ -38,7 +38,7 @@ Add beacon generation functions for CobaltStrike's cross-platform beacon. Curren
 |  | Windows | Linux | MacOS | iOS | Android | Embedded |
 | --- | --- | --- | --- | --- | --- | --- |
 | Run Env (x86) |  | √ |  |  |  |  |
-| Run Env (x64) |  | √ | √ |  |  |  |
+| Run Env (x64) | √ | √ | √ |  |  |  |
 | gen beacon (x86) |  | √ |  |  | √ |  |
 | gen beacon (x64) |  | √ | √ |  |  |  |
 | gen beacon (armv7) |  |  |  | ⍻  | √ |  |
