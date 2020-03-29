@@ -4,6 +4,10 @@
 
 🚀 更快捷的生成方式，参见 **cna** 介绍 [GO📌](#cna插件方式)
 
+🔥 **Linux** & **MacOS** 支持无文件落地从内存中加载执行 **动态库** 或 **可执行文件** [GO📖](https://gloxec.github.io/CrossC2/)
+
+🔥 灵活自定义执行文件的数据返回类型，**端口扫描**, **屏幕截图**, **键盘记录**, **口令凭证** 等用户自定义开发实现更便捷 [GO📖](https://gloxec.github.io/CrossC2/)    ( [样例: GO📌](#CustomExtension) )
+
 🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
 
 # Cross C2 - 生成CobaltStrike的跨平台beacon
@@ -48,76 +52,9 @@
 * Embedded: only *nix
 * ⍻ : 加载还在完善中
 
+# Install & Usage
 
-# Install
-
-下载基础文件:
-
-> 
-* **CrossC2.cna**
-* **genCrossC2** `CS运行环境`
-
-1. 拷贝 **CrossC2.cna** 与 **genCrossC2** 文件到CobaltStrike **根目录** 下 (必须处于 **同目录** )
-2. 选择`Script Manager`，添加`CrossC2.cna` (如果成功安装，菜单栏会多出一项 `CrossC2`)
-3. 修改`CrossC2.cna`脚本中`genCrossC2`路径为**真实路径**
-
-```
-|  | Windows | Linux | MacOS | iOS | Android | Embedded |
-| --- | --- | --- | --- | --- | --- | --- |
-| Run Env (x86) |  | √ |  |  |  |  |
-| Run Env (x64) |  | √ | √ |  |  |  |
-| gen beacon (x86) |  | √ |  |  | √ |  |
-| gen beacon (x64) |  | √ | √ |  |  |  |
-| gen beacon (armv7) |  |  |  |   | √ |  |
-| gen beacon (arm64) |  |  |  | √ | √ |  |
-| gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
-
-exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
-```
-
-
-# Usage
-
-## teamserver
-
-因为一些原因，目前强制只支持HTTPS beacon
-`后续将支持C2~~Profile动态解析`
-
-**复制server上cs目录下的 `.cobaltstrike.beacon_keys`到本地cs目录下**
-
-## cna插件方式 
-
-```
-菜单栏: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
-
-弹出的对话框中可以配置:
-1. 操作系统
-2. 运行位数
-3. Payload类型(目前仅支持Stageless, Staged正在更新中)
-4. 生成文件保存路径
-
-最终将生成Payload到指定目录以及创建供wget等工具使用的Scripted Web Delivery
-
-```
-![](media/15848885324084/15848895853537.jpg)
-
-
-## 直接运行底层程序
-
-除过cna GUI生成外，也可以直接调用底层程序直接生成。
-
-```
-[usage]: genCrossC2 [host] [port] [getURI] [postURI] [platform] [arch] [outputFileName]
-
-
--platform		'MacOS' / 'Linux'
--arch    		'x86' / 'x64'
-
-[ex]:
-	genCrossC2 127.0.0.1 4444 null null MacOS x64 ./CrossC2-test
-```
-![](media/15718834682843/15794546043572.jpg)
-
+参考文档: [📖 Wiki](https//gloxec.github.io/CrossC2/)
 
 # 即将上线
 
@@ -138,8 +75,19 @@ exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
 
 ![](media/15794884596715/15795001494711.jpg)
 ![](media/15824278372797/15824282351545.jpg)
-![](media/15824278372797/15824282632072.jpg)
 
+## CustomExtension
+
+开发动态库，自定义数据返回类型，例如实现一些内置功能。
+
+### 键盘记录
+![](media/15854585486601/15854592406527.jpg)
+
+### 口令凭证
+![](media/15854585486601/15854601104042.jpg)
+
+### 端口扫描
+![](media/15854585486601/15854593957704.jpg)
 
 # ChangeLog
 
@@ -174,6 +122,14 @@ md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
 md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
 
 md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
+
+## release v1.0 :
+
+* -修复 真实环境中多种场景下长时间多次测试，修复一些隐藏的问题，现在更加稳定
+* +支持 Linux & MacOS 支持无文件内存加载执行
+* +支持 预留CS内置数据类型，更加丰富的用户自定义插件返回数据类型，可自由便捷实现'portscan'等等原生功能
+
+
 
 
 
