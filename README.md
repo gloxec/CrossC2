@@ -4,6 +4,10 @@
 
 🚀 For a faster way, see **cna** introduction [GO📌](#cna-plugin-way)
 
+🔥 **Linux** & **MacOS** supports no file landing, load and execute from memory **dynamic library** or **executable file** [GO📖](https://gloxec.github.io/CrossC2/)
+
+🔥 Flexibly customize the data return type of the execution file, **portscan**, **screenshot**, **keystrokes**, **credentials** and other user-defined development to achieve more convenient implementation [GO📖](https://gloxec.github.io/CrossC2/)    ( [Sample: GO📌](#CustomExtension) )
+
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
 # Cross C2 - Generator CobaltStrike's cross-platform beacon
@@ -48,63 +52,9 @@ Restricted description:
 * Embedded: only *nix
 * ⍻ : Loader is still in progress
 
+# Install & Usage
 
-# Install
-
-Download:
-
-> 
-* **CrossC2.cna**
-* **genCrossC2** `CS Env`
-
-1. copy **CrossC2.cna** and **genCrossC2** file to `CobaltStrike`'s **rootdir**  (Must be in the **same directory** )
-2. choose `Script Manager`，add `CrossC2.cna` (If successfully installed, the menu bar will have an additional item `CrossC2`)
-3. Modify the `genCrossC2` path in the` CrossC2.cna` script to the **real path**
-
-```
-exec("/xxx/xxx/genCrossC2"... -> exec("/opt/cs/genCrossC2"...
-```
-
-
-# Usage
-
-## teamserver
-
-For some reasons, only HTTPS beacon is currently supported.
-`C2Profile dynamic analysis will be supported in the future`
-
-**Copy `.cobaltstrike.beacon_keys` from the cs directory on the server to the local cs directory.**
-
-## cna plugin way
-
-```
-Menu bar: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
-
-Can be configured in the pop-up dialog:
-1. Operating System
-2. Arach
-3. Payload Type(Currently only supports Stageless, Staged is being updated)
-4. Generate file save path
-
-```
-![](media/15848885324084/15848895853537.jpg)
-
-## Run the underlying program directly
-
-In addition to cna GUI generation, you can also directly call the underlying program to generate directly.
-
-```
-[usage]: genCrossC2 [host] [port] [getURI] [postURI] [platform] [arch] [outputFileName]
-
-
--platform		'MacOS' / 'Linux'
--arch    		'x86' / 'x64'
-
-[ex]:
-	genCrossC2 127.0.0.1 4444 null null MacOS x64 ./CrossC2-test
-```
-![](media/15718834682843/15794546043572.jpg)
-
+参考文档: [📖 Wiki](https//gloxec.github.io/CrossC2/)
 
 # Coming soon
 
@@ -126,7 +76,20 @@ In addition to cna GUI generation, you can also directly call the underlying pro
 
 ![](media/15794884596715/15795001494711.jpg)
 ![](media/15824278372797/15824282351545.jpg)
-![](media/15824278372797/15824282632072.jpg)
+
+
+## CustomExtension
+
+Develop dynamic libraries and customize data return types, such as implementing some built-in functions.
+
+### keystrokes
+![](media/15854585486601/15854592406527.jpg)
+
+### credentials
+![](media/15854585486601/15854601104042.jpg)
+
+### portscan
+![](media/15854585486601/15854593957704.jpg)
 
 
 # ChangeLog
@@ -162,5 +125,11 @@ md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
 md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
 
 md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
+
+## release v1.0 :
+
+* -fix Test multiple times for a long time in multiple scenarios in real environment, fix some hidden problems, now more stable
+* +support Linux & MacOS Supports no file landing, loading and executing from memory
+* +support Reserved CS built-in data types, richer user-defined plug-in return data types, free and easy to implement 'portscan' and other native functions
 
 
