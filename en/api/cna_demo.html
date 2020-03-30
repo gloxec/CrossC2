@@ -394,6 +394,8 @@
                                 
                                 <h1 id="cna-writing-instructions">cna Writing instructions</h1>
 <p>The first is the common basic function defined by CrossC2Kit, and finally the <strong>bcrossc2_load</strong> function is responsible for delivering to the <strong>CrossC2 beacon</strong> executable files or dynamic libraries that require no file loading in memory, and parameters that need to be passed in at runtime.</p>
+<pre><code>include(script_resource(&quot;CrossC2Kit.cna&quot;));
+</code></pre><p>CrossC2Kit.cna:</p>
 <pre><code>sub random_string {
     # &lt;3 @offsec_ginger
     $limit = $1;
@@ -449,7 +451,8 @@ sub bcrossc2_load_dyn {
     bupload_raw($beaconid,$ELFName,$juicyData);
 }
 </code></pre><p>Below will write a <strong>&quot;Incoming Parameter Parsing&quot;</strong>. Cna plugin demo</p>
-<pre><code>ssh_alias cc2_parseArgs {
+<pre><code>include(script_resource(&quot;CrossC2Kit.cna&quot;));
+ssh_alias cc2_parseArgs {
     $taskName = &quot;cc2_parseArgs&quot;; # task Name
     $taskType = &quot;so&quot;;  # $taskType -&gt; ELF, MachO, so, dylib
     $taskResType = &quot;info&quot;; # task return value type definition reference &quot;#Variable definitions&quot;
@@ -511,7 +514,7 @@ ssh_command_register(&quot;cc2_parseArgs&quot;, &quot;CrossC2 dynamic run in mem
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"cna Demo","level":"1.4.2","depth":2,"next":{"title":"C/C++ Demo","level":"1.4.3","depth":2,"path":"api/c_demo.md","ref":"api/c_demo.md","articles":[]},"previous":{"title":"Variable definitions","level":"1.4.1","depth":2,"path":"api/commons.md","ref":"api/commons.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"api/cna_demo.md","mtime":"2020-03-29T06:35:42.109Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-29T07:49:21.625Z"},"basePath":"..","book":{"language":"en"}});
+            gitbook.page.hasChanged({"page":{"title":"cna Demo","level":"1.4.2","depth":2,"next":{"title":"C/C++ Demo","level":"1.4.3","depth":2,"path":"api/c_demo.md","ref":"api/c_demo.md","articles":[]},"previous":{"title":"Variable definitions","level":"1.4.1","depth":2,"path":"api/commons.md","ref":"api/commons.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"api/cna_demo.md","mtime":"2020-03-30T05:51:11.350Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-30T06:07:07.787Z"},"basePath":"..","book":{"language":"en"}});
         });
     </script>
 </div>
@@ -519,10 +522,6 @@ ssh_command_register(&quot;cc2_parseArgs&quot;, &quot;CrossC2 dynamic run in mem
         
     <script src="../../gitbook/gitbook.js"></script>
     <script src="../../gitbook/theme.js"></script>
-    
-        
-        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>

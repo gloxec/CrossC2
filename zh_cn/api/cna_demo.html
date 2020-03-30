@@ -394,6 +394,8 @@
                                 
                                 <h1 id="cna&#x7F16;&#x5199;&#x8BF4;&#x660E;">cna&#x7F16;&#x5199;&#x8BF4;&#x660E;</h1>
 <p>&#x9996;&#x5148;&#x662F;CrossC2Kit&#x5B9A;&#x4E49;&#x7684;&#x516C;&#x5171;&#x57FA;&#x7840;&#x51FD;&#x6570;&#xFF0C;&#x6700;&#x7EC8;&#x7531; <strong>bcrossc2_load</strong> &#x51FD;&#x6570;&#x8D1F;&#x8D23;&#x5411; <strong>CrossC2 beacon</strong> &#x4E0B;&#x53D1;&#x9700;&#x8981;&#x5185;&#x5B58;&#x65E0;&#x6587;&#x4EF6;&#x52A0;&#x8F7D;&#x7684;&#x53EF;&#x6267;&#x884C;&#x6587;&#x4EF6;&#x6216;&#x8005;&#x52A8;&#x6001;&#x5E93;, &#x4EE5;&#x53CA;&#x8FD0;&#x884C;&#x65F6;&#x9700;&#x8981;&#x4F20;&#x5165;&#x7684;&#x53C2;&#x6570;&#x3002;</p>
+<pre><code>include(script_resource(&quot;CrossC2Kit.cna&quot;));
+</code></pre><p>CrossC2Kit.cna:</p>
 <pre><code>sub random_string {
     # &lt;3 @offsec_ginger
     $limit = $1;
@@ -449,7 +451,8 @@ sub bcrossc2_load_dyn {
     bupload_raw($beaconid,$ELFName,$juicyData);
 }
 </code></pre><p>&#x4E0B;&#x9762;&#x5C06;&#x7F16;&#x5199;&#x4E00;&#x4E2A; <strong>&#x201C;&#x4F20;&#x5165;&#x53C2;&#x6570;&#x89E3;&#x6790;&#x201C;</strong> &#x529F;&#x80FD;&#x7684;.cna&#x63D2;&#x4EF6;demo</p>
-<pre><code>ssh_alias cc2_parseArgs {
+<pre><code>include(script_resource(&quot;CrossC2Kit.cna&quot;));
+ssh_alias cc2_parseArgs {
     $taskName = &quot;cc2_parseArgs&quot;; # &#x8BE5;&#x4EFB;&#x52A1;&#x7684;&#x540D;&#x79F0;
     $taskType = &quot;so&quot;;  # $taskType -&gt; ELF, MachO, so, dylib
     $taskResType = &quot;info&quot;; # task&#x8FD4;&#x56DE;&#x503C;&#x7C7B;&#x578B;&#x5B9A;&#x4E49;&#x53C2;&#x8003; &quot;#&#x53D8;&#x91CF;&#x5B9A;&#x4E49;&quot;
@@ -511,7 +514,7 @@ ssh_command_register(&quot;cc2_parseArgs&quot;, &quot;CrossC2 dynamic run in mem
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"cna Demo","level":"1.4.2","depth":2,"next":{"title":"C/C++ Demo","level":"1.4.3","depth":2,"path":"api/c_demo.md","ref":"api/c_demo.md","articles":[]},"previous":{"title":"变量定义","level":"1.4.1","depth":2,"path":"api/commons.md","ref":"api/commons.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh_cn","gitbook":"*"},"file":{"path":"api/cna_demo.md","mtime":"2020-03-29T04:01:13.035Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-29T07:49:21.625Z"},"basePath":"..","book":{"language":"zh_cn"}});
+            gitbook.page.hasChanged({"page":{"title":"cna Demo","level":"1.4.2","depth":2,"next":{"title":"C/C++ Demo","level":"1.4.3","depth":2,"path":"api/c_demo.md","ref":"api/c_demo.md","articles":[]},"previous":{"title":"变量定义","level":"1.4.1","depth":2,"path":"api/commons.md","ref":"api/commons.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh_cn","gitbook":"*"},"file":{"path":"api/cna_demo.md","mtime":"2020-03-30T05:51:04.988Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-30T06:07:07.787Z"},"basePath":"..","book":{"language":"zh_cn"}});
         });
     </script>
 </div>
@@ -519,10 +522,6 @@ ssh_command_register(&quot;cc2_parseArgs&quot;, &quot;CrossC2 dynamic run in mem
         
     <script src="../../gitbook/gitbook.js"></script>
     <script src="../../gitbook/theme.js"></script>
-    
-        
-        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>

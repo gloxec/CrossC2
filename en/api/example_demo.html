@@ -431,7 +431,7 @@ int crossc2_entry(int argc, char **argv) {
 
 cna: (Please refer to cna introduction in API / cna demo)
 
-... # Omit common base functions here
+include(script_resource(&quot;CrossC2Kit.cna&quot;));
 
 ssh_alias cc2_portscan_lib {
     $taskName = &quot;cc2_portscan&quot;; # task Name
@@ -479,10 +479,10 @@ int crossc2_entry(int argc, char **argv) {
 
 cna: (Please refer to cna introduction in API / cna demo)
 
-... # Omit common base functions here
+include(script_resource(&quot;CrossC2Kit.cna&quot;));
 
 ssh_alias cc2_keystrokes_lib {
-    $taskName = &quot;cc2_portscan&quot;; # task Name
+    $taskName = &quot;cc2_keystrokes&quot;; # task Name
     $taskType = &quot;so&quot;;  # $taskType -&gt; ELF, MachO, so, dylib
     $taskResType = &quot;keystrokes&quot;; # task return value type definition reference &quot;#Variable definitions&quot;
     $loadlib = &quot;./cc2_keystrokes_lib.dylib&quot;; # Dynamic libraries / executable files to be loaded
@@ -541,7 +541,7 @@ ssh_command_register(&quot;cc2_keystrokes_lib&quot;, &quot;Unix keystrokes&quot;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Example","level":"1.4.5","depth":2,"next":{"title":"portscan","level":"1.4.5.1","depth":3,"anchor":"#portscan","path":"api/example_demo.md","ref":"api/example_demo.md#portscan","articles":[]},"previous":{"title":"Golang Demo","level":"1.4.4","depth":2,"path":"api/go_demo.md","ref":"api/go_demo.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"api/example_demo.md","mtime":"2020-03-29T06:38:54.652Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-29T07:49:21.625Z"},"basePath":"..","book":{"language":"en"}});
+            gitbook.page.hasChanged({"page":{"title":"Example","level":"1.4.5","depth":2,"next":{"title":"portscan","level":"1.4.5.1","depth":3,"anchor":"#portscan","path":"api/example_demo.md","ref":"api/example_demo.md#portscan","articles":[]},"previous":{"title":"Golang Demo","level":"1.4.4","depth":2,"path":"api/go_demo.md","ref":"api/go_demo.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"api/example_demo.md","mtime":"2020-03-30T05:49:10.783Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-30T06:07:07.787Z"},"basePath":"..","book":{"language":"en"}});
         });
     </script>
 </div>
@@ -549,10 +549,6 @@ ssh_command_register(&quot;cc2_keystrokes_lib&quot;, &quot;Unix keystrokes&quot;
         
     <script src="../../gitbook/gitbook.js"></script>
     <script src="../../gitbook/theme.js"></script>
-    
-        
-        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
