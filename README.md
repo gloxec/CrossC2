@@ -10,6 +10,7 @@
 
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
+
 # Cross C2 - Generator CobaltStrike's cross-platform beacon
 
 ```
@@ -54,7 +55,9 @@ Restricted description:
 
 # Install & Usage
 
-参考文档: [📖 Wiki](https//gloxec.github.io/CrossC2/)
+Reference documents: [📖 Wiki](https://gloxec.github.io/CrossC2/)
+
+Password dump module: using open source projects MimiPenguin2.0, See `CrossC2Kit/mimipenguin/mimipenguin.cna`
 
 # Coming soon
 

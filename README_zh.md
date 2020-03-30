@@ -10,6 +10,7 @@
 
 🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
 
+
 # Cross C2 - 生成CobaltStrike的跨平台beacon
 
 ```
@@ -54,7 +55,9 @@
 
 # Install & Usage
 
-参考文档: [📖 Wiki](https//gloxec.github.io/CrossC2/)
+参考文档: [📖 Wiki](https://gloxec.github.io/CrossC2/)
+
+密码dump模块：采用开源项目 MimiPenguin2.0，参见 `CrossC2Kit/mimipenguin/mimipenguin.cna`
 
 # 即将上线
 
