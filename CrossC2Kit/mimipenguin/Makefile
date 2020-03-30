@@ -1,0 +1,25 @@
+CC=gcc
+STRIP=strip --strip-unneeded
+CFLAGS=-Iinclude/ -D_FILE_OFFSET_BITS=64 -O3 -Wno-unused-result -fPIC -shared
+LDFLAGS=-lcrypt
+
+all: 
+	@$(CC) $(CFLAGS) src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin.so $(LDFLAGS)
+	@$(CC) $(CFLAGS) -m32 src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin_x32.so $(LDFLAGS)
+	@$(STRIP) mimipenguin.so
+	@$(STRIP) mimipenguin_x32.so
+
+static: 
+	@$(CC) $(CFLAGS) -static src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin.so $(LDFLAGS)
+	@$(CC) $(CFLAGS) -m32 -static src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin_x32.so $(LDFLAGS)
+	@$(STRIP) mimipenguin.so
+	@$(STRIP) mimipenguin_x32.so
+debug: 
+	@$(CC) $(CFLAGS) -DDEBUG src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin.so $(LDFLAGS)
+	@$(CC) $(CFLAGS) -m32 -DDEBUG src/scanner.c src/users.c src/targets.c src/mimipenguin.c -o mimipenguin_x32.so $(LDFLAGS)
+
+clean:
+	@rm mimipenguin.so
+	@rm mimipenguin_x32.so
+
+.PHONY: all

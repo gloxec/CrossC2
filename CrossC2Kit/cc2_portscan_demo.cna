@@ -12,7 +12,7 @@ ssh_alias cc2_portscan_demo {
     $port = $3;
     $scan_type = $4;
     $scan_thread = $5;
-    $transportArg = base64_encode($host . "^" . $port . "^" . $scan_type . "^" . $scan_thread);
+    $transportArg = $host . "^" . $port . "^" . $scan_type . "^" . $scan_thread;
 
     blog($beaconid, "portscan: " . $host . " " . $port);
 
