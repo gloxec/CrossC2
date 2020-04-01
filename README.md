@@ -32,7 +32,7 @@
 
 # Description
 
-Add beacon generation functions for CobaltStrike's cross-platform beacon. Currently only supported on **Linux** & **MacOS**.
+Add beacon generation functions for CobaltStrike's cross-platform beacon. 
 
 
 

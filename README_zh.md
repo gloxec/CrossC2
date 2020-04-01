@@ -33,7 +33,7 @@
 
 # Description
 
-为CobaltStrike添加其他平台的beacon生成功能，暂时仅支持在 **Linux** & **MacOS** 上运行。
+为CobaltStrike添加其他平台的beacon生成功能。
 
 
 |  | Windows | Linux | MacOS | iOS | Android | Embedded |
