@@ -20,7 +20,7 @@ int crossc2_entry(int argc, char **argv) {
             "172.16.251.220:22 (Open-SSH-2.0,1)",
             "172.16.251.221:22 (Open-SSH-2.0,1)"
     };
-    for (int i; i < (sizeof(tempRes)/sizeof(char *)); ++i) {
+    for (int i = 0; i < (sizeof(tempRes)/sizeof(char *)); ++i) {
         printf("%s\n", tempRes[i]);
     }
     
