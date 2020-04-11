@@ -97,27 +97,27 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 # ChangeLog
 
-## release v0.1 : 
+## release v1.1 :
 
-* Support Linux & MacOS beacon generation.
+* -fix Multi-language garbled problem fix for memory load execution function
 
-md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+md5(genCrossC2.Linux) = 2347ed6e30e4655b793a6dbb4d33d25c
 
-md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
+md5(genCrossC2.MacOS) = f530333500a76fe228864f8901af4104
 
-## release v0.2 : 
+md5(genCrossC2.Win.exe) = c223e31b2674a8a11d3254f92259e87a
 
-* -fix genCrossC2.Linux crash.
-* -fix uploading large file error.
-* +support GUI file manager.
+## release v1.0 :
 
-md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+* -fix Test multiple times for a long time in multiple scenarios in real environment, fix some hidden problems, now more stable
+* +support Linux & MacOS Supports no file landing, loading and executing from memory
+* +support Reserved CS built-in data types, richer user-defined plug-in return data types, free and easy to implement 'portscan' and other native functions
 
-md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+md5(genCrossC2.Linux) = 12295998d4bffd5b4c4a411fb33428bb
 
-## release v0.3 :
+md5(genCrossC2.MacOS) = c88ce9df47529b243e2215a866d445c5
 
-* +support Compatibility with older versions of GLIBC on older systems Linux (around 2010).
+md5(genCrossC2.Win.exe) = 51d1814f1ebbab634bce0373ceb7cee6
 
 ## release v0.4 :
 
@@ -129,10 +129,27 @@ md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
 
 md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
 
-## release v1.0 :
+## release v0.3 :
 
-* -fix Test multiple times for a long time in multiple scenarios in real environment, fix some hidden problems, now more stable
-* +support Linux & MacOS Supports no file landing, loading and executing from memory
-* +support Reserved CS built-in data types, richer user-defined plug-in return data types, free and easy to implement 'portscan' and other native functions
+* +support Compatibility with older versions of GLIBC on older systems Linux (around 2010).
+
+## release v0.2 : 
+
+* -fix genCrossC2.Linux crash.
+* -fix uploading large file error.
+* +support GUI file manager.
+
+md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+
+md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+
+## release v0.1 : 
+
+* Support Linux & MacOS beacon generation.
+
+md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+
+md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
+
 
 

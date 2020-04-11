@@ -94,27 +94,27 @@
 
 # ChangeLog
 
-## release v0.1 : 
+## release v1.1 :
 
-* 支持 生成 Linux & MacOS beacon.
+* -修复 内存加载执行功能的多国语言乱码问题修复
 
-md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+md5(genCrossC2.Linux) = 2347ed6e30e4655b793a6dbb4d33d25c
 
-md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
+md5(genCrossC2.MacOS) = f530333500a76fe228864f8901af4104
 
-## release v0.2 : 
+md5(genCrossC2.Win.exe) = c223e31b2674a8a11d3254f92259e87a
 
-* -修复 Linux genCrossC2.Linux 崩溃的bug.
-* -修复 大文件上传时末尾字节写入不全的bug.
-* +支持 GUI的文件管理器.
+## release v1.0 :
 
-md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+* -修复 真实环境中多种场景下长时间多次测试，修复一些隐藏的问题，现在更加稳定
+* +支持 Linux & MacOS 支持无文件内存加载执行
+* +支持 预留CS内置数据类型，更加丰富的用户自定义插件返回数据类型，可自由便捷实现'portscan'等等原生功能
 
-md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+md5(genCrossC2.Linux) = 12295998d4bffd5b4c4a411fb33428bb
 
-## release v0.3 :
+md5(genCrossC2.MacOS) = c88ce9df47529b243e2215a866d445c5
 
-* +支持 老系统Linux上低版本GLIBC的兼容 (2010年左右)
+md5(genCrossC2.Win.exe) = 51d1814f1ebbab634bce0373ceb7cee6
 
 ## release v0.4 :
 
@@ -126,11 +126,30 @@ md5(genCrossC2.Linux) = b2e34f721ec2543b6625e33c8c2935df
 
 md5(genCrossC2.MacOS) = 4e38a9d9a3eeff309648afc02e2e7664
 
-## release v1.0 :
+## release v0.3 :
 
-* -修复 真实环境中多种场景下长时间多次测试，修复一些隐藏的问题，现在更加稳定
-* +支持 Linux & MacOS 支持无文件内存加载执行
-* +支持 预留CS内置数据类型，更加丰富的用户自定义插件返回数据类型，可自由便捷实现'portscan'等等原生功能
+* +支持 老系统Linux上低版本GLIBC的兼容 (2010年左右)
+
+## release v0.2 : 
+
+* -修复 Linux genCrossC2.Linux 崩溃的bug.
+* -修复 大文件上传时末尾字节写入不全的bug.
+* +支持 GUI的文件管理器.
+
+md5(genCrossC2.Linux) = 8256374d88c2149efc102aff7e90b3f9
+
+md5(genCrossC2.MacOS) = 08fce0a5d964a091d8bf2344d7ab809e
+
+## release v0.1 : 
+
+* 支持 生成 Linux & MacOS beacon.
+
+md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
+
+md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
+
+
+
 
 
 
