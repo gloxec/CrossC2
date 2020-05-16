@@ -74,13 +74,13 @@ sub dialogCallBack {
     }
 
 
-    $genCc2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
+    $genCC2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
 
 
 
-    $genCc2 = $genCc2." ".$host." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
-    elog(genCc2);
-    $process = exec(genCc2);
+    $genCC2 = $genCC2." ".$host." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
+    elog($genCC2);
+    $process = exec($genCC2);
     $data = readAll($process);
     closef($process);
     elog("genCrossC2 beacon -> ".$data[13]);
