@@ -87,18 +87,16 @@ It adopts the method of loading memory without landing, and supports dynamic lib
 The type of output information can be freely specified at the time of execution. The return type has been predetermined and can be docked with the native return data type of CS.
 `⚠️: For special data types, such as passwords, port scan results, etc., please refer to the information returned by the native function of cs, which will be matched according to the regular.`
 
-`
-Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see
-CrossC2Kit / mimipenguin / mimipenguin.cna
-Authentication backdoor modules: cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
-Information collection modules: cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained.
-Traffic proxy module: cc2_frp supports fast TCP/KCP(UDP) reverse socks5 encrypted traffic proxy.
-Keylogger module: cc2_keylogger records user's keyboard input.
-Network detection module: cc2_portscan, cc2_serverscan for port scanning and service version scanning.
-Privilege promotion module: cc2_prompt_spoof induces deception to obtain user account password.
-Task management module: cc2_job manages the modules running in memory.
-...
-`
+1. Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see
+2. CrossC2Kit / mimipenguin / mimipenguin.cna
+3. Authentication backdoor modules: cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
+4. Information collection modules: cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained.
+5. Traffic proxy module: cc2_frp supports fast TCP/KCP(UDP) reverse socks5 encrypted traffic proxy.
+6. Keylogger module: cc2_keylogger records user's keyboard input.
+7. Network detection module: cc2_portscan, cc2_serverscan for port scanning and service version scanning.
+8. Privilege promotion module: cc2_prompt_spoof induces deception to obtain user account password.
+9. Task management module: cc2_job manages the modules running in memory.
+1. ...
 
 ## Custom communication protocol: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/protocol/)
 

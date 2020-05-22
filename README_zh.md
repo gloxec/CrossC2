@@ -88,18 +88,17 @@
 执行时输出信息的类型可以自由指定，已预定了返回类型，可对接CS原生的返回数据类型。
 `⚠️: 关于特殊的数据类型，如密码，端口扫描结果等，请参照cs原生功能返回的信息编写，将按照正则匹配。`
 
-`
-密码dump模块：cc2_mimipenguin 采用开源项目 MimiPenguin2.0，参见 
-CrossC2Kit/mimipenguin/mimipenguin.cna
-认证后门模块：cc2_auth, cc2_ssh sudo/su/passwd等认证后门，ssh被连接及连接其他主机的凭证都将被记录。
-信息收集模块：cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump 常见浏览器的访问记录，以及iMessage聊天内容与钥匙串中保存的认证凭据都将被获取。
-流量代理模块：cc2_frp 支持快速TCP/KCP(UDP)的反向socks5加密流量代理。
-键盘记录模块：cc2_keylogger 记录用户的键盘输入。
-网络探测模块：cc2_portscan, cc2_serverscan 进行端口扫描及服务版本扫描。
-权限提升模块：cc2_prompt_spoof 诱导欺骗获取用户账户密码。
-任务管理模块：cc2_job 管理内存中运行的模块。
-...
-`
+1. 密码dump模块：cc2_mimipenguin 采用开源项目 MimiPenguin2.0，参见 
+2. CrossC2Kit/mimipenguin/mimipenguin.cna
+3. 认证后门模块：cc2_auth, cc2_ssh sudo/su/passwd等认证后门，ssh被连接及连接其他主机的凭证都将被记录。
+4. 信息收集模块：cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump 常见浏览器的访问记录，以及iMessage聊天内容与钥匙串中保存的认证凭据都将被获取。
+5. 流量代理模块：cc2_frp 支持快速TCP/KCP(UDP)的反向socks5加密流量代理。
+6. 键盘记录模块：cc2_keylogger 记录用户的键盘输入。
+7. 网络探测模块：cc2_portscan, cc2_serverscan 进行端口扫描及服务版本扫描。
+8. 权限提升模块：cc2_prompt_spoof 诱导欺骗获取用户账户密码。
+9. 任务管理模块：cc2_job 管理内存中运行的模块。
+10. ...
+
 
 ## 自定义通信协议: API介绍 [📖 Wiki](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
 
