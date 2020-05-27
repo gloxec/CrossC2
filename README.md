@@ -73,7 +73,6 @@ Restricted description:
 > Create listener and copy key:
 
 For some reasons, only HTTPS beacon is currently supported.
-`C2Profile dynamic analysis will be supported in the future`
 
 **Copy `.cobaltstrike.beacon_keys` from the cs directory on the server to the local directory.**
 
