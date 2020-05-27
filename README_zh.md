@@ -72,8 +72,7 @@
 
 > 建立listener与拷贝key:
 
-因为一些原因，目前强制只支持HTTPS beacon
-`后续将支持C2~~Profile动态解析`
+因为一些原因，目前强制只支持HTTPS beacon。
 
 **复制server上cs目录下的 `.cobaltstrike.beacon_keys`到本地目录下**
 
