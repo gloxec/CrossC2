@@ -8,6 +8,8 @@
 
 🔥 Flexibly customize the data return type of the execution file, **portscan**, **screenshot**, **keystrokes**, **credentials** and other user-defined development to achieve more convenient implementation [GO📖](https://gloxec.github.io/CrossC2/en/api/commons.html)    ( [Sample: GO📌](#CustomExtension) )
 
+🔥 Custom communication protocol [GO📖](https://gloxec.github.io/CrossC2/en/protocol/)
+
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
 
