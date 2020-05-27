@@ -8,6 +8,8 @@
 
 🔥 灵活自定义执行文件的数据返回类型，**端口扫描**, **屏幕截图**, **键盘记录**, **口令凭证** 等用户自定义开发实现更便捷 [GO📖](https://gloxec.github.io/CrossC2/zh_cn/api/commons.html)    ( [样例: GO📌](#CustomExtension) )
 
+🔥 自定义通信协议 [GO📖](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
+
 🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
 
 
