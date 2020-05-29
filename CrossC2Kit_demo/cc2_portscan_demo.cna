@@ -1,0 +1,22 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+ssh_alias cc2_portscan_demo {
+    $taskName = "cc2_portscan"; # 该任务的名称
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "portscan"; # task返回值类型定义参考 "#变量定义"
+    $loadlib = "./cc2_portscan_demo.dylib"; # 需要载入的动态库/可执行文件
+
+    $beaconid = $1;
+    $host = $2;
+    $port = $3;
+    $scan_type = $4;
+    $scan_thread = $5;
+    $transportArg = $host . "^" . $port . "^" . $scan_type . "^" . $scan_thread;
+
+    blog($beaconid, "portscan: " . $host . " " . $port);
+
+    bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+}
+
+ssh_command_register("cc2_portscan_demo", "CrossC2 Unix PortScan", "Use: cc2_portscan_demo -H [host] -P [port]\n\n-H 192.168.1.1/24   or   192.168.1.23-198\n-P 22,80,445,600-1000");
