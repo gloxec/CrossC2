@@ -1,0 +1,158 @@
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_portscan_dyn {
+    blog($1, "cc2_serverscan\nby: trim\nUsage: cc2_portscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_portscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+}
+
+sub printUsage_ServerScan_dyn {
+    blog($1, "cc2_serverscan\nby: trim\nUsage: cc2_serverscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_serverscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+}
+
+sub printUsage_portscan {
+    blog($1, "cc2_serverscan\nby: trim\nUsage: cc2_portscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_portscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+}
+
+sub printUsage_ServerScan {
+    blog($1, "cc2_serverscan\nby: trim\nUsage: cc2_serverscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_serverscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+}
+
+
+ssh_alias cc2_portscan_dyn {
+    $taskName = "cc2_portscan";
+    $taskType = "so";
+    $taskResType = "portscan";
+
+    $beaconid = $1;
+    $arch = $2;
+    $host = $3;
+    $port = $4;
+    $scan_type = $5;
+    $transportArg = $host . "^" . $port . "^" . $scan_type;
+
+    if ($arch eq "osx") {
+        $loadlib = "scanner/ServerScan/osx/crossc2_portscan.dylib";
+    } else if ($arch eq "linux32") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_portscan386.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_portscan.so";
+    } else {
+        berror($beaconid, "*[error]: system");
+        printUsage_portscan_dyn($beaconid);
+        return;
+    }
+    if ($host && $port && $scan_type) {
+        blog($beaconid, "cc2_serverscan: " . $host . " " . $port . " " . $scan_type);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_portscan_dyn($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_portscan_dyn", "CrossC2 PortScan Dyn(3.8M) - Scan a network for open services", "\nby: trim\nUsage: cc2_portscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_portscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+
+ssh_alias cc2_serverscan_dyn {
+    $taskName = "cc2_serverscan";
+    $taskType = "so";
+    $taskResType = "portscan";
+
+    $beaconid = $1;
+    $arch = $2;
+    $host = $3;
+    $port = $4;
+    $scan_type = $5;
+    $transportArg = $host . "^" . $port . "^" . $scan_type;
+
+    if ($arch eq "osx") {
+        $loadlib = "scanner/ServerScan/osx/cc2_serverscan.dylib";
+    } else if ($arch eq "linux32") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_serverscan386.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_serverscan.so";
+    } else {
+        berror($beaconid, "*[error]: system");
+        printUsage_ServerScan_dyn($beaconid);
+        return;
+    }
+    if ($host && $port && $scan_type) {
+        blog($beaconid, "cc2_serverscan: " . $host . " " . $port . " " . $scan_type);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_ServerScan_dyn($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_serverscan_dyn", "CrossC2 ServerScan Dyn(9.8M) - Scan a network for open services and services version detection", "\nby: trim\nUsage: cc2_serverscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_serverscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+
+
+
+# ELF / MachO
+ssh_alias cc2_portscan {
+    $taskName = "cc2_portscan";
+    $taskType = "ELF";
+    $taskResType = "portscan";
+
+    $beaconid = $1;
+    $arch = $2;
+    $host = $3;
+    $port = $4;
+    $scan_type = $5;
+    $transportArg = $host . "^" . $port . "^" . $scan_type;
+
+    if ($arch eq "osx") {
+        $loadlib = "scanner/ServerScan/osx/crossc2_portscan.dylib";
+    } else if ($arch eq "linux32") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_portscan386.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_portscan.so";
+    } else {
+        berror($beaconid, "*[error]: system");
+        printUsage_portscan($beaconid);
+        return;
+    }
+    if ($host && $port && $scan_type) {
+        blog($beaconid, "cc2_serverscan: " . $host . " " . $port . " " . $scan_type);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_portscan($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_portscan", "CrossC2 PortScan(1.1M) - Scan a network for open services, but it will be seen in the process", "\nby: trim\nUsage: cc2_portscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_portscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+
+ssh_alias cc2_serverscan {
+    $taskName = "cc2_serverscan";
+    $taskType = "ELF";
+    $taskResType = "portscan";
+
+    $beaconid = $1;
+    $arch = $2;
+    $host = $3;
+    $port = $4;
+    $scan_type = $5;
+    $transportArg = $host . "^" . $port . "^" . $scan_type;
+
+    if ($arch eq "osx") {
+        $loadlib = "scanner/ServerScan/osx/cc2_serverscan.dylib";
+    } else if ($arch eq "linux32") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_serverscan386.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "scanner/ServerScan/linux/SO/crossc2_serverscan.so";
+    } else {
+        berror($beaconid, "*[error]: system");
+        printUsage_ServerScan($beaconid);
+        return;
+    }
+    if ($host && $port && $scan_type) {
+        blog($beaconid, "cc2_serverscan: " . $host . " " . $port . " " . $scan_type);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_ServerScan($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_serverscan", "CrossC2 ServerScan(3M) - Scan a network for open services and services version detection,  but it will be seen in the process", "\nby: trim\nUsage: cc2_serverscan <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_serverscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
+

