@@ -182,25 +182,25 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 ## release v2.0 :
 
--fix Fix the problem of path errors caused by backslashes when uploading files in the file management office
--fix Long-term testing in various scenarios in the real environment, fixing some hidden problems, and now more stable
-+support Support for lower kernel version systems
-+support Environment variables are automatically set at startup
-+support Delete sensitive env records at startup
-+support The background service process can be linked to the init process at startup
-+support Increase session spawn function
-+support Increase the function of session setting environment variables
-+support Increase the privilege escalation function of session getsystem
-+support Increase session analysis function to handle multiple merge tasks
-+support Increase Mac & Linux lateral movement function
+* -fix Fix the problem of path errors caused by backslashes when uploading files in the file management office
+* -fix Long-term testing in various scenarios in the real environment, fixing some hidden problems, and now more stable
+* +support Support for lower kernel version systems
+* +support Environment variables are automatically set at startup
+* +support Delete sensitive env records at startup
+* +support The background service process can be linked to the init process at startup
+* +support Increase session spawn function
+* +support Increase the function of session setting environment variables
+* +support Increase the privilege escalation function of session getsystem
+* +support Increase session analysis function to handle multiple merge tasks
+* +support Increase Mac & Linux lateral movement function
 
 ## release v1.5 :
 
--fix genCrossC2's bug about protocol rebinding.
+* -fix genCrossC2's bug about protocol rebinding.
 
 ## release v1.4 :
 
--fix Linux daemon process and joblist display problem.
+* -fix Linux daemon process and joblist display problem.
 
 ## release v1.3 :
 
