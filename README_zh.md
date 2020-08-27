@@ -10,26 +10,28 @@
 
 🔥 自定义通信协议 [GO📖](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
 
+🔥 现已支持横向移动 [GO📌](#横向移动: 使用方法)
+
 🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
 
 
 # CrossC2 framework - 生成CobaltStrike的跨平台beacon
 
 ```
-     ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 
-    ▒██▀ ▀█  ▓██ ▒ ██▒▒██▒  ██▒▒██    ▒ ▒██    ▒    ▒██▀ ▀█        ██░
-    ▒▓█    ▄ ▓██ ░▄█ ▒▒██░  ██▒░ ▓██▄   ░ ▓██▄      ▒▓█        █████▒ 
-    ▒▓▓▄ ▄██▒▒██▀▀█▄  ▒██   ██░  ▒   ██▒  ▒   ██▒   ▒▓▓▄ ▄█ ░▒██      
-    ▒ ▓███▀ ░░██▓ ▒██▒░ ████▓▒░▒██████▒▒▒██████▒▒   ▒ ▓███▀  ░▒▓█████▓
-    ░ ░▒ ▒  ░░ ▒▓ ░▒▓░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░   ░ ░▒ ▒    ░▒ ░▓ ░░
-      ░  ▒     ░▒ ░ ▒░  ░ ▒ ▒░ ░ ░▒  ░ ░░ ░▒  ░ ░     ░  ▒     ░ ░░ ░ 
-    ░          ░░   ░ ░ ░ ░ ▒  ░  ░  ░  ░  ░  ░     ░         by:░hook
-    ░ ░         ░         ░ ░        ░        ░     ░ ░          ░    
-    ░                                               ░                 
-              
+	 ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄
+	▒██▀ ▀█  ▓██ ▒ ██▒▒██▒  ██▒▒██    ▒ ▒██    ▒    ▒██▀ ▀█        ██░
+	▒▓█    ▄ ▓██ ░▄█ ▒▒██░  ██▒░ ▓██▄   ░ ▓██▄      ▒▓█        █████▒
+	▒▓▓▄ ▄██▒▒██▀▀█▄  ▒██   ██░  ▒   ██▒  ▒   ██▒   ▒▓▓▄ ▄█ ░▒██
+	▒ ▓███▀ ░░██▓ ▒██▒░ ████▓▒░▒██████▒▒▒██████▒▒   ▒ ▓███▀  ░▒▓█████▓
+	░ ░▒ ▒  ░░ ▒▓ ░▒▓░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░   ░ ░▒ ▒    ░▒ ░▓ ░░
+	  ░  ▒     ░▒ ░ ▒░  ░ ▒ ▒░ ░ ░▒  ░ ░░ ░▒  ░ ░     ░  ▒     ░ ░░ ░
+	░          ░░   ░ ░ ░ ░ ▒  ░  ░  ░  ░  ░  ░  CrossC2 v2.0 @hook
+	░ ░         ░         ░ ░        ░        ░     ░ ░          ░
+	░                                               ░     
 ```
 
-![](media/15794884596715/15794993795360.jpg)
+![](media/15901534124389/15985513904454.jpg)
+
 ![](media/15848885324084/15848892759774.jpg)
 
 
@@ -63,7 +65,7 @@
 > 下载基础文件:
 
 * **CrossC2.cna**
-* **genCrossC2** `(If it is a Windows system, download genCrossC2.Win.exe)`
+* **genCrossC2** `(如果操作系统是Windows, 下载genCrossC2.Win.exe)`
 
 1. 选择`Script Manager`，添加`CrossC2.cna` (如果成功安装，菜单栏会多出一项 `CrossC2`)
 2. 修改`CrossC2.cna`脚本中`genCC2`路径为**真实路径**
@@ -89,21 +91,35 @@
 执行时输出信息的类型可以自由指定，已预定了返回类型，可对接CS原生的返回数据类型。
 `⚠️: 关于特殊的数据类型，如密码，端口扫描结果等，请参照cs原生功能返回的信息编写，将按照正则匹配。`
 
-1. 密码dump模块：cc2_mimipenguin 采用开源项目 MimiPenguin2.0，参见 
-2. CrossC2Kit/mimipenguin/mimipenguin.cna
-3. 认证后门模块：cc2_auth, cc2_ssh sudo/su/passwd等认证后门，ssh被连接及连接其他主机的凭证都将被记录。
-4. 信息收集模块：cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump 常见浏览器的访问记录，以及iMessage聊天内容与钥匙串中保存的认证凭据都将被获取。
-5. 流量代理模块：cc2_frp 支持快速TCP/KCP(UDP)的反向socks5加密流量代理。
-6. 键盘记录模块：cc2_keylogger 记录用户的键盘输入。
-7. 网络探测模块：cc2_portscan, cc2_serverscan 进行端口扫描及服务版本扫描。
-8. 权限提升模块：cc2_prompt_spoof 诱导欺骗获取用户账户密码。
-9. 任务管理模块：cc2_job 管理内存中运行的模块。
-10. ...
+1. 密码dump模块：cc2_mimipenguin 采用开源项目 MimiPenguin2.0，参见 CrossC2Kit/mimipenguin/mimipenguin.cna
+
+2. 认证后门模块：cc2_auth, cc2_ssh sudo/su/passwd等认证后门，ssh被连接及连接其他主机的凭证都将被记录。
+
+3. 信息收集模块：cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump 常见浏览器的访问记录，以及iMessage聊天内容与钥匙串中保存的认证凭据都将被获取。
+
+4. 流量代理模块：cc2_frp 支持快速TCP/KCP(UDP)的反向socks5加密流量代理。
+
+5. 键盘记录模块：cc2_keylogger 记录用户的键盘输入。
+
+6. 网络探测模块：cc2_portscan, cc2_serverscan 进行端口扫描及服务版本扫描。
+
+7. 权限提升模块：cc2_prompt_spoof 诱导欺骗获取用户账户密码。
+
+8. 任务管理模块：cc2_job 管理内存中运行的模块。
+
+9. ...
 
 
 ## 自定义通信协议: API介绍 [📖 Wiki](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
 
 可以更便捷的实现C2Profile配置及自定义通信协议TCP/UDP等等。 
+
+## 横向移动: 使用方法 [📖 Wiki]()
+
+1. 生成 `Linux-bind` / `MacOS-bind` 类型的beacon
+2. 内网中的目标运行 `./MacOS-bind.beacon <port>` 开启服务
+3. 在网络联通的session中运行 `connect <targetIP>:<port>`
+
 
 ## cna插件方式
 
@@ -163,6 +179,28 @@
 ![](media/15854585486601/15854593957704.jpg)
 
 # ChangeLog
+
+## release v2.0 :
+
+-修复 修复文件管理处上传文件时带反斜杠导致路径出错的问题
+-修复 真实环境中多种场景下长时间测试，修复一些隐藏的问题，现在更加稳定
++支持 更低内核版本系统的支持
++支持 启动时环境变量自动设置
++支持 启动时敏感env记录删除
++支持 启动时可后台服务进程方式挂属init进程下
++支持 增加session spawn功能
++支持 增加session 设置环境变量的功能
++支持 增加session getsystem权限提升功能
++支持 增加session 处理多个合并任务的解析功能
++支持 增加 Mac & Linux 横向移动的功能
+
+## release v1.5 :
+
+-修复 修复genCrossC2的通讯协议重绑定错误
+
+## release v1.4 :
+
+-修复 Linux后台进程与joblist显示错误的问题
 
 ## release v1.3 :
 
