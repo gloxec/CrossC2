@@ -1,0 +1,9 @@
+{
+  "assets": [
+    {
+        "name": "CrossC2Kit.zip",
+        "browser_download_url": "http://127.0.0.1/CrossC2Kit.zip",
+        "desc": "<h1><font color=\"red\">CrossC2 插件更新列表正在统计中，后续会推送到github</font></h1>"
+    }
+  ]
+}

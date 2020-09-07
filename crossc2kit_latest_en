@@ -1,0 +1,9 @@
+{
+  "assets": [
+    {
+        "name": "CrossC2Kit.zip",
+        "browser_download_url": "http://127.0.0.1/CrossC2Kit.zip",
+        "desc": "<h1><font color=\"red\">The CrossC2 plugin update list is being counted and will be pushed to github in the future</font></h1>"
+    }
+  ]
+}

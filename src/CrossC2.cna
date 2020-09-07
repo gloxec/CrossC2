@@ -1,5 +1,8 @@
 menubar("CrossC2", "generator", 2);
 
+$CC2_PATH = "/xxx/xx/xx/"; # <-------- fix
+$CC2_BIN = "genCrossC2.MacOS";
+
 popup generator {
     menu "&CrossC2 Payload Generator" {
         item "&genCrossC2" {
@@ -74,7 +77,7 @@ sub dialogCallBack {
     }
 
 
-    $genCC2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
+    $genCC2 = $CC2_PATH . $CC2_BIN;  
 
 
 
@@ -125,12 +128,14 @@ sub genCrossC2 {
 }
 
 sub projectAboutCallback {
+    $autoupdate = "java -jar " . $CC2_PATH . "autoupdate.jar";
+    exec($autoupdate);
 }
 
 sub projectAbout {
     $dialog = dialog("Cross C2 About",%(link => "https://github.com/gloxec/CrossC2"), &projectAboutCallback);
     dialog_description($dialog, "Export CrossC2 Payload");
-    dbutton_action($dialog, "OK");
+    dbutton_action($dialog, "update");
     drow_text($dialog, "link", "link: ", "");
     dialog_show($dialog);
 }
