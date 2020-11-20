@@ -13,6 +13,27 @@ include(script_resource("gather/browser/chrome_dump.cna"));
 include(script_resource("gather/keychain/keychain_dump.cna"));
 include(script_resource("gather/message/iMessage_dump.cna"));
 
+popup ssh {
+    menu "&Access" {
+        item "&Elevate" { openElevateDialog($1); }
+    }
+    menu "&Explore" {
+        item "&File Browser" { 
+            local('$bid');
+            foreach $bid ($1) {
+                openFileBrowser($bid);
+            }
+        }
+        item "&Process List" { openProcessBrowser($1); }
+    }
+
+    item "&Spawn" { 
+        local('$bid');
+        foreach $bid ($1) {
+            bshell($bid, "spawn");
+        }
+    }
+}
 
 ssh_alias spawn {
     bshell($1, "spawn");
