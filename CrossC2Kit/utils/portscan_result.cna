@@ -1,0 +1,94 @@
+#### Port Scan Results ####
+## See and sort results from portscan module in a new tab
+## Author: Alyssa (@ramen0x3f)
+## Last Updated: 2018-08-08
+
+## CREDIT ##
+# This script uses the awesome visualization/tab code made by @001SPARTaN (for @r3dqu1nn)
+# As seen here: https://github.com/harleyQu1nn/AggressorScripts/blob/master/logvis.cna
+
+## Usage ##
+# View > "Port Scan Results". Click column to sort. 
+
+######################################################################
+
+import ui.*;
+import table.*;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+global('$model $console $table');
+
+sub updateTable {
+	fork({
+		local('$entry');
+
+		# Clear the model so we can put new stuff in it.
+		[$model clear: 1024];
+
+		foreach @entry (data_query('services')) {
+        	%modelEntry['address'] = @entry['address'];
+            %modelEntry['port'] = @entry['port'];
+            %modelEntry['banner'] = @entry['banner'];
+            
+            # Add the new entry to $model
+            [$model addEntry: %modelEntry];
+		}
+		# Update with the new table
+		[$model fireListeners];
+	}, \$model);
+}
+
+sub createVisualization {
+	this('$client');
+	# GenericTableModel from table.*
+	# Columns for each data model
+	$model = [new GenericTableModel: @("address", "port", "banner"), "beacon", 16];
+
+	# Create a table from the GenericTableModel
+	$table = [new ATable: $model];
+
+	# Controls how the column headers will sort the table
+	$sorter = [new TableRowSorter: $model];
+	[$sorter toggleSortOrder: 3];
+
+	[$sorter setComparator: 0, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 1, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 2, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 3, {
+		return $1 <=> $2;
+	}];
+
+	# Set $sorter as the row sorter for $table
+	[$table setRowSorter: $sorter];
+
+	# Create a split pane (divider you can drag around)
+	$content = [new JScrollPane: $table];
+
+	# Set popup menu for the table
+	setupPopupMenu($table, "command_log");
+
+	updateTable();
+
+	# Register the visualization with CS
+	addVisualization("Port Scan Results", $content);
+	return $content;
+}
+
+popup view {
+	item "Port Scan Results" {
+		# Show the visualization
+		addTab("Port Scan Results", createVisualization(), "All discovered services from portscan");
+	}
+}
