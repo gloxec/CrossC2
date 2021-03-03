@@ -14,6 +14,25 @@ popup generator {
     }
 }
 
+popup ssh {
+    menu "&Explore" {
+        item "&File Browser" { 
+            local('$bid');
+            foreach $bid ($1) {
+                openFileBrowser($bid);
+            }
+        }
+        item "&Process List" { openProcessBrowser($1); }
+    }
+    item "&Spawn" { 
+        local('$bid');
+        foreach $bid ($1) {
+            blog($bid, "[shell]: shell spawn");
+            bshell($bid, "spawn");
+        }
+    }
+}
+
 sub random_string {
     # <3 @offsec_ginger
     $limit = $1;
@@ -28,9 +47,9 @@ sub random_string {
 
 sub getSystemInfo {
     $process = exec("/usr/bin/uname");
-    $data = readAll($process);
+    $sys_data = readAll($process);
     closef($process);
-    if (strlen($data) > 0) {
+    if (strlen($sys_data) > 0) {
         return 1;
     } else {
         return 0;
@@ -149,9 +168,20 @@ sub dialogCallBack {
     $genCC2 = $genCC2." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
     elog($genCC2);
     $process = exec($genCC2);
-    $data = readAll($process);
+    $run_res = readAll($process);
     closef($process);
-    elog("genCrossC2 beacon -> ".$data[13]);
+    if (getSystemInfo() == 1) {
+        elog("genCrossC2 beacon -> ".$run_res[14]);
+    } else {
+        elog("genCrossC2 beacon -> ".$run_res[11]);
+    }
+    if ($rebind_lib ne 'null') {
+        if (getSystemInfo() == 1) {
+            elog("rebind protocol -> ".$run_res[16]);
+        } else {
+            elog("rebind protocol -> ".$run_res[13]);
+        }
+    }
 
     $handle = openf($outputFileName);
     $c2Data = readb($handle, -1);
