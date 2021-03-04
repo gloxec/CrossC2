@@ -71,7 +71,7 @@
 <details>
 <summary><b>注意事项⚠️</b></summary>
 genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.dll`。
-可自己安装依赖或者使用issue中提供的文件拷贝至`C:\Windows\System32`
+</br>可自己安装依赖或者使用issue中提供的文件拷贝至`C:\Windows\System32`
 [issue: win_sdk_dll](https://github.com/gloxec/CrossC2/issues/49#issuecomment-748630879)
 </details>
 
@@ -108,7 +108,7 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 <details>
 <summary><b>注意事项⚠️</b></summary>
 `⚠️: 虽然文件都是无落地从内存加载，但选用可执行文件(ELF/MachO)的方式在传入参数时，进程是可以在ps中查看到的，不过进程名可以自定义。`
-`⚠️: 关于特殊的数据类型，如密码，端口扫描结果等，请参照cs原生功能返回的信息编写，将按照正则匹配。`
+</br>`⚠️: 关于特殊的数据类型，如密码，端口扫描结果等，请参照cs原生功能返回的信息编写，将按照正则匹配。`
 </details>
 
 <details>

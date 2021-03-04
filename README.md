@@ -12,7 +12,7 @@
 
 🔥 Now supports lateral movement [GO📌](#Lateral-movement:-Usage)
 
-🔥 Now supports loading scripts from memory [GO📌](#Run script-in-memory)
+🔥 Now supports loading scripts from memory [GO📌](#Run-script-in-memory)
 
 🎉 **Android** & **iPhone** support [GO📌](#Mobile)
 
@@ -68,29 +68,47 @@ Restricted description:
 
 * **CrossC2.cna**
 * **genCrossC2** `(If it is a Windows system, download genCrossC2.Win.exe)`
+<details>
+<summary><b>note⚠️</b></summary>
+The two files that genCrossC2.Win.exe needs to depend on are `ucrtbased.dll` and `vcruntime140d.dll`.
+</br>You can install the dependencies yourself or use the files provided in the issue to copy to `C:\Windows\System32`
+[issue: win_sdk_dll](https://github.com/gloxec/CrossC2/issues/49#issuecomment-748630879)
+</details>
 
-1. choose `Script Manager`，add `CrossC2.cna` (If successfully installed, the menu bar will have an additional item `CrossC2`)
-2. Modify the `genCC2` path in the` CrossC2.cna` script to the **real path**
-
+1. Modify the `genCC2` path in the` CrossC2.cna` script to the **real path**
 ```
 77:    $genCC2 = "/xxx/xx/xx/genCrossC2.MacOS";  # <-------- fix
 ```
+
+2. choose `Script Manager`, add `CrossC2.cna` (If successfully installed, the menu bar will have an additional item `CrossC2`)
 
 > Create listener and copy key:
 
 For some reasons, only HTTPS beacon is currently supported.
 
-**Copy `.cobaltstrike.beacon_keys` from the cs directory on the server to the local directory.**
+1. Copy `.cobaltstrike.beacon_keys` from the cs directory on the **server** to the **local directory.**
+
+> CustomExtension:
+
+1. Add `CrossC2Kit_Loader.cna` after downloading CrossC2Kit. It contains other functions such as memory loading. (The file management function of `cs4.x` version is missing. Only use this Loader to re-enable file management)
+
 
 ## Reference documents: [📖 Wiki](https://gloxec.github.io/CrossC2/en/usage/)
 
 ## Module: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/api/)
 
 It adopts the method of loading memory without landing, and supports dynamic libraries (.so/.dylib) and executable files (ELF/MachO).
-`⚠️: Although the file is loaded directly from memory, the process can be viewed in ps when the executable file is passed in, but the process name can be customized.`
 
 The type of output information can be freely specified at the time of execution. The return type has been predetermined and can be docked with the native return data type of CS.
-`⚠️: For special data types, such as passwords, port scan results, etc., please refer to the information returned by the native function of cs, which will be matched according to the regular.`
+
+<details>
+<summary><b>warning⚠️</b></summary>
+`⚠️: Although the file is loaded directly from memory, the process can be viewed in ps when the executable file(ELF/MachO) is passed in, but the process name can be customized.`
+</br>`⚠️: For special data types, such as passwords, port scan results, etc., please refer to the information returned by the native function of cs, which will be matched according to the regular.`
+</details>
+
+<details>
+<summary><b>CustomExtension</b></summary>
 
 1. Password dump module: cc2_mimipenguin uses the open source project MimiPenguin2.0, see CrossC2Kit/ mimipenguin/mimipenguin.cna
 
@@ -110,6 +128,9 @@ The type of output information can be freely specified at the time of execution.
 
 9. ...
 
+</details>
+
+
 ## Custom communication protocol: API introduction [📖 Wiki](https://gloxec.github.io/CrossC2/en/protocol/)
 
 Can more easily realize C2Profile configuration and custom communication protocol TCP / UDP and so on.
@@ -123,6 +144,9 @@ Can more easily realize C2Profile configuration and custom communication protoco
 
 ## Run script in memory
 
+<details>
+<summary><b>Examples</b></summary>
+
 The script interpreter such as **bash** / **python** / **ruby** / **perl** / **php** in the host can be called directly in the session to execute the script passed into the memory.
 `There is no information in the process, all running content is transferred from the memory to the interpreter`
 1. python c:\getsysteminfo.py
@@ -135,7 +159,7 @@ Try to load local script:
 Try to run the scripting language directly:
 ![](media/15901534124389/16041502298949.jpg)
 
-
+</details>
 
 # Coming soon
 
@@ -144,19 +168,32 @@ Try to run the scripting language directly:
 3. http-proxy (auth) & socks proxy back connection support
 4. Proxy-Pivots  ✔︎ (Temporarily adopt the method of connecting back to socks proxy)
 5. node beacon? (Single node type, can host other beacon without relying on teamserver)
+6. Linux & MacOS side so/dylib's reverse shell support, and its derivative process injection functions
 
 # Examples
+
+<details>
+<summary><b>Mobile</b></summary>
 
 ## Mobile
 ![](media/15848885324084/15848892759774.jpg)
 
 ![](media/15848885324084/15848892902723.jpg)
 
+</details>
+
+<details>
+<summary><b>MacOS & Linux</b></summary>
+
 ## MacOS & Linux
 
 ![](media/15794884596715/15795001494711.jpg)
 ![](media/15824278372797/15824282351545.jpg)
 
+</details>
+
+<details>
+<summary><b>CustomExtension</b></summary>
 
 ## CustomExtension
 
@@ -171,8 +208,22 @@ Develop dynamic libraries and customize data return types, such as implementing 
 ### portscan
 ![](media/15854585486601/15854593957704.jpg)
 
+</details>
 
 # ChangeLog
+
+## release v2.2 :
+
+* -change Only CS 4.x (>=4.1) version is supported, lower versions will no longer be supported.
+* -fix Fix the protocol rebinding error of the low version of Linux kernel
+* +support C2 domain name resolution
+* +support Support continuous invocation of memory execution components
+* +support Support for adding shell aliases for memory execution, so that other people in the team can directly call the loaded memory execution components through shell commands
+* +support python-import support, like powershell-import to provide convenience for python execution
+* +support low version GLIBC support of genCrossC2
+
+<details>
+<summary><b>Historical version update instructions</b></summary>
 
 ## release v2.1 :
 
@@ -282,4 +333,5 @@ md5(genCrossC2.Linux) = f4c0cc85c7cdd096d2b7febedc037538
 md5(genCrossC2.MacOS) = 79fff0505092fc2055824ed1289ce8f9
 
 
+</details>
 
