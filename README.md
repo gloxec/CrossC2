@@ -118,7 +118,7 @@ Can more easily realize C2Profile configuration and custom communication protoco
 
 1. Generate beacon of `Linux-bind` / `MacOS-bind` type
 2. The target in the intranet runs `./MacOS-bind.beacon <port>` to start the service
-3. Run `connect <targetIP>:<port>` in the session of China Unicom
+3. Run `connect <targetIP> <port>` in the session of China Unicom
 
 
 ## Run script in memory
