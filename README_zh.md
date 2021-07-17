@@ -120,7 +120,7 @@
 
 1. 生成 `Linux-bind` / `MacOS-bind` 类型的beacon
 2. 内网中的目标运行 `./MacOS-bind.beacon <port>` 开启服务
-3. 在网络联通的session中运行 `connect <targetIP>:<port>`
+3. 在网络联通的session中运行 `connect <targetIP> <port>`
 
 ## 内存中运行脚本
 
