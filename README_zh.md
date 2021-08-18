@@ -223,6 +223,15 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 
 # ChangeLog
 
+## release v2.2.5 - stable :
+* -修复 v2.2.4 版本引入的Linux高版本上线问题
+* -修复 内存执行在传入参数时可能会失败的bug
+* -修复 修复网络连接异常时导致崩溃的bug，例如正在发包时teamserver突然异常退出等 #106
+* -修复 connect指令在连接子节点时未指定端口将异常退出的bug #95
+* +支持 CDN类服务器SNI支持，现如Cloudflare服务已可正常使用 #87
+* +支持 Linux 32&64 位都已支持procfs获取进程信息
+* -变更 beacon上线时`[config]: alive`将默认不显示，可使用export CC_DEBUG=1开启 #78
+
 ## release v2.2.4 - stable :
 * -修复 v2.2.3 的上线问题 #84 #85
 * +支持 Linux支持从procfs中获取进程列表信息
@@ -245,6 +254,9 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 > 2. /tmp/c2 /tmp/c2-rebind.so
 (为beacon强制指定通信协议库)
 
+<details>
+<summary><b>历史版本更新说明</b></summary>
+
 ## release v2.2.1 :
 * -修复 修复文件下载速度过慢的问题（现已达到满速）
 * -修复 修复同时下载多个文件出现的问题（使用`downloads`命令查看进度）
@@ -261,9 +273,6 @@ genCrossC2.Win.exe 需要依赖的两个文件为`ucrtbased.dll`,`vcruntime140d.
 * +支持 支持添加内存执行的shell别名，方便团队其他人直接通过shell指令调用已加载的内存执行组件
 * +支持 python-import支持，像powershell-import一样为python执行提供便利
 * +支持 genCrossC2生成器支持更低版本的GLIBC
-
-<details>
-<summary><b>历史版本更新说明</b></summary>
 
 ## release v2.1 :
 

@@ -219,6 +219,15 @@ Develop dynamic libraries and customize data return types, such as implementing 
 
 # ChangeLog
 
+## release v2.2.5 - stable :
+* -fix The online issue of the high version of Linux introduced by the v2.2.4 version
+* -fix A bug where memory execution may fail when passing in parameters
+* -fix Fix the bug that caused the crash when the network connection is abnormal, for example, the teamserver suddenly exits abnormally when the package is being sent, etc. #106
+* -fix The bug that the connect command does not specify a port when connecting to a child node will exit abnormally #95
+* +support CDN server SNI support, now Cloudflare service can be used normally #87
+* +support Linux 32&64 bits have supported procfs to obtain process information
+* -change When beacon is online, `[config]: alive` will not be displayed by default, and it can be turned on with `export CC_DEBUG=1` #78
+
 ## release v2.2.4 - stable :
 * -fix v2.2.3 beacon online issue #84 #85
 * +support Support for obtaining process list information from procfs on Linux
@@ -239,6 +248,9 @@ Develop dynamic libraries and customize data return types, such as implementing 
 > 2. /tmp/c2 /tmp/c2-rebind.so
 (Mandatory loading of communication protocol library for beacon)
 
+<details>
+<summary><b>Historical version update instructions</b></summary>
+
 ## release v2.2.1 :
 * -fix Fix the problem that the file download speed is too slow (now up to full speed)
 * -fix Fix the problem of multiple files at the same time (use the `downloads` command to view the progress)
@@ -256,8 +268,6 @@ Develop dynamic libraries and customize data return types, such as implementing 
 * +support python-import support, like powershell-import to provide convenience for python execution
 * +support low version GLIBC support of genCrossC2
 
-<details>
-<summary><b>Historical version update instructions</b></summary>
 
 ## release v2.1 :
 
