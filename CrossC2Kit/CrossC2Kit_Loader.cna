@@ -207,18 +207,36 @@ ssh_command_register("spawn", "Spawn a new session");
 ssh_command_register("getsystem", "Promote the session with uid=0 temporary permission to root session");
 ssh_command_register("setenv", "Set the environment variables of the session", "\nUsage: setenv <EnvName> <EnvValue> \n\tsetenv PATH ./:/usr/bin/\n");
 
-# Useful aliases, placed in kitloader because I always have this loaded
-# from 'Und3rf10w - KitLoader.cna'
 
-ssh_alias ls {
-    if(!$2){
-        bshell($1, "ls -la");
-    } else {
-        bshell($1, "ls -la $2");
+set SSH_SBAR_LEFT {
+    local('$computer $user $pid $barch');
+    ($computer, $user, $barch) = values($2, @('computer', 'user', 'barch'));
+    $usi = indexOf($user, " ");
+    if ($usi ne $null) {
+        $user = substr($user, 0, $usi);
+    }
+    $si = indexOf($computer, "(");
+    $si = $si + 1;
+    $ei = indexOf($computer, ")");
+    $pid = substr($computer, $si, $ei);
+    # CWD=$cwd 如果可以的话再加个cwd功能
+    return "[ $+ $user\@$computer $+ ][ $+ $barch $+ ] PID=$pid";
+}
+
+# beaconid, %meta
+set SSH_SBAR_RIGHT {
+    if ($2['note'] ne "") {
+        return "\c2" . $2['note'] . "  \olast: " . $2['lastf'] . " ";
+    }
+    else {
+        return "last: " . $2['lastf'] . " ";
     }
 }
 
-ssh_command_register("ls", "Lists files", "Use: ls [folder]\n\nLists files in a folder");
+
+
+# Useful aliases, placed in kitloader because I always have this loaded
+# from 'Und3rf10w - KitLoader.cna'
 
 ssh_alias cat {
     if ($2){
@@ -246,8 +264,3 @@ ssh_alias head {
     }
 }
 ssh_command_register("head", "Print the first 10 lines of a file", "Use: head [file]\n\nDisplays first 10 lines of [file]");
-
-ssh_alias ps {
-    bshell($1, "ps aux");
-}
-ssh_command_register("ps", "Show process list", "Use: ps\n\nShows a list of processes");
