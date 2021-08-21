@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main 
+      - cs4.1 
     paths:
       - 'src/CrossC2.cna'
 
