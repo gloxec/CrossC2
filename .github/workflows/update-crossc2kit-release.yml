@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main 
+      - cs4.1 
     paths:
       - 'CrossC2Kit/**'
       - '!CrossC2Kit/README.md'
