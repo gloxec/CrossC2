@@ -1,0 +1,66 @@
+on:
+  push:
+  release:
+    types: 
+      published
+
+name: Create Base Release
+
+jobs:
+  build:
+    name: Update Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Build project # This would actually build your project, using zip for an example artifact
+        run: |
+          zip -r CrossC2Kit-${{ steps.date.outputs.date }} CrossC2Kit/
+          echo 1 > blank
+      - name: Gets latest created release info
+        id: latest_release_info
+        uses: jossef/action-latest-release-info@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Create a placeholder file
+        id: create-placeholder-file 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./blank
+          asset_name: placeholder
+          asset_content_type: application/zip
+      - name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ steps.latest_release_info.outputs.tag_name }}
+          assets: |
+            CrossC2Kit-GithubBot-*.zip
+            CrossC2-GithubBot-*.cna
+            placeholder
+      - name: Upload CrossC2Kit Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./CrossC2Kit-${{ steps.date.outputs.date }}.zip
+          asset_name: CrossC2Kit-GithubBot-${{ steps.date.outputs.date }}.zip
+          asset_content_type: application/zip
+      - name: Upload CrossC2 Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: src/CrossC2.cna
+          asset_name: CrossC2-GithubBot-${{ steps.date.outputs.date }}.cna
+          asset_content_type: application/zip
