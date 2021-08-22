@@ -104,7 +104,7 @@ sub format_ls{
         }
 
         if($type eq "D") { $type = "dir"; }
-        else if($type eq "F") { $type = "fil"; }
+        else if($type eq "F") { $type = "file"; }
 
         $s = long($s);
         $totalsize += $s;
@@ -153,7 +153,7 @@ sub format_ls{
         }
     }
 
-    sort({ return ($1['type'] cmp $res['type']); }, @ls);
+    sort({ return ($1['type'] cmp $2['type']); }, @ls);
 
     foreach $temp (@ls) {
         $outls .= $temp['entry'] . "\n";
