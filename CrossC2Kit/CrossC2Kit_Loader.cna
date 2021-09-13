@@ -15,6 +15,7 @@ include(script_resource("gather/keychain/keychain_dump.cna"));
 include(script_resource("gather/message/iMessage_dump.cna"));
 include(script_resource("utils/portscan_result.cna"));
 include(script_resource("process/processhelper.cna"));
+include(script_resource("sshpass/sshpass.cna"));
 
 sub openMemoryFileLoadDialogCallBack {
     $taskFile = $3['taskFile'];
