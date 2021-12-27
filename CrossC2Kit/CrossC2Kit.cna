@@ -107,6 +107,8 @@ sub transportStrings {
 }
 
 sub bcrossc2_load_dyn_pro {
+    local('$beaconid $taskType $taskName $taskResType $taskNeedRun $taskNeedPersistence $taskXorKey $loadFileName $taskArgs');
+    local('$loadFilePath $juicySize $handle $juicyData $ELFName');
     $beaconid = $1;
     $taskType = $2;
     $taskName = $3;

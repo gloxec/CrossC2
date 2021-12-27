@@ -1,0 +1,147 @@
+# Beacon Command Log visualization
+# Author: @001SPARTaN (for @r3dqu1nn)
+# Tracks all your commands you executed on every beacon
+
+import ui.*;
+import table.*;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+global('$model $console $table');
+
+sub updateTable {
+	fork({
+		local('$entry');
+
+		# Clear the model so we can put new stuff in it.
+		[$model clear: 1024];
+
+		foreach @entry (data_query('beaconlog')) {
+            if (@entry[0] eq "ssh_input") {
+				%modelEntry['operator'] = @entry[2];
+                $bid = @entry[1];
+                %modelEntry['ip'] = binfo($bid, "internal");
+                %modelEntry['hostname'] = binfo($bid, "computer");
+                %modelEntry['user'] = binfo($bid, "user");
+				$computer = binfo($bid, "computer");
+				$si = indexOf($computer, "(");
+				$si = $si + 1;
+				$ei = indexOf($computer, ")");
+				$pid = substr($computer, $si, $ei);
+                %modelEntry['pid'] = $pid;
+                %modelEntry['command'] = @entry[3];
+                %modelEntry['timestamp'] = formatDate(@entry[4], "MMM dd HH:mm:ss z");
+                # Add the new entry to $model
+                [$model addEntry: %modelEntry];
+			}
+		}
+		# Update with the new table
+		[$model fireListeners];
+	}, \$model);
+}
+
+# setupPopupMenu provided by Raphael Mudge
+# https://gist.github.com/rsmudge/87ce80cd8d8d185c5870d559af2dc0c2
+sub setupPopupMenu {
+	# we're using fork({}) to run this in a separate Aggressor Script environment.
+	# This reduces deadlock potential due to Sleep's global interpreter lock
+	#
+	# this especially matters as our mouse listener will be fired for *everything*
+	# to include mouse movements.
+	fork({
+		[$component addMouseListener: lambda({
+			if ([$1 isPopupTrigger]) {
+				# If right click, show popup
+				show_popup($1, $name, $component);
+			}
+		}, \$component, \$name)];
+	}, $component => $1, $name => $2, $model => $model, $table => $table);
+}
+
+sub createVisualization {
+	this('$client');
+	# GenericTableModel from table.*
+	# Columns for each data model
+	$model = [new GenericTableModel: @("operator", "ip", "hostname", "user", "pid", "command", "timestamp"), "beacon", 16];
+
+	# Create a table from the GenericTableModel
+	$table = [new ATable: $model];
+
+	# Controls how the column headers will sort the table
+	$sorter = [new TableRowSorter: $model];
+	[$sorter toggleSortOrder: 3];
+
+	[$sorter setComparator: 0, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 1, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 2, {
+		return $1 cmp $2;
+	}];
+
+	[$sorter setComparator: 3, {
+		return $1 <=> $2;
+	}];
+
+	# Set $sorter as the row sorter for $table
+	[$table setRowSorter: $sorter];
+
+	# Create a split pane (divider you can drag around)
+	$content = [new JScrollPane: $table];
+
+	# Set popup menu for the table
+	setupPopupMenu($table, "command_log");
+
+	updateTable();
+
+	# Register the visualization with CS
+	addVisualization("Beacon Command Log", $content);
+	return $content;
+}
+
+popup command_log {
+	item "Copy Logs" {
+		println("Right click captured!");
+		$selected = "";
+		foreach $row ([$table getSelectedRows]) {
+            # operator [ip_hostname] user/proc | timestamp> command
+			$operator = [$model getValueAt: $row, 0];
+            $ip = [$model getValueAt: $row, 1];
+            $hostname = [$model getValueAt: $row, 2];
+            $user = [$model getValueAt: $row, 3];
+            $proc = [$model getValueAt: $row, 4];
+            $time = [$model getValueAt: $row, 6];
+            $command = [$model getValueAt: $row, 5];
+
+            $selected .= "$operator \[$ip\_$hostname\] $user\/$proc | $time\> $command\n";
+		}
+		add_to_clipboard($selected);
+	}
+	item "Copy Command" {
+		println("Right click captured!");
+		$selected = "";
+		foreach $row ([$table getSelectedRows]) {
+            $command = [$model getValueAt: $row, 5];
+
+            $selected .= $command;
+		}
+		add_to_clipboard($selected);
+	}
+}
+
+popup view {
+	item "SSH Command Log" {
+		# Show the visualization
+		addTab("SSH Beacon Command Log", createVisualization(), "All commands you have executed in a beacon");
+	}
+}
+
+on beacon_input {
+	updateTable();
+}
