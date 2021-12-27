@@ -1,0 +1,87 @@
+#
+# Safe & sound HTTP request implementation for Cobalt Strike 4.0 Aggressor Script.
+# Works with HTTP & HTTPS, GET/POST/etc. + redirections.
+#
+# Mariusz B. / mgeeky
+#
+
+import java.net.URLEncoder;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
+#
+# httpRequest($method, $url, $body);
+#
+sub httpRequest {
+    $method = $1;
+    $url = $2;
+    $body = $3;
+    $n = 0;
+    # println("request ".$url);
+
+    if(size(@_) == 4) { $n = $4; }
+
+    $bodyLen = strlen($body);
+    $maxRedirectsAllowed = 10;
+    if ($n > $maxRedirectsAllowed) {
+        warn("Exceeded maximum number of redirects: $method $url ");
+        return "";
+    }
+
+    try
+    {
+        $urlobj = [new java.net.URL: $url];
+        $con = $null;
+        $con = [$urlobj openConnection];
+        [$con setRequestMethod: $method];
+        [$con setInstanceFollowRedirects: true];
+        [$con setRequestProperty: "Accept", "*/*"];
+        [$con setRequestProperty: "Cache-Control", "max-age=0"];
+        [$con setRequestProperty: "Connection", "keep-alive"];
+        # [$con setRequestProperty: "User-Agent", $USER_AGENT];
+        [$con setRequestProperty: "User-Agent", "bot"];
+        [$con setConnectTimeout: 3000];
+        [$con setReadTimeout: 3000];
+
+        if($bodyLen > 0) {
+            [$con setDoOutput: true];
+            [$con setRequestProperty: "Content-Type", "application/x-www-form-urlencoded"];
+        }
+
+        $outstream = [$con getOutputStream];
+        if($bodyLen > 0) {
+            [$outstream write: [$body getBytes]];
+        }
+
+        $inputstream = [$con getInputStream];
+        $handle = [SleepUtils getIOHandle: $inputstream, $outstream];
+        $responseCode = [$con getResponseCode];
+
+        if(($responseCode >= 301) && ($responseCode <= 304)) {
+            $loc = [$con getHeaderField: "Location"];
+            return httpRequest($method, $loc, $body, $n + 1);
+        }
+
+        @content = readAll($handle);
+        $response = "";
+        foreach $line (@content) {
+            $response .= $line . "\r\n";
+        }
+
+        if((strlen($response) > 2) && (right($response, 2) eq "\r\n")) {
+            $response = substr($response, 0, strlen($response) - 2);
+        }
+
+        return $response;
+    }
+    catch $message
+    {
+       warn("HTTP Request failed: $method $url : $message ");
+       printAll(getStackTrace());
+       return "";
+    }
+}
