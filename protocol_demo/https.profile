@@ -53,7 +53,7 @@ http-post {
         }
 
         output {
-            base64url;
+            base64;
             print;
         }
     }
