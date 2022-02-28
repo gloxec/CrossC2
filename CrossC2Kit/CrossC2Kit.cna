@@ -192,6 +192,40 @@ sub brun_script_in_mem {
     bupload_raw!($beaconid,$scriptName,$juicyData);
 }
 
+sub bset_metadata {
+    local('$beaconid $metadata_key $metadata_value');
+    $bid = $1;
+    $metadata_key = $2;
+    $metadata_value = $3;
+
+    binput($bid, "$metadata_key $metadata_value");
+    bshell($bid, "$metadata_key $metadata_value");
+}
+
+sub bsetostype {
+    local('$bid $ostype');
+    $bid = $1;
+    $ostype = $2;
+
+    bset_metadata($bid, "setostype", $ostype);
+}
+
+sub bsetlocalip {
+    local('$bid $localip');
+    $bid = $1;
+    $localip = $2;
+
+    bset_metadata($bid, "setlocalip", $localip);
+}
+
+sub bsethostname {
+    local('$bid $hostname');
+    $bid = $1;
+    $hostname = $2;
+
+    bset_metadata($bid, "sethostname", $hostname);
+}
+
 @fileupload_list = @();
 global(@fileupload_list);
 sub bawait_upload {
