@@ -19,76 +19,76 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-global('$model $console $table');
+global('$ps_model $ps_content $ps_table');
 
-sub updateTable {
+sub updatePSTable {
 	fork({
 		local('$entry');
 
 		# Clear the model so we can put new stuff in it.
-		[$model clear: 1024];
+		[$ps_model clear: 1024];
 
 		foreach @entry (data_query('services')) {
         	%modelEntry['address'] = @entry['address'];
             %modelEntry['port'] = @entry['port'];
             %modelEntry['banner'] = @entry['banner'];
             
-            # Add the new entry to $model
-            [$model addEntry: %modelEntry];
+            # Add the new entry to $ps_model
+            [$ps_model addEntry: %modelEntry];
 		}
 		# Update with the new table
-		[$model fireListeners];
-	}, \$model);
+		[$ps_model fireListeners];
+	}, \$ps_model);
 }
 
-sub createVisualization {
-	this('$client');
+sub createPSVisualization {
+	this('$ps_sorter');
 	# GenericTableModel from table.*
 	# Columns for each data model
-	$model = [new GenericTableModel: @("address", "port", "banner"), "beacon", 16];
+	$ps_model = [new GenericTableModel: @("address", "port", "banner"), "beacon", 16];
 
 	# Create a table from the GenericTableModel
-	$table = [new ATable: $model];
+	$ps_table = [new ATable: $ps_model];
 
 	# Controls how the column headers will sort the table
-	$sorter = [new TableRowSorter: $model];
-	[$sorter toggleSortOrder: 3];
+	$ps_sorter = [new TableRowSorter: $ps_model];
+	[$ps_sorter toggleSortOrder: 3];
 
-	[$sorter setComparator: 0, {
+	[$ps_sorter setComparator: 0, {
 		return $1 cmp $2;
 	}];
 
-	[$sorter setComparator: 1, {
+	[$ps_sorter setComparator: 1, {
 		return $1 cmp $2;
 	}];
 
-	[$sorter setComparator: 2, {
+	[$ps_sorter setComparator: 2, {
 		return $1 cmp $2;
 	}];
 
-	[$sorter setComparator: 3, {
+	[$ps_sorter setComparator: 3, {
 		return $1 <=> $2;
 	}];
 
-	# Set $sorter as the row sorter for $table
-	[$table setRowSorter: $sorter];
+	# Set $ps_sorter as the row sorter for $ps_table
+	[$ps_table setRowSorter: $ps_sorter];
 
 	# Create a split pane (divider you can drag around)
-	$content = [new JScrollPane: $table];
+	$ps_content = [new JScrollPane: $ps_table];
 
 	# Set popup menu for the table
-	setupPopupMenu($table, "command_log");
+	setupPopupMenu($ps_table, "portscan_res");
 
-	updateTable();
+	updatePSTable();
 
 	# Register the visualization with CS
-	addVisualization("Port Scan Results", $content);
-	return $content;
+	addVisualization("Port Scan Results", $ps_content);
+	return $ps_content;
 }
 
 popup view {
 	item "Port Scan Results" {
 		# Show the visualization
-		addTab("Port Scan Results", createVisualization(), "All discovered services from portscan");
+		addTab("Port Scan Results", createPSVisualization(), "All discovered services from portscan");
 	}
 }
