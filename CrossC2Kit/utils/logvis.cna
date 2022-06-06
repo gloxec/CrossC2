@@ -135,7 +135,7 @@ popup command_log {
 	}
 }
 
-popup view {
+popup generator {
 	item "SSH Command Log" {
 		# Show the visualization
 		addTab("SSH Beacon Command Log", createSSHLogVisualization(), "All commands you have executed in a beacon");

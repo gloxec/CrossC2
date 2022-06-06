@@ -1,0 +1,97 @@
+include(script_resource("CrossC2Kit.cna"));
+popup generator {
+    separator();
+    item "&CrossC2Kit Setup" {
+        setupCrossC2KitPref();
+    }
+}
+
+sub modify_content {
+    local('$flag $pathFlag $script_path $new_content $set_path $file $r_handle $index');
+    local('$metastr $realpath $change $w_handle');
+    $flag = "__CC2_INIT__:";
+    $pathFlag = "__CC2_INIT_PATH__";
+    $script_path = script_resource();
+    $new_content = "";
+
+    $set_path = $1;
+    $file = $2;
+    if ($set_path) {
+        $script_path = $set_path;
+    }
+
+    $r_handle = openf($file);
+
+    if (checkError($error)) {
+        show_error("Could not open the file( $file ): $error");
+    } else {
+        while $read (readln($r_handle)) {
+            if ($flag isin $read) {
+                $index = indexOf($read, $flag);
+                if ($index ne $null) {
+                    $index = $index + strlen($flag);
+                    $metastr = substr($read, $index);
+                    $realpath = replace($metastr, $pathFlag, $script_path);
+                    $change = "$realpath #$flag$metastr";
+                    $new_content = $new_content.$change."\n";
+                }
+            } else {
+                $new_content = $new_content.$read."\n";
+            }
+        }
+        closef($r_handle);
+    }
+
+    if ($new_content ne "") {
+        $w_handle = openf(">$file");
+        if (checkError($error)) {
+            show_error("Could not open the file( $file ): $error");
+        } else {
+            writeb($w_handle, $new_content);
+            closef($w_handle);
+        }
+    }
+}
+
+sub modify_modulepath {
+    local('@filelist $set_path $file');
+    @filelist = @(
+        "update_site/httprequest.cna",
+    );
+    $set_path = $1;
+    foreach $file(@filelist) {
+        println("[cc2_setup]: $file ");
+        modify_content($set_path, script_resource($file));
+    }
+}
+
+sub setupCrossC2KitPrefCallback {
+    local('$cc2kit_dir');
+    $cc2kit_dir = $3['cc2kit_dir'];
+    if ($cc2kit_dir) {
+        pref_set("cc2kit_path", $cc2kit_dir);
+    }
+    modify_modulepath($cc2kit_dir);
+}
+
+sub setupCrossC2KitPref {
+    local('$cc2kit_path $dialog');
+
+    $cc2kit_path = pref_get("cc2kit_path");
+    if ($cc2kit_path eq "") {
+        $cc2kit_path = "/cs/script/CrossC2Kit";
+    }
+
+    $dialog = dialog("Edit script", %(cc2kit_dir => $cc2kit_path), &setupCrossC2KitPrefCallback);
+    dialog_description($dialog, "Setup CrossC2 Kit Path");
+    drow_text($dialog, "cc2kit_dir", "CrossC2 Kit Path: ");
+    dbutton_action($dialog, "OK");
+    dialog_show($dialog);
+}
+
+local('$cc2kit_path');
+$cc2kit_path = pref_get("cc2kit_path");
+if ($cc2kit_path eq "") {
+    println("[cc2_setup]: auto setup");
+    modify_modulepath();
+}

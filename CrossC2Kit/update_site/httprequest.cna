@@ -5,6 +5,8 @@
 # Mariusz B. / mgeeky
 #
 
+__CC2_INIT__:import SSLUtils from: __CC2_INIT_PATH__/update_site/SSLUtils.jar;
+
 import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -36,6 +38,8 @@ sub httpRequest {
     {
         $urlobj = [new java.net.URL: $url];
         $con = $null;
+        $SSL = [new SSLUtils];
+        [$SSL ignoreSsl];
         $con = [$urlobj openConnection];
         [$con setRequestMethod: $method];
         [$con setInstanceFollowRedirects: true];

@@ -1,5 +1,5 @@
 
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_safari_dump {
     blog($1, "\nUsage: cc2_safari_dump <username> <dump count>\n\tdump browser history from Safari.\nEx:\n\tcc2_safari_dump test 100");

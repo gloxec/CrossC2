@@ -1,0 +1,35 @@
+sub openModifyMetaData {
+    local('$bids $data_type $data_value');
+    $bids = $1;
+    $data_type = $2;
+    $data_value = $3;
+    
+    # setostype
+    # setlocalip
+
+    if ($data_type eq "setostype") {
+        bsetostype($bids, $data_value);
+    } else if ($data_type eq "setlocalip") {
+        prompt_text("Modify Session MetaData(Internal IP): ", $data_value, lambda({
+            if ($1) {
+                foreach $bid ($bids) {
+                    $o_ip = binfo($bid, "internal");
+                    blog($bid, "");
+                    blog($bid, "original IP : $o_ip ");
+                }
+                bsetlocalip($bids, $1);
+            }
+        }, $bids => $1));
+    } else if ($data_type eq "sethostname") {
+        prompt_text("Modify Session MetaData(HostName): ", $data_value, lambda({
+            if ($1) {
+                foreach $bid ($bids) {
+                    $o_hostname = binfo($bid, "computer");
+                    blog($bid, "");
+                    blog($bid, "original HostName: $o_hostname ");
+                }
+                bsethostname($bids, $1);
+            }
+        }, $bids => $1));
+    }
+}

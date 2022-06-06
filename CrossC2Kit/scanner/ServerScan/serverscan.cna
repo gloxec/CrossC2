@@ -1,4 +1,4 @@
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_portscan_dyn {
     blog($1, "cc2_portscan_dyn\nby: trim\nUsage: cc2_portscan_dyn <linux(32)/osx> <host> <port> <scan_type>\n\n\thost:\t192.168.1.1\n\t\t\t192.168.1.1-10\n\t\t\t192.168.1.*\n\t\t\t192.168.1.0/24\n\tport:\t21,22,80-99,8000-8080 ...\n\tscan_type: icmp / tcp\nEx:\n\tcc2_portscan linux 10.20.10.1/24 22,445,80-99,8000-8080 tcp");
