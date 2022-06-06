@@ -1,0 +1,3 @@
+[submodule "CrossC2Kit"]
+	path = CrossC2Kit
+	url = https://github.com/CrossC2/CrossC2Kit.git
