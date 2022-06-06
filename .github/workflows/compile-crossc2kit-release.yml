@@ -1,0 +1,231 @@
+on:
+  push:
+    branches:
+      - cs4.1 
+    paths:
+      - 'CrossC2Kit/**'
+      - '!CrossC2Kit/README.md'
+
+name: Compile CrossC2Kit Release
+jobs:
+  job1:
+      name: build (linux)
+      runs-on: ubuntu-18.04
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+          with:
+            submodules: 'true'
+        - name: Get current date
+          id: date
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        - name: Build project
+          run: |
+            uname -a
+            cp -r CrossC2Kit/third-party /tmp/third-party
+            cp release.sh /tmp/
+            cp CrossC2Kit/compile.sh /tmp/
+            cd /tmp
+            chmod 755 compile.sh
+            chmod 755 release.sh
+            ./compile.sh > /tmp/elog
+            find /tmp/third/ >> /tmp/elog
+            ./release.sh >> /tmp/elog
+            echo 1 > /tmp/blank
+            cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Arch"  >> $GITHUB_STEP_SUMMARY
+            uname -a >> $GITHUB_STEP_SUMMARY
+            echo "# Build Result" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        - name: Gets latest created release info
+          id: latest_release_info
+          uses: jossef/action-latest-release-info@v1.1.0
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+        - name: Create a placeholder file
+          id: create-placeholder-file 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/blank
+            asset_name: placeholder
+            asset_content_type: application/zip
+        - name: Delete old release assets
+          uses: mknejp/delete-release-assets@v1
+          with:
+            token: ${{ github.token }}
+            tag: ${{ steps.latest_release_info.outputs.tag_name }}
+            assets: | 
+              bot-third-linux*.zip
+              placeholder
+        - name: Upload Release Asset
+          id: upload-release-asset 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/third-party.zip
+            asset_name: bot-third-linux-${{ steps.date.outputs.date }}.zip
+            asset_content_type: application/zip
+  job2:
+      name: build (macOS)
+      runs-on: macOS-10.15
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            submodules: 'true'
+        - name: Get current date
+          id: date2
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        - name: Build project
+          run: |
+            uname -a
+            cp -r CrossC2Kit/third-party /tmp/third-party
+            cp release.sh /tmp/
+            cp CrossC2Kit/compile.sh /tmp/
+            cd /tmp
+            chmod 755 compile.sh
+            chmod 755 release.sh
+            ./compile.sh > /tmp/elog
+            find /tmp/third/ >> /tmp/elog
+            ./release.sh >> /tmp/elog
+            echo 1 > /tmp/blank
+            cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Arch"  >> $GITHUB_STEP_SUMMARY
+            uname -a >> $GITHUB_STEP_SUMMARY
+            echo "# Build Result" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        - name: Gets latest created release info
+          id: latest_release_info2
+          uses: jossef/action-latest-release-info@v1.1.0
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+        - name: Create a placeholder file
+          id: create-placeholder-file2 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info2.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/blank
+            asset_name: placeholder
+            asset_content_type: application/zip
+        - name: Delete old release assets
+          uses: mknejp/delete-release-assets@v1
+          with:
+            token: ${{ github.token }}
+            tag: ${{ steps.latest_release_info2.outputs.tag_name }}
+            assets: | 
+              bot-third-mac*.zip
+              placeholder
+        - name: Upload Release Asset
+          id: upload-release-asset2 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info2.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/third-party.zip
+            asset_name: bot-third-mac-${{ steps.date2.outputs.date }}.zip
+            asset_content_type: application/zip
+  job3:
+      needs: [job1, job2]
+      name: build release
+      runs-on: ubuntu-18.04
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            submodules: 'true'
+        - name: Download Release Asset
+          id: download_release_asset
+          uses: i3h/download-release-asset@v1
+          with:
+            owner: jacknnookac
+            repo: t2
+            tag: latest
+            file: /bot-third-linux-.*zip/
+            path: /tmp/
+        - name: Download Release Asset
+          id: download_release_asset2
+          uses: i3h/download-release-asset@v1
+          with:
+            owner: jacknnookac
+            repo: t2
+            tag: latest
+            file: /bot-third-mac-.*zip/
+            path: /tmp/
+        - name: Get current date
+          id: date3
+          run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        - name: Build project
+          run: |
+            uname -a
+            cp -r CrossC2Kit /tmp/CrossC2Kit
+            rm -rf /tmp/CrossC2Kit/third-party/
+            mv /tmp/bot-third-mac-*.zip /tmp/CrossC2Kit/third-mac.zip
+            mv /tmp/bot-third-linux-*.zip /tmp/CrossC2Kit/third-linux.zip
+            cd /tmp/CrossC2Kit/
+            unzip -o third-mac.zip
+            unzip -o third-linux.zip
+            rm -rf third-mac.zip
+            rm -rf third-linux.zip
+            cd /tmp/
+            zip -r CrossC2Kit-${{ steps.date3.outputs.date }} CrossC2Kit > /tmp/elog
+            echo 1 > /tmp/blank
+            cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Build Files"  >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        - name: Gets latest created release info
+          id: latest_release_info3
+          uses: jossef/action-latest-release-info@v1.1.0
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+        - name: Create a placeholder file
+          id: create-placeholder-file3 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info3.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/blank
+            asset_name: placeholder
+            asset_content_type: application/zip
+        - name: Delete old release assets
+          uses: mknejp/delete-release-assets@v1
+          with:
+            token: ${{ github.token }}
+            tag: ${{ steps.latest_release_info3.outputs.tag_name }}
+            assets: | 
+              bot-third-*.zip
+              CrossC2Kit-*.zip
+              placeholder
+        - name: Upload CrossC2Kit Release Asset
+          id: upload-release-asset3 
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.latest_release_info3.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/CrossC2Kit-${{ steps.date3.outputs.date }}.zip
+            asset_name: CrossC2Kit-GithubBot-${{ steps.date3.outputs.date }}.zip
+            asset_content_type: application/zip
