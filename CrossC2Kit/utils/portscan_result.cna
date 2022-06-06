@@ -86,7 +86,7 @@ sub createPSVisualization {
 	return $ps_content;
 }
 
-popup view {
+popup generator {
 	item "Port Scan Results" {
 		# Show the visualization
 		addTab("Port Scan Results", createPSVisualization(), "All discovered services from portscan");

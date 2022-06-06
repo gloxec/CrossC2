@@ -1,5 +1,5 @@
 
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_mimipenguin {
     blog($1, "\nUsage: cc2_mimipenguin\n\troot permissions\ndump the login password from the current linux desktop\nEx:\n\tcc2_mimipenguin");

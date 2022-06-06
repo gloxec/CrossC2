@@ -1,5 +1,6 @@
 include(script_resource("httprequest.cna"));
 popup generator {
+    separator();
     item "&Update Script" {
         createScriptEditor();
     }

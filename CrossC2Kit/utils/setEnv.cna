@@ -1,0 +1,26 @@
+sub openSetEnvDialogCallBack {
+    $envKey = $3['envKey'];
+    $envValue = $3['envValue'];
+    bcc2_setenv($beaconid, $envKey, $envValue);
+}
+
+sub openSetEnvDialog {
+    $beaconid = $1;
+    $dialog = dialog("SetEnv", %(beaconid => $beaconid, envKey => "TEST_PATH", envValue => "/usr/bin/:/usr/sbin/:/bin/:/sbin/"), &openSetEnvDialogCallBack);
+    dialog_description($dialog, "setenv");
+
+    drow_text($dialog, "envKey", "envKey: ", ""); 
+    drow_text($dialog, "envValue", "envValue: ", "");
+
+    dbutton_action($dialog, "set");
+    dialog_show($dialog);
+}
+
+sub openUnSetEnvDialog{
+    $bids = $1;
+    prompt_text("unsetenv: ", "TEST_PATH", lambda({
+        if ($1) {
+            bcc2_unsetenv($bids, $1);
+        }
+    }, $bids => $1));
+}

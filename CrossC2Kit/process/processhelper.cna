@@ -40,7 +40,7 @@ sub bcc2_inject {
     $injectMOD = $null;
 
     binput($bid, "cc2_inject $inject_PID libbeacon $savepath");
-    btask($bid, "[tips]: [if ptrace attach failed]: echo 0 > /proc/sys/kernel/yama/ptrace_scope");
+    btask($bid, "[cc2_inject]: [tips]: [if ptrace attach failed]: echo 0 > /proc/sys/kernel/yama/ptrace_scope");
 
     if ('linux' isin $os) {
         if ($arch eq 'x86') {
@@ -56,7 +56,7 @@ sub bcc2_inject {
         btask($bid, "[cc2_inject]: inject ".$injectObjectPath." to pid-[".$inject_PID."]");
         bawait_upload_raw($bid, $inject_Data, $savepath, $savename, &bcc2_inject_cb, @($injectMOD, $inject_PID, $injectObjectPath));
     } else {
-        berror($bid, "unknow platform");
+        berror($bid, "[cc2_inject]: unknow platform");
     }
 }
 

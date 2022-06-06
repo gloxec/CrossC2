@@ -1,0 +1,36 @@
+
+#include(script_resource("CrossC2Kit.cna"));
+
+sub printUsage_importscript {
+    blog($1, "\nUsage: import");
+}
+
+ssh_alias python-import {
+    $taskResType = "info"; # info -> normal message
+
+    $beaconid = $1;
+    $scriptType = 'python-import$';
+    $scriptEnginePath = 'null';
+    $scriptLocalPath = $2;
+    $transportArg = '';
+
+    $pathIndex = lindexOf($scriptLocalPath, '/');
+    $pathIndex += 1;
+    $filename = substr($scriptLocalPath, $pathIndex);
+
+    $importName = substr($filename, 0, lindexOf($filename, '.'));
+    blog($1, "[Python]: import ".$importName);
+    $scriptType = $scriptType.$importName;
+
+    if ($scriptType && $scriptLocalPath) {
+        if (indexOf($scriptType, "/")) {
+            $scriptEnginePath = $scriptType;
+        }
+        brun_script_in_mem($beaconid, $scriptType, $scriptEnginePath, $taskResType, $scriptLocalPath, $transportArg);
+    } else {
+        berror($beaconid, "*[error]: error script load");
+        printUsage_importscript($beaconid);
+    }
+}
+
+ssh_command_register("python-import", "aaa\n");

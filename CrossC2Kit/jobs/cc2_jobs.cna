@@ -17,7 +17,6 @@ sub cc2_job {
     $arch = beacon_info($beaconid, "arch");
     $os = lc(beacon_info($beaconid, "os"));
     if ('linux' isin $os) {
-        $loadlib = 'errorlog.so';
         if ($arch eq 'x86') {
             $loadlib = "jobs/cc2_jobs32.so";
         } else if ($arch eq 'x64') {
@@ -25,6 +24,9 @@ sub cc2_job {
         }
     } else if ('macos' isin $os) {
         $loadlib = "jobs/cc2_jobs.dylib";
+    } else {
+        berror($beaconid, "*[error]: system $os ");
+        printUsage_jobs($beaconid);
     }
 
     if ($jobType) {
