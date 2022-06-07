@@ -1,5 +1,7 @@
 on:
-  workflow_dispatch
+  release:
+    types: 
+      published
 
 name: Compile Base Release
 jobs:
