@@ -19,6 +19,7 @@ jobs:
         - name: Build project
           run: |
             uname -a
+            find ./
             cp -r CrossC2Kit/third-party /tmp/third-party
             cp release.sh /tmp/
             cp CrossC2Kit/compile.sh /tmp/
