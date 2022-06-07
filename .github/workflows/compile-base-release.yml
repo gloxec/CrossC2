@@ -171,6 +171,7 @@ jobs:
           run: |
             uname -a
             cp -r CrossC2Kit /tmp/CrossC2Kit
+            cp src/CrossC2.cna /tmp/CrossC2.cna
             rm -rf /tmp/CrossC2Kit/third-party/
             mv /tmp/bot-third-mac-*.zip /tmp/CrossC2Kit/third-mac.zip
             mv /tmp/bot-third-linux-*.zip /tmp/CrossC2Kit/third-linux.zip
@@ -232,6 +233,6 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
             upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: src/CrossC2.cna
+            asset_path: /tmp/CrossC2.cna
             asset_name: CrossC2-GithubBot-${{ steps.date3.outputs.date }}.cna
             asset_content_type: application/zip
