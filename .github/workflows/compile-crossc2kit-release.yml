@@ -96,7 +96,7 @@ jobs:
             chmod 755 compile.sh
             chmod 755 release.sh
             ./compile.sh > /tmp/elog
-            find /tmp/third/ >> /tmp/elog
+            find /tmp/third-party/ >> /tmp/elog
             ./release.sh >> /tmp/elog
             echo 1 > /tmp/blank
             cd /tmp/
@@ -155,8 +155,8 @@ jobs:
           id: download_release_asset
           uses: i3h/download-release-asset@v1
           with:
-            owner: jacknnookac
-            repo: t2
+            owner: gloxec
+            repo: CrossC2
             tag: latest
             file: /bot-third-linux-.*zip/
             path: /tmp/
@@ -164,8 +164,8 @@ jobs:
           id: download_release_asset2
           uses: i3h/download-release-asset@v1
           with:
-            owner: jacknnookac
-            repo: t2
+            owner: gloxec
+            repo: CrossC2
             tag: latest
             file: /bot-third-mac-.*zip/
             path: /tmp/
