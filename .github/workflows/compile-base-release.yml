@@ -25,11 +25,20 @@ jobs:
             cd /tmp
             chmod 755 compile.sh
             chmod 755 release.sh
-            ./compile.sh
-            find /tmp/third-party/
-            ./release.sh
+            ./compile.sh > /tmp/elog
+            find /tmp/third-party/ >> /tmp/elog
+            ./release.sh >> /tmp/elog
             echo 1 > /tmp/blank
             cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Arch"  >> $GITHUB_STEP_SUMMARY
+            uname -a >> $GITHUB_STEP_SUMMARY
+            echo "# Build Result" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         - name: Gets latest created release info
           id: latest_release_info
           uses: jossef/action-latest-release-info@v1.1.0
@@ -83,11 +92,20 @@ jobs:
             cd /tmp
             chmod 755 compile.sh
             chmod 755 release.sh
-            ./compile.sh
-            find /tmp/third/
-            ./release.sh
+            ./compile.sh > /tmp/elog
+            find /tmp/third-party/ >> /tmp/elog
+            ./release.sh >> /tmp/elog
             echo 1 > /tmp/blank
             cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Arch"  >> $GITHUB_STEP_SUMMARY
+            uname -a >> $GITHUB_STEP_SUMMARY
+            echo "# Build Result" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         - name: Gets latest created release info
           id: latest_release_info2
           uses: jossef/action-latest-release-info@v1.1.0
@@ -134,8 +152,8 @@ jobs:
           id: download_release_asset
           uses: i3h/download-release-asset@v1
           with:
-            owner: jacknnookac
-            repo: t2
+            owner: gloxec
+            repo: CrossC2
             tag: latest
             file: /bot-third-linux-.*zip/
             path: /tmp/
@@ -143,8 +161,8 @@ jobs:
           id: download_release_asset2
           uses: i3h/download-release-asset@v1
           with:
-            owner: jacknnookac
-            repo: t2
+            owner: gloxec
+            repo: CrossC2
             tag: latest
             file: /bot-third-mac-.*zip/
             path: /tmp/
@@ -155,6 +173,7 @@ jobs:
           run: |
             uname -a
             cp -r CrossC2Kit /tmp/CrossC2Kit
+            cp src/CrossC2.cna /tmp/CrossC2.cna
             rm -rf /tmp/CrossC2Kit/third-party/
             mv /tmp/bot-third-mac-*.zip /tmp/CrossC2Kit/third-mac.zip
             mv /tmp/bot-third-linux-*.zip /tmp/CrossC2Kit/third-linux.zip
@@ -164,9 +183,16 @@ jobs:
             rm -rf third-mac.zip
             rm -rf third-linux.zip
             cd /tmp/
-            zip -r CrossC2Kit-${{ steps.date3.outputs.date }} CrossC2Kit
+            zip -r CrossC2Kit-${{ steps.date3.outputs.date }} CrossC2Kit > /tmp/elog
             echo 1 > /tmp/blank
             cd /tmp/
+        - name: Build project
+          run: |
+            echo "# Build Files"  >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`python" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/elog >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         - name: Gets latest created release info
           id: latest_release_info3
           uses: jossef/action-latest-release-info@v1.1.0
@@ -208,7 +234,7 @@ jobs:
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            upload_url: ${{ steps.latest_release_info.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: src/CrossC2.cna
+            upload_url: ${{ steps.latest_release_info3.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+            asset_path: /tmp/CrossC2.cna
             asset_name: CrossC2-GithubBot-${{ steps.date3.outputs.date }}.cna
             asset_content_type: application/zip
