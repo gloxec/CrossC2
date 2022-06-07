@@ -6,4 +6,4 @@ do
     echo $module
     rm -rf $module
 done
-zip -r third-party.zip third
+zip -r third-party.zip third-party
