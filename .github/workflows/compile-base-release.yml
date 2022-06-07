@@ -83,7 +83,7 @@ jobs:
             chmod 755 compile.sh
             chmod 755 release.sh
             ./compile.sh
-            find /tmp/third/
+            find /tmp/third-party/
             ./release.sh
             echo 1 > /tmp/blank
             cd /tmp/
