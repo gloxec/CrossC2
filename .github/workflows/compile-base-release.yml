@@ -1,7 +1,5 @@
 on:
-  release:
-    types: 
-      [published, edited]
+  workflow_dispatch
 
 name: Compile Base Release
 jobs:
